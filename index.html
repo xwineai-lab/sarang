@@ -303,7 +303,8 @@
           <div class="h-title">내 기도 기록을 지켜요</div>
           <div class="h-desc">기기를 바꿔도 연속기록과 누적이 복구됩니다.<br>연결해도 다른 사람에겐 여전히 익명이에요.</div>
         </div>
-        <div style="margin-top:22px;">
+        <div class="card" id="connectDone" style="display:none;text-align:center;margin-top:22px;color:var(--ink);"></div>
+        <div id="connectForm" style="margin-top:22px;">
           <div class="field"><label>이메일</label><input id="linkEmail" type="email" placeholder="example@email.com" autocomplete="email" /></div>
           <button class="lbtn2 email" style="background:var(--amber);color:#fff;" onclick="linkEmailAccount()">이메일로 기록 연결하기</button>
           <button class="lbtn2" style="border:1.5px solid var(--line);background:var(--surface);color:var(--ink);" onclick="recoverByEmail()">이 이메일로 로그인 (다른 기기 복구)</button>
@@ -450,13 +451,14 @@
         <div class="mrow"><span>기도 리마인더</span><span class="r">준비 중</span></div>
         <div class="mrow"><span>새벽기도 알림 (06:00)</span><span class="r">준비 중</span></div>
         <div class="seclbl">내 정보</div>
+        <div class="mrow" onclick="changeName()" style="cursor:pointer;"><span>별명</span><span class="r" id="myNameLabel">고요한 등불 ›</span></div>
         <div class="mrow" onclick="go('joinzone')" style="cursor:pointer;"><span>내 구역</span><span class="r" id="myZoneLabel">독일열방 ›</span></div>
         <div class="mrow"><span>참여 방식</span><span class="r" id="myModeLabel">익명 참여 중</span></div>
         <div class="seclbl">캠페인</div>
         <div class="mrow"><span>현재 목표</span><span class="r">50,000 시간</span></div>
         <div class="mrow"><span>관리자 대시보드</span><span class="r">준비 중</span></div>
         <div class="seclbl">계정</div>
-        <div class="mrow" onclick="go('connect')" style="cursor:pointer;"><span>기록 지키기 (이메일 연결)</span><span class="link">연결 ›</span></div>
+        <div class="mrow" id="linkRow" onclick="go('connect')" style="cursor:pointer;"><span>기록 지키기 (이메일 연결)</span><span class="link" id="linkRowState">연결 ›</span></div>
         <div class="mrow"><span class="link" onclick="logout()">로그아웃</span><span></span></div>
       </div>
     </div>
@@ -475,7 +477,26 @@
 
 <script>
   const TOTAL=50000;let current=0,liveN=0;
-  let SB=null, MY_GROUP_ID=null, GROUPS_BY_NAME={}, SERVER_ZONES=null, PRESENCE=null, ZONE_LIVE={};
+  let SB=null, MY_GROUP_ID=null, GROUPS_BY_NAME={}, SERVER_ZONES=null, PRESENCE=null, ZONE_LIVE={}, myEmail=null, isAnon=true;
+  function syncAuthUI(){
+    const linked = !!myEmail;
+    const ls=document.getElementById('linkRowState'); if(ls) ls.textContent = linked ? '연결됨' : '연결 ›';
+    const lr=document.getElementById('linkRow'); if(lr) lr.style.cursor = linked ? 'default' : 'pointer';
+    const done=document.getElementById('connectDone'), form=document.getElementById('connectForm');
+    if(done && form){
+      if(linked){ done.style.display='block'; form.style.display='none';
+        done.textContent='이미 '+myEmail+' 로 연결돼 있어요. 다른 기기에서 이 이메일로 로그인하면 기록이 복구됩니다.'; }
+      else { done.style.display='none'; form.style.display='block'; }
+    }
+  }
+  function changeName(){
+    const v = window.prompt('표시할 별명을 입력하세요. (남에게 실명은 보이지 않아요)', myName||'');
+    if(v===null) return;
+    const name = (v.trim()) ? v.trim() : (myName||makeAlias());
+    myName=name; const p=loadProfile()||{joined:true,dept:selDept,zone:selZone,mode:joinMode}; p.name=name; if(v.trim()) p.mode='nick'; joinMode=p.mode||joinMode; saveProfile(p);
+    if(SB) upsertProfile(name);
+    syncProfileUI();
+  }
   const LEVELS=[[0,'씨앗'],[10,'새싹'],[40,'등불'],[120,'빛'],[300,'횃불'],[800,'불기둥']];
   function levelOf(hours){ let lv=1,name='씨앗'; for(let i=0;i<LEVELS.length;i++){ if(hours>=LEVELS[i][0]){ lv=i+1; name=LEVELS[i][1]; } } return {lv:lv,name:name}; }
   let tickerTk=null;
@@ -494,6 +515,7 @@
     if(id==='joinzone') buildChips();
     if(id==='topics') buildTopics();
     if(id==='record') loadMyRecord();
+    if(id==='more' || id==='connect') syncAuthUI();
   }
   /* 프로필 기억하기 + 익명 가상 닉네임 */
   const PKEY='omansigan_profile';
@@ -506,8 +528,10 @@
   function syncProfileUI(){
     const p=loadProfile()||{}; if(p.name) myName=p.name;
     const z=document.getElementById('myZoneLabel'); if(z) z.textContent=(p.zone||selZone)+' ›';
-    const m=document.getElementById('myModeLabel'); if(m) m.textContent=(p.mode==='nick'?'닉네임':'익명')+(myName?(' · '+myName):'');
+    const m=document.getElementById('myModeLabel'); if(m) m.textContent=(myEmail?'이메일 연결됨':(p.mode==='nick'?'닉네임':'익명'))+(myName?(' · '+myName):'');
+    const nl=document.getElementById('myNameLabel'); if(nl) nl.textContent=(myName||'별명 설정')+' ›';
     const rs=document.getElementById('recSub'); if(rs) rs.textContent=(myName||'나의 기도')+' · '+(p.zone||selZone)+' 구역';
+    syncAuthUI();
   }
   function enterApp(){
     const typed=((document.getElementById('nickIn')||{}).value||'').trim();
@@ -677,6 +701,8 @@
       SB = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       const { data:s } = await SB.auth.getSession();
       if(!s || !s.session){ await SB.auth.signInAnonymously(); }
+      try{ const { data:uu } = await SB.auth.getUser(); if(uu && uu.user){ myEmail = uu.user.email || null; isAnon = !!uu.user.is_anonymous; } }catch(e){}
+      syncAuthUI();
       const { data:gs } = await SB.from('groups').select('id,name');
       (gs||[]).forEach(function(g){ GROUPS_BY_NAME[g.name]=g.id; });
       MY_GROUP_ID = GROUPS_BY_NAME[selZone] || null;
