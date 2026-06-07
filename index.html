@@ -69,6 +69,11 @@
   .lbtn2.kakao{background:#fae100;color:#3a1d1d;}
   .lbtn2.email{background:var(--surface);border:1.5px solid var(--line);color:var(--ink);}
   .homebanner{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--amber-tint);border-radius:14px;padding:11px 14px;margin-top:12px;font-size:12.5px;color:var(--amber-deep);font-family:"Gowun Dodum",sans-serif;cursor:pointer;}
+  .liveticker{margin-top:10px;min-height:20px;font-size:12.5px;color:var(--amber-deep);font-family:"Gowun Dodum",sans-serif;display:flex;align-items:center;gap:7px;opacity:0;transition:opacity .35s;}
+  .liveticker.on{opacity:1;}
+  .liveticker .d{width:7px;height:7px;border-radius:50%;background:var(--green);flex-shrink:0;}
+  .lvtag{display:inline-block;font-size:9.5px;color:#fff;background:var(--amber-deep);padding:1px 6px;border-radius:6px;margin-left:6px;vertical-align:2px;}
+  .zlive{color:var(--green);font-weight:700;}
   /* prayer topic card */
   .topiccard{background:var(--surface);border-radius:20px;padding:16px 18px 14px;margin-top:18px;box-shadow:0 8px 22px rgba(150,120,60,.08);text-align:left;}
   .topiclabel{display:flex;justify-content:space-between;align-items:center;font-size:11.5px;color:var(--soft);}
@@ -333,6 +338,7 @@
           <span class="livetx">지금 <b id="liveN">18</b>명이 함께 기도하고 있어요</span>
           <span class="presence" id="presence"></span>
         </div>
+        <div class="liveticker" id="liveTicker"></div>
         <div class="homebanner" onclick="go('connect')"><span>익명으로 참여 중이에요 · 기록을 안전하게 지키기</span><span>›</span></div>
 
         <div class="card midcard" onclick="go('topics')" style="cursor:pointer;">
@@ -469,7 +475,15 @@
 
 <script>
   const TOTAL=50000;let current=0,liveN=0;
-  let SB=null, MY_GROUP_ID=null, GROUPS_BY_NAME={}, SERVER_ZONES=null, PRESENCE=null;
+  let SB=null, MY_GROUP_ID=null, GROUPS_BY_NAME={}, SERVER_ZONES=null, PRESENCE=null, ZONE_LIVE={};
+  const LEVELS=[[0,'씨앗'],[10,'새싹'],[40,'등불'],[120,'빛'],[300,'횃불'],[800,'불기둥']];
+  function levelOf(hours){ let lv=1,name='씨앗'; for(let i=0;i<LEVELS.length;i++){ if(hours>=LEVELS[i][0]){ lv=i+1; name=LEVELS[i][1]; } } return {lv:lv,name:name}; }
+  let tickerTk=null;
+  function pushTicker(zone){
+    const el=document.getElementById('liveTicker'); if(!el) return;
+    el.innerHTML='<span class="d"></span><span>방금 <b>'+zone+'</b> 구역이 함께 기도에 참여했어요</span>';
+    el.classList.add('on'); clearTimeout(tickerTk); tickerTk=setTimeout(function(){ el.classList.remove('on'); }, 4000);
+  }
   const APP=['home','pray','zone','record','more','connect','topics'];
   function go(id){
     document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id));
@@ -501,7 +515,7 @@
     let name = (joinMode==='nick' && typed) ? typed : ((prev&&prev.name) || makeAlias());
     saveProfile({ joined:true, dept:selDept, zone:selZone, mode:joinMode, name:name });
     myName=name;
-    if(SB){ MY_GROUP_ID = GROUPS_BY_NAME[selZone] || null; upsertProfile(name); }
+    if(SB){ MY_GROUP_ID = GROUPS_BY_NAME[selZone] || null; upsertProfile(name); if(PRESENCE){ try{ PRESENCE.track({ zone: selZone, at: Date.now() }); }catch(e){} } }
     syncProfileUI();
     go('home');
   }
@@ -592,10 +606,18 @@
     }else{
       running=false;clearInterval(tk);b.textContent='기도 시작';b.classList.add('start');
       if(autoOn) toggleAuto();
-      const mins=Math.max(1,Math.round(sec/60))||1;
-      if(SB){ recordPrayer(mins); } else { current+=Math.max(1,Math.round(sec/6)); liveN=Math.max(0,liveN-1); updateLive(); renderGauge(); }
-      const to=document.getElementById('toast');document.getElementById('toastB').textContent='+'+(sec<60?1:mins)+'분';
-      to.classList.add('show');setTimeout(()=>to.classList.remove('show'),2200);
+      const mins=Math.round(sec/60);
+      const to=document.getElementById('toast'), ts=to.querySelector('.s');
+      if(mins<1){
+        document.getElementById('toastB').textContent='조금 더 함께해요';
+        if(ts) ts.textContent='1분 미만은 기록되지 않아요';
+        to.classList.add('show');setTimeout(function(){to.classList.remove('show'); if(ts) ts.textContent='내 기도가 모두의 시간에 더해졌어요';},2200);
+      } else {
+        if(SB){ recordPrayer(mins); } else { current+=mins/60; liveN=Math.max(0,liveN-1); updateLive(); renderGauge(); }
+        document.getElementById('toastB').textContent='+'+mins+'분';
+        if(ts) ts.textContent='내 기도가 모두의 시간에 더해졌어요';
+        to.classList.add('show');setTimeout(function(){to.classList.remove('show');},2200);
+      }
       go('home');
     }
   }
@@ -609,10 +631,12 @@
     const Z = SERVER_ZONES || ZONES;
     const max=Math.max.apply(null,Z.map(z=>z[1]))||1;
     document.getElementById('zoneList').innerHTML=Z.map((z,i)=>{
-      const pct=Math.round(z[1]/max*100), me=z[3]===true;
+      const hours=z[1], pct=Math.round(hours/max*100), me=z[3]===true;
+      const lv=levelOf(hours), live=ZONE_LIVE[z[0]]||0;
+      const livePart = live>0 ? ('<span class="zlive">지금 '+live+'명</span> · ') : '';
       return '<div class="zcard'+(i===0?' top':'')+(me?' me':'')+'"><div class="zic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">'+IC[z[2]]+'</svg></div>'+
-      '<div class="zmid"><div class="zrow1"><span class="znm">'+z[0]+(me?'<span class="metag">우리 구역</span>':'')+'</span><span class="zh num">'+z[1].toLocaleString()+' h</span></div>'+
-      '<div class="ztrack"><i style="width:'+pct+'%"></i></div><div class="zp">'+pct+'%</div></div><div class="ar">›</div></div>';
+      '<div class="zmid"><div class="zrow1"><span class="znm">'+z[0]+'<span class="lvtag">Lv.'+lv.lv+' '+lv.name+'</span>'+(me?'<span class="metag">우리 구역</span>':'')+'</span><span class="zh num">'+fmtHM(hours*60)+'</span></div>'+
+      '<div class="ztrack"><i style="width:'+pct+'%"></i></div><div class="zp">'+livePart+pct+'%</div></div><div class="ar">›</div></div>';
     }).join('');
   }
   // 기도 제목 (교회 이전을 위한 합심 기도제목)
@@ -723,11 +747,15 @@
     const key = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Math.random());
     PRESENCE = SB.channel('prayer-room', { config:{ presence:{ key: key } } });
     PRESENCE.on('presence', { event:'sync' }, function(){
-      const st = PRESENCE.presenceState();
-      liveN = Math.max(0, Object.keys(st).length);
-      updateLive();
+      const st = PRESENCE.presenceState(); let total=0; const zc={};
+      Object.keys(st).forEach(function(k){ (st[k]||[]).forEach(function(m){ total++; const z=m.zone; if(z) zc[z]=(zc[z]||0)+1; }); });
+      liveN = total; ZONE_LIVE = zc; updateLive();
+      if(document.getElementById('zone').classList.contains('on')) buildZones();
     });
-    PRESENCE.subscribe(function(status){ if(status==='SUBSCRIBED'){ PRESENCE.track({ at: Date.now() }); } });
+    PRESENCE.on('presence', { event:'join' }, function(payload){
+      (payload.newPresences||[]).forEach(function(p){ if(p && p.zone) pushTicker(p.zone); });
+    });
+    PRESENCE.subscribe(function(status){ if(status==='SUBSCRIBED'){ PRESENCE.track({ zone: selZone, at: Date.now() }); } });
     window.addEventListener('beforeunload', function(){ try{ PRESENCE.untrack(); }catch(e){} });
   }
   async function upsertProfile(name){
