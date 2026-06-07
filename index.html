@@ -414,7 +414,7 @@
         <div class="statusbar"><span>9:41</span><span class="r">5G &nbsp; 87%</span></div>
         <div style="text-align:center;margin:6px 0 4px;">
           <div class="h-title">나의 기록</div>
-          <div class="h-desc">나의 기도 여정을 돌아보고<br>하나님의 은혜를 기억합니다.</div>
+          <div class="h-desc" id="recSub" style="margin-top:7px;font-weight:600;color:var(--amber-deep);">고요한 등불 · 독일열방 구역</div>
         </div>
         <div class="statcard">
           <div class="col"><div class="cl">이번 주</div><div class="cv" id="st-week">0분</div></div>
@@ -438,18 +438,17 @@
         <div class="statusbar"><span>9:41</span><span class="r">5G &nbsp; 87%</span></div>
         <div class="h-title" style="margin-top:6px;">더보기</div>
         <div class="seclbl">알림</div>
-        <div class="mrow"><span>기도 리마인더</span><div class="sw on" onclick="this.classList.toggle('on')"></div></div>
-        <div class="mrow"><span>새벽기도 알림 (05:00)</span><div class="sw on" onclick="this.classList.toggle('on')"></div></div>
-        <div class="seclbl">표시</div>
-        <div class="mrow"><span>실명으로 표시</span><div class="sw on" onclick="this.classList.toggle('on')"></div></div>
-        <div class="mrow"><span>내 구역</span><span class="r">독일열방 ›</span></div>
+        <div class="mrow"><span>기도 리마인더</span><span class="r">준비 중</span></div>
+        <div class="mrow"><span>새벽기도 알림 (06:00)</span><span class="r">준비 중</span></div>
+        <div class="seclbl">내 정보</div>
+        <div class="mrow" onclick="go('joinzone')" style="cursor:pointer;"><span>내 구역</span><span class="r" id="myZoneLabel">독일열방 ›</span></div>
+        <div class="mrow"><span>참여 방식</span><span class="r" id="myModeLabel">익명 참여 중</span></div>
         <div class="seclbl">캠페인</div>
         <div class="mrow"><span>현재 목표</span><span class="r">50,000 시간</span></div>
-        <div class="mrow"><span>관리자 대시보드</span><span class="link">열기 ›</span></div>
+        <div class="mrow"><span>관리자 대시보드</span><span class="r">준비 중</span></div>
         <div class="seclbl">계정</div>
-        <div class="mrow"><span>참여 방식</span><span class="r">익명 참여 중</span></div>
-        <div class="mrow"><span>기록 지키기 (이메일·카카오 연결)</span><span class="link" onclick="go('connect')">연결 ›</span></div>
-        <div class="mrow"><span class="link" onclick="go('welcome')">로그아웃</span><span></span></div>
+        <div class="mrow"><span>기록 지키기 (이메일·카카오 연결)</span><span class="r">준비 중</span></div>
+        <div class="mrow"><span class="link" onclick="logout()">로그아웃</span><span></span></div>
       </div>
     </div>
 
@@ -479,7 +478,36 @@
     if(id==='topics') buildTopics();
     if(id==='record') loadMyRecord();
   }
-  function enterApp(){ if(SB){ MY_GROUP_ID = GROUPS_BY_NAME[selZone] || null; } go('home'); }
+  /* 프로필 기억하기 + 익명 가상 닉네임 */
+  const PKEY='omansigan_profile';
+  const ADJ=['고요한','따뜻한','잔잔한','평안한','은혜로운','기쁜','맑은','겸손한','든든한','새벽'];
+  const NOUN=['등불','새벽빛','사슴','별','샘물','반석','백합','종달새','올리브','비둘기'];
+  function makeAlias(){ return ADJ[Math.floor(Math.random()*ADJ.length)]+' '+NOUN[Math.floor(Math.random()*NOUN.length)]; }
+  function loadProfile(){ try{ return JSON.parse(localStorage.getItem(PKEY)||'null'); }catch(e){ return null; } }
+  function saveProfile(p){ try{ localStorage.setItem(PKEY, JSON.stringify(p)); }catch(e){} }
+  let myName='';
+  function syncProfileUI(){
+    const p=loadProfile()||{}; if(p.name) myName=p.name;
+    const z=document.getElementById('myZoneLabel'); if(z) z.textContent=(p.zone||selZone)+' ›';
+    const m=document.getElementById('myModeLabel'); if(m) m.textContent=(p.mode==='nick'?'닉네임':'익명')+(myName?(' · '+myName):'');
+    const rs=document.getElementById('recSub'); if(rs) rs.textContent=(myName||'나의 기도')+' · '+(p.zone||selZone)+' 구역';
+  }
+  function enterApp(){
+    const typed=((document.getElementById('nickIn')||{}).value||'').trim();
+    const prev=loadProfile();
+    let name = (joinMode==='nick' && typed) ? typed : ((prev&&prev.name) || makeAlias());
+    saveProfile({ joined:true, dept:selDept, zone:selZone, mode:joinMode, name:name });
+    myName=name;
+    if(SB){ MY_GROUP_ID = GROUPS_BY_NAME[selZone] || null; upsertProfile(name); }
+    syncProfileUI();
+    go('home');
+  }
+  function logout(){ try{ localStorage.removeItem(PKEY); }catch(e){} myName=''; go('welcome'); }
+  function restoreSession(){
+    const s=loadProfile();
+    if(s && s.joined){ if(s.dept)selDept=s.dept; if(s.zone)selZone=s.zone; if(s.mode)joinMode=s.mode; if(s.name)myName=s.name; syncProfileUI(); go('home'); return true; }
+    return false;
+  }
   // join: 부서 → 하위그룹(구역/마을/반)
   let selDept='장년부', selZone='독일열방';
   const SUBG={'청년부':['1마을','2마을','3마을','4마을','5마을','6마을'],'청소년부':['중등 1반','중등 2반','고등 1반','고등 2반']};
@@ -669,6 +697,13 @@
     PRESENCE.subscribe(function(status){ if(status==='SUBSCRIBED'){ PRESENCE.track({ at: Date.now() }); } });
     window.addEventListener('beforeunload', function(){ try{ PRESENCE.untrack(); }catch(e){} });
   }
+  async function upsertProfile(name){
+    if(!SB) return;
+    try{ const { data:u } = await SB.auth.getUser(); if(!u || !u.user) return;
+      await SB.from('profiles').upsert({ id:u.user.id, group_id:MY_GROUP_ID, is_anonymous:(joinMode!=='nick'), display_name:(name||null) });
+    }catch(e){ console.warn('profile upsert:', e); }
+  }
+  restoreSession();
   initBackend();
 
   /* 캐시로 인한 구버전 표시 방지: 기존 서비스워커/캐시 정리 (서비스워커 미사용) */
