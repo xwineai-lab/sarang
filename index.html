@@ -115,7 +115,7 @@
   .praylive b{color:var(--amber-deep);}
 
   /* big circular prayer button (home) */
-  .circlewrap{display:flex;justify-content:center;margin:30px 0 8px;}
+  .circlewrap{display:flex;justify-content:center;margin:16px 0 8px;}
   .pbtn{width:184px;height:184px;border-radius:50%;border:none;cursor:pointer;background:var(--surface);
     box-shadow:0 14px 30px rgba(180,140,60,.18),inset 0 0 0 2px rgba(224,169,58,.55);
     display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;transition:transform .15s ease;}
@@ -323,7 +323,7 @@
         <div class="h-title">함께 채워가는 기도</div>
         <div class="h-desc">작은 기도가 모여 큰 변화를 만듭니다.</div>
 
-        <div class="gnum"><span class="big num" id="cur">32,140 h</span><span class="tot">/ 50,000 h</span></div>
+        <div class="gnum"><span class="big num" id="cur">0분</span><span class="tot">/ 50,000시간</span></div>
         <div class="gbarwrap"><div class="gbar"><i id="bar"></i></div><span class="gpct" id="pct">64%</span></div>
         <div class="livecard">
           <span class="livedot"></span>
@@ -332,17 +332,17 @@
         </div>
         <div class="homebanner" onclick="go('connect')"><span>익명으로 참여 중이에요 · 기록을 안전하게 지키기</span><span>›</span></div>
 
+        <div class="card midcard" onclick="go('topics')" style="cursor:pointer;">
+          <div class="lf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 21c-1-6 2-10 8-11-1 6-4 10-8 11zM12 21C8 20 5 16 4 10c6 1 9 5 8 11z"/></svg></div>
+          <div class="tx"><div class="s">오늘의 기도 제목</div><div class="m">교회 이전을 위한 합심 기도</div></div>
+          <div class="ar">›</div>
+        </div>
+
         <div class="circlewrap">
           <button class="pbtn" onclick="go('pray')">
             <svg viewBox="0 0 48 56" fill="none" stroke="#c5881d" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M24 8 C19 16 14 28 13 36 C12.4 42 16 47 24 48 Z"/><path d="M24 8 C29 16 34 28 35 36 C35.6 42 32 47 24 48 Z"/><path d="M24 12 L24 46"/></svg>
             <span class="t">기도 시작</span>
           </button>
-        </div>
-
-        <div class="card midcard" onclick="go('topics')" style="cursor:pointer;">
-          <div class="lf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 21c-1-6 2-10 8-11-1 6-4 10-8 11zM12 21C8 20 5 16 4 10c6 1 9 5 8 11z"/></svg></div>
-          <div class="tx"><div class="s">오늘의 기도 제목</div><div class="m">교회 이전을 위한 합심 기도</div></div>
-          <div class="ar">›</div>
         </div>
       </div>
     </div>
@@ -518,9 +518,10 @@
     p.innerHTML=PC.map(c=>'<i style="background:'+c+'"></i>').join('');
   }
   buildPresence(); updateLive();
+  function fmtHM(min){ min=Math.max(0,Math.round(min)); const h=Math.floor(min/60), m=min%60; return h>0 ? (h.toLocaleString('en-US')+'시간'+(m?(' '+m+'분'):'')) : (m+'분'); }
   function renderGauge(){
-    const p=Math.min(current/TOTAL,1);
-    document.getElementById('cur').textContent=fmt(current)+' h';
+    const totMin=Math.round((current||0)*60), goalMin=TOTAL*60, p=Math.min(totMin/goalMin,1);
+    document.getElementById('cur').textContent=fmtHM(totMin);
     document.getElementById('bar').style.width=(p*100)+'%';
     document.getElementById('pct').textContent=Math.round(p*100)+'%';
   }
@@ -535,14 +536,15 @@
     if(!running){
       running=true;b.textContent='기도 마치기';b.classList.remove('start');
       sec=0;document.getElementById('clock').textContent='00:00:00';document.getElementById('prog').style.strokeDashoffset=CIRC;
-      if(SB && PRESENCE){ PRESENCE.track({at:Date.now()}); } else { liveN++; updateLive(); }
+      if(!autoOn) toggleAuto();
+      if(!SB){ liveN++; updateLive(); }
       tk=setInterval(()=>{sec++;document.getElementById('clock').textContent=hhmmss(sec);
         const p=Math.min(sec/goalSec,1);document.getElementById('prog').style.strokeDashoffset=CIRC*(1-p);},1000);
     }else{
       running=false;clearInterval(tk);b.textContent='기도 시작';b.classList.add('start');
-      if(PRESENCE) PRESENCE.untrack();
+      if(autoOn) toggleAuto();
       const mins=Math.max(1,Math.round(sec/60))||1;
-      if(SB){ recordPrayer(mins); } else { current+=Math.max(1,Math.round(sec/6)); liveN=Math.max(12,liveN-1); updateLive(); renderGauge(); }
+      if(SB){ recordPrayer(mins); } else { current+=Math.max(1,Math.round(sec/6)); liveN=Math.max(0,liveN-1); updateLive(); renderGauge(); }
       const to=document.getElementById('toast');document.getElementById('toastB').textContent='+'+(sec<60?1:mins)+'분';
       to.classList.add('show');setTimeout(()=>to.classList.remove('show'),2200);
       go('home');
@@ -615,7 +617,7 @@
   async function refreshProgress(){
     if(!SB) return;
     const { data } = await SB.rpc('get_progress');
-    if(data){ current = Math.round(Number(data.total_hours)||0); renderGauge(); }
+    if(data){ current = Number(data.total_hours)||0; renderGauge(); }
   }
   async function recordPrayer(mins){
     try{
@@ -664,12 +666,16 @@
       liveN = Math.max(0, Object.keys(st).length);
       updateLive();
     });
-    PRESENCE.subscribe();
+    PRESENCE.subscribe(function(status){ if(status==='SUBSCRIBED'){ PRESENCE.track({ at: Date.now() }); } });
+    window.addEventListener('beforeunload', function(){ try{ PRESENCE.untrack(); }catch(e){} });
   }
   initBackend();
 
-  /* PWA: 서비스 워커 등록 */
-  if('serviceWorker' in navigator){ navigator.serviceWorker.register('./service-worker.js').catch(function(){}); }
+  /* 캐시로 인한 구버전 표시 방지: 기존 서비스워커/캐시 정리 (서비스워커 미사용) */
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.getRegistrations().then(function(rs){ rs.forEach(function(r){ r.unregister(); }); }).catch(function(){});
+  }
+  if(window.caches && caches.keys){ caches.keys().then(function(ks){ ks.forEach(function(k){ caches.delete(k); }); }).catch(function(){}); }
 </script>
 </body>
 </html>
