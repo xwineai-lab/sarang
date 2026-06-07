@@ -41,7 +41,11 @@
 
   .h-title{font-family:"Gowun Dodum",sans-serif;font-size:22px;color:var(--ink);letter-spacing:-.3px;}
   .h-desc{font-size:13px;color:var(--soft);margin-top:6px;line-height:1.5;}
-  .sloganstrip{text-align:center;font-family:"Gowun Dodum",sans-serif;font-size:12.5px;color:var(--amber-deep);background:var(--amber-tint);border-radius:14px;padding:9px 12px;line-height:1.6;margin-bottom:16px;}
+  .sloganstrip{text-align:center;font-family:"Gowun Dodum",sans-serif;font-size:12.5px;color:var(--amber-deep);background:linear-gradient(90deg,var(--amber-tint),#fbe6b8,var(--amber-tint));background-size:200% 100%;border-radius:14px;padding:9px 12px;line-height:1.6;margin-bottom:16px;animation:sloganShimmer 6s ease-in-out infinite, sloganBreathe 4.5s ease-in-out infinite;}
+  @keyframes sloganShimmer{0%{background-position:0% 0%}50%{background-position:100% 0%}100%{background-position:0% 0%}}
+  @keyframes sloganBreathe{0%,100%{transform:scale(1);opacity:.92}50%{transform:scale(1.015);opacity:1}}
+  .verseline{text-align:center;font-family:"Gowun Dodum",sans-serif;font-size:12.5px;color:var(--soft);margin-top:10px;line-height:1.55;min-height:18px;transition:opacity .5s;}
+  .verseline b{color:var(--amber-deep);}
   /* entry / auth */
   .entry-pad{padding:56px 26px 30px;display:flex;flex-direction:column;height:100%;}
   .bigemblem{width:90px;height:90px;border-radius:28px;background:var(--surface);display:flex;align-items:center;justify-content:center;margin:0 auto;box-shadow:0 12px 28px rgba(150,120,60,.13);}
@@ -335,6 +339,7 @@
 
         <div class="gnum"><span class="big num" id="cur">0분</span><span class="tot">/ 50,000시간</span></div>
         <div class="gbarwrap"><div class="gbar"><i id="bar"></i></div><span class="gpct" id="pct">64%</span></div>
+        <div class="verseline" id="verseLine"></div>
         <div class="livecard">
           <span class="livedot"></span>
           <span class="livetx">지금 <b id="liveN">18</b>명이 함께 기도하고 있어요</span>
@@ -607,11 +612,20 @@
   }
   buildPresence(); updateLive();
   function fmtHM(min){ min=Math.max(0,Math.round(min)); const h=Math.floor(min/60), m=min%60; return h>0 ? (h.toLocaleString('en-US')+'시간'+(m?(' '+m+'분'):'')) : (m+'분'); }
+  function pickVerse(p){
+    if(p>=1) return '<b>"다 이루었다"</b> — 5만 시간을 가득 채웠습니다!';
+    if(p<0.05) return '<b>"쉬지 말고 기도하라"</b> · 살전 5:17 — 이제 첫걸음이에요.';
+    if(p<0.2) return '<b>"먼저 그의 나라를 구하라"</b> · 마 6:33 — 한 걸음씩 채워가요.';
+    if(p<0.5) return '<b>"구하라 그리하면 주시리라"</b> · 마 7:7 — 절반을 향해 더 힘내요.';
+    if(p<0.8) return '<b>"낙심 말고 항상 기도하라"</b> · 눅 18:1 — 거의 다 왔어요!';
+    return '<b>"믿음의 선한 싸움을 싸우라"</b> · 딤전 6:12 — 마지막 힘을 모아요!';
+  }
   function renderGauge(){
     const totMin=Math.round((current||0)*60), goalMin=TOTAL*60, p=Math.min(totMin/goalMin,1);
     document.getElementById('cur').textContent=fmtHM(totMin);
     document.getElementById('bar').style.width=(p*100)+'%';
     document.getElementById('pct').textContent=Math.round(p*100)+'%';
+    const v=document.getElementById('verseLine'); if(v) v.innerHTML=pickVerse(p);
   }
   renderGauge();
   setInterval(()=>{if(!SB && !running){liveN+=(Math.random()>.5?1:-1);liveN=Math.max(12,Math.min(26,liveN));updateLive();}},4000);
@@ -682,7 +696,7 @@
   }
   function nextTopic(){ti=(ti+1)%TOPICS.length;renderTopic();}
   function prevTopic(){ti=(ti-1+TOPICS.length)%TOPICS.length;renderTopic();}
-  function toggleAuto(){autoOn=!autoOn;const b=document.getElementById('autoBtn');b.classList.toggle('on',autoOn);b.textContent=autoOn?'자동 넘김 켜짐':'자동 넘김';if(autoOn){autoTk=setInterval(nextTopic,9000);}else{clearInterval(autoTk);}}
+  function toggleAuto(){autoOn=!autoOn;const b=document.getElementById('autoBtn');if(b){b.classList.toggle('on',autoOn);b.textContent=autoOn?'자동 넘김 켜짐':'자동 넘김 꺼짐';}clearInterval(autoTk);if(autoOn){autoTk=setInterval(nextTopic,15000);}}
   function buildTopics(){
     document.getElementById('topicsList').innerHTML='<div class="versecard">"나의 눈물을 주의 병에 담으소서" — 시편 56:8</div>'+
       TOPICS.map(function(t,i){return '<div class="card" style="margin-top:10px;text-align:left;"><div style="font-family:\'Gowun Dodum\',sans-serif;font-size:16px;color:var(--ink);">'+(i+1)+'. '+t[0]+'</div><div style="font-size:12.5px;color:var(--soft);margin-top:6px;line-height:1.6;">'+t[1]+'</div></div>';}).join('');
@@ -758,15 +772,15 @@
   async function loadDept(){
     if(!SB) return;
     const { data } = await SB.rpc('dept_totals'); if(!data) return;
-    const m={}; data.forEach(r=>{ m[r.dept_name]=Math.round(Number(r.hours)||0); });
-    const set=(id,v)=>{ const e=document.getElementById(id); if(e) e.textContent=(v||0).toLocaleString()+' h'; };
+    const m={}; data.forEach(r=>{ m[r.dept_name]=Number(r.hours)||0; });
+    const set=(id,v)=>{ const e=document.getElementById(id); if(e) e.textContent=fmtHM((v||0)*60); };
     set('dept-jang', m['장년부']); set('dept-young', m['청년부']); set('dept-youth', m['청소년부']);
   }
   async function loadRankings(){
     if(!SB) return;
     const { data } = await SB.rpc('group_rankings');
     if(!data) return;
-    SERVER_ZONES = data.map(function(r){ return [ r.group_name, Math.round(Number(r.hours)||0), 'people', r.group_name===selZone ]; });
+    SERVER_ZONES = data.map(function(r){ return [ r.group_name, Number(r.hours)||0, 'people', r.group_name===selZone ]; });
     if(document.getElementById('zone').classList.contains('on')) buildZones();
   }
   function setupPresence(){
