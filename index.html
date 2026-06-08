@@ -650,9 +650,9 @@
     if(!SB){ if(msg) msg.textContent='서버 연결이 필요합니다.'; return; }
     if(msg) msg.textContent='카카오로 이동 중...';
     try{
-      const { error } = await SB.auth.linkIdentity({ provider:'kakao', options:{ redirectTo: location.href } });
+      const { error } = await SB.auth.linkIdentity({ provider:'kakao', options:{ redirectTo: location.href, scopes:'profile_nickname' } });
       if(error){
-        const r = await SB.auth.signInWithOAuth({ provider:'kakao', options:{ redirectTo: location.href } });
+        const r = await SB.auth.signInWithOAuth({ provider:'kakao', options:{ redirectTo: location.href, scopes:'profile_nickname' } });
         if(r.error && msg) msg.textContent='카카오 연결 오류: '+r.error.message;
       }
     }catch(e){ if(msg) msg.textContent='문제가 발생했어요. 잠시 후 다시 시도해주세요.'; }
