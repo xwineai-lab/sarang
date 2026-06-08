@@ -403,7 +403,7 @@
         </div>
 
         <div class="liveticker" id="liveTicker"></div>
-        <div class="homebanner" onclick="go('connect')"><span>익명으로 참여 중이에요 · 기록을 안전하게 지키기</span><span>›</span></div>
+        <div class="homebanner" id="homeBanner" onclick="go('connect')"><span>익명으로 참여 중이에요 · 기록을 안전하게 지키기</span><span>›</span></div>
 
         <div class="card midcard" onclick="go('topics')" style="cursor:pointer;">
           <div class="lf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 21c-1-6 2-10 8-11-1 6-4 10-8 11zM12 21C8 20 5 16 4 10c6 1 9 5 8 11z"/></svg></div>
@@ -588,7 +588,8 @@
   const TOTAL=50000;let current=0,liveN=0;
   let SB=null, MY_GROUP_ID=null, GROUPS_BY_NAME={}, SERVER_ZONES=null, SERVER_DEPT_ITEMS=null, PRESENCE=null, ZONE_LIVE={}, myEmail=null, isAnon=true, authProvider=null;
   function syncAuthUI(){
-    const linked = !!myEmail || isAnon===false;
+    const linked = !!authProvider || !!myEmail || isAnon===false;
+    const hb=document.getElementById('homeBanner'); if(hb) hb.style.display = linked ? 'none' : '';
     const ls=document.getElementById('linkRowState'); if(ls) ls.textContent = linked ? '연결됨' : '연결 ›';
     const lr=document.getElementById('linkRow'); if(lr) lr.style.cursor = linked ? 'default' : 'pointer';
     const done=document.getElementById('connectDone'), form=document.getElementById('connectForm');
