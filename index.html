@@ -201,15 +201,16 @@
   .growth .gbar2 i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--amber),#eebb50);transition:width .8s cubic-bezier(.2,.8,.2,1);}
 
   /* 내 정보 카드 (더보기) */
-  .mecard{display:flex;align-items:center;gap:13px;background:var(--surface);border-radius:18px;padding:15px 16px;margin-top:8px;box-shadow:0 8px 22px rgba(150,120,60,.08);}
-  .mecard .meavatar{width:50px;height:50px;border-radius:50%;background:var(--amber-tint);color:var(--amber-deep);display:flex;align-items:center;justify-content:center;font-family:"Gowun Dodum",sans-serif;font-size:21px;flex-shrink:0;}
-  .mecard .meinfo{flex:1;min-width:0;}
+  .mecard{position:relative;overflow:hidden;display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,#fffdf8,#fbf1da 55%,#f7e4be);border-radius:20px;padding:18px 16px;margin-top:8px;box-shadow:0 12px 30px rgba(200,150,50,.18);border:1px solid rgba(224,169,58,.2);}
+  .mecard::before{content:"";position:absolute;top:-34px;right:-22px;width:130px;height:130px;border-radius:50%;background:radial-gradient(circle,rgba(255,206,110,.5),rgba(255,206,110,0) 70%);pointer-events:none;}
+  .mecard .meavatar{position:relative;z-index:1;width:54px;height:54px;border-radius:50%;background:linear-gradient(140deg,#ffd982,#e0a93a);color:#fff;display:flex;align-items:center;justify-content:center;font-family:"Gowun Dodum",sans-serif;font-size:22px;flex-shrink:0;box-shadow:0 6px 16px rgba(224,169,58,.45),0 0 0 4px rgba(255,255,255,.65);}
+  .mecard .meinfo{position:relative;z-index:1;flex:1;min-width:0;}
   .mecard .mename{font-family:"Gowun Dodum",sans-serif;font-size:18px;color:var(--ink);}
   .mecard .mestatus{margin-top:6px;}
   .mebadge{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;padding:3px 10px;border-radius:999px;font-weight:600;}
   .mebadge.ok{background:#e9f3e1;color:#4f7d3f;}
   .mebadge.anon{background:var(--amber-tint);color:var(--amber-deep);cursor:pointer;}
-  .mecard .meedit{flex-shrink:0;font-size:12px;color:var(--amber-deep);background:var(--amber-tint);border:none;border-radius:999px;padding:7px 13px;font-family:"Gowun Dodum",sans-serif;cursor:pointer;}
+  .mecard .meedit{position:relative;z-index:1;flex-shrink:0;font-size:12px;color:var(--amber-deep);background:rgba(255,255,255,.85);border:1px solid rgba(224,169,58,.35);border-radius:999px;padding:7px 13px;font-family:"Gowun Dodum",sans-serif;cursor:pointer;}
   .meprivacy{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--soft);margin-top:11px;padding:0 4px;line-height:1.55;}
   .meprivacy svg{width:15px;height:15px;flex-shrink:0;color:var(--faint);margin-top:1px;}
   .mrow.only{border-radius:14px;margin-top:12px;}
@@ -227,8 +228,9 @@
 
   /* tabbar */
   .tabbar{position:absolute;left:0;right:0;bottom:0;height:76px;display:none;justify-content:space-around;align-items:flex-start;padding-top:10px;
-    background:rgba(255,255,255,.86);backdrop-filter:blur(14px);border-top:1px solid var(--line);}
+    background:rgba(255,255,255,.86);backdrop-filter:blur(14px);border-top:1px solid var(--line);transition:transform .28s cubic-bezier(.2,.8,.2,1);}
   .tabbar.on{display:flex;}
+  .tabbar.tbhide{transform:translateY(130%);}
   .tab{display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--faint);font-size:10.5px;cursor:pointer;}
   .tab svg{width:24px;height:24px;stroke:var(--faint);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
   .tab.active{color:var(--amber-deep);}
@@ -590,7 +592,7 @@
   const APP=['home','pray','zone','record','more','connect','topics'];
   function go(id){
     document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id));
-    document.querySelector('.tabbar').classList.toggle('on',APP.includes(id));
+    const tabbarEl=document.querySelector('.tabbar'); tabbarEl.classList.toggle('on',APP.includes(id)); tabbarEl.classList.remove('tbhide');
     document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.s===id));
     const el=document.getElementById(id); if(el) el.scrollTop=0;
     if(id==='zone'){ buildZones(); loadDept(); }
@@ -972,6 +974,19 @@
       await SB.from('profiles').upsert({ id:u.user.id, group_id:MY_GROUP_ID, is_anonymous:(joinMode!=='nick'), display_name:(name||null) });
     }catch(e){ console.warn('profile upsert:', e); }
   }
+  // 하단 탭바: 아래로 스크롤하면 숨김, 위로 올리면 다시 표시 (앱에서 흔한 방식)
+  (function(){
+    var tb=document.querySelector('.tabbar'); if(!tb) return;
+    var last={};
+    document.querySelectorAll('.screen').forEach(function(sc){
+      sc.addEventListener('scroll', function(){
+        var st=sc.scrollTop, prev=last[sc.id]||0;
+        if(st>prev && st>50) tb.classList.add('tbhide');
+        else if(st<prev-4) tb.classList.remove('tbhide');
+        last[sc.id]=st;
+      }, {passive:true});
+    });
+  })();
   restoreSession();
   initBackend();
 
