@@ -27,9 +27,9 @@
   .screen{position:absolute;inset:0;display:none;flex-direction:column;overflow-y:auto;scrollbar-width:none;}
   .screen::-webkit-scrollbar{display:none;}
   .screen.on{display:flex;}
-  .pad{padding:54px 22px 96px;}
+  .pad{padding:40px 22px 124px;}  /* 하단 여백 확대: 탭바(76px)에 콘텐츠가 가려지지 않도록 */
 
-  .statusbar{display:flex;justify-content:space-between;align-items:center;padding:0 4px 4px;font-size:13px;font-weight:600;color:var(--ink);}
+  .statusbar{display:none;}  /* 가짜 상태바(9:41 · 5G 87%) 숨김 — 실제 기기 상태바를 사용 */
   .statusbar .r{display:flex;gap:5px;align-items:center;font-size:12px;}
 
   /* top header */
@@ -232,7 +232,7 @@
     .wrap, .pad{ padding-top: max(28px, env(safe-area-inset-top)); }
     .entry-pad{ padding-top: max(36px, env(safe-area-inset-top)); }
     .tabbar{ height: calc(76px + env(safe-area-inset-bottom)); padding-bottom: calc(10px + env(safe-area-inset-bottom)); }
-    .pad{ padding-bottom: calc(96px + env(safe-area-inset-bottom)); }
+    .pad{ padding-bottom: calc(124px + env(safe-area-inset-bottom)); }
   }
 </style>
   <meta name="theme-color" content="#e0a93a" />
