@@ -621,22 +621,50 @@
   }
   buildPresence(); updateLive();
   function fmtHM(min){ min=Math.max(0,Math.round(min)); const h=Math.floor(min/60), m=min%60; return h>0 ? (h.toLocaleString('en-US')+'시간'+(m?(' '+m+'분'):'')) : (m+'분'); }
-  function pickVerse(p){
-    if(p>=1) return '<b>"다 이루었다"</b> — 5만 시간을 가득 채웠습니다!';
-    if(p<0.05) return '<b>"쉬지 말고 기도하라"</b> · 살전 5:17 — 이제 첫걸음이에요.';
-    if(p<0.2) return '<b>"먼저 그의 나라를 구하라"</b> · 마 6:33 — 한 걸음씩 채워가요.';
-    if(p<0.5) return '<b>"구하라 그리하면 주시리라"</b> · 마 7:7 — 절반을 향해 더 힘내요.';
-    if(p<0.8) return '<b>"낙심 말고 항상 기도하라"</b> · 눅 18:1 — 거의 다 왔어요!';
-    return '<b>"믿음의 선한 싸움을 싸우라"</b> · 딤전 6:12 — 마지막 힘을 모아요!';
+  // 홈 게이지 아래 말씀 — 기도 관련 구절 20개를 약 8초마다 자동으로 돌려가며 보여줌
+  const VERSES=[
+    '<b>"쉬지 말고 기도하라"</b> · 살전 5:17',
+    '<b>"먼저 그의 나라와 그의 의를 구하라"</b> · 마 6:33',
+    '<b>"구하라 그리하면 너희에게 주실 것이요"</b> · 마 7:7',
+    '<b>"항상 기도하고 낙심하지 말아야 하리라"</b> · 눅 18:1',
+    '<b>"아무것도 염려하지 말고 다만 기도와 간구로 하나님께 아뢰라"</b> · 빌 4:6',
+    '<b>"너는 내게 부르짖으라 내가 응답하겠고"</b> · 렘 33:3',
+    '<b>"두세 사람이 내 이름으로 모인 곳에는 나도 그들 중에 있느니라"</b> · 마 18:20',
+    '<b>"믿음의 선한 싸움을 싸우라"</b> · 딤전 6:12',
+    '<b>"여호와를 앙망하는 자는 새 힘을 얻으리니"</b> · 사 40:31',
+    '<b>"수고하고 무거운 짐 진 자들아 다 내게로 오라"</b> · 마 11:28',
+    '<b>"의인의 간구는 역사하는 힘이 큼이니라"</b> · 약 5:16',
+    '<b>"너희 염려를 다 주께 맡기라"</b> · 벧전 5:7',
+    '<b>"내게 능력 주시는 자 안에서 내가 모든 것을 할 수 있느니라"</b> · 빌 4:13',
+    '<b>"항상 기뻐하라 쉬지 말고 기도하라 범사에 감사하라"</b> · 살전 5:16-18',
+    '<b>"여호와는 나의 목자시니 내게 부족함이 없으리로다"</b> · 시 23:1',
+    '<b>"네 길을 여호와께 맡기라 그를 의지하면 그가 이루시리라"</b> · 시 37:5',
+    '<b>"너는 마음을 다하여 여호와를 신뢰하고"</b> · 잠 3:5',
+    '<b>"시험에 들지 않게 깨어 기도하라"</b> · 마 26:41',
+    '<b>"너희 중의 두 사람이 합심하여 구하면 이루게 하시리라"</b> · 마 18:19',
+    '<b>"주의 말씀은 내 발에 등이요 내 길에 빛이니이다"</b> · 시 119:105'
+  ];
+  let verseIdx=Math.floor(Math.random()*VERSES.length), verseTk=null, campaignDone=false;
+  function paintVerse(){
+    const v=document.getElementById('verseLine'); if(!v) return;
+    const html = campaignDone ? '<b>"다 이루었다"</b> — 5만 시간을 가득 채웠습니다!' : VERSES[verseIdx % VERSES.length];
+    v.style.opacity='0';
+    setTimeout(function(){ v.innerHTML=html; v.style.opacity='1'; }, 260);
+  }
+  function startVerseRotation(){
+    clearInterval(verseTk); paintVerse();
+    verseTk=setInterval(function(){ if(campaignDone) return; verseIdx++; paintVerse(); }, 8000);
   }
   function renderGauge(){
     const totMin=Math.round((current||0)*60), goalMin=TOTAL*60, p=Math.min(totMin/goalMin,1);
     document.getElementById('cur').textContent=fmtHM(totMin);
     document.getElementById('bar').style.width=(p*100)+'%';
     document.getElementById('pct').textContent=Math.round(p*100)+'%';
-    const v=document.getElementById('verseLine'); if(v) v.innerHTML=pickVerse(p);
+    const wasDone=campaignDone; campaignDone=(p>=1);
+    if(campaignDone!==wasDone) paintVerse();
   }
   renderGauge();
+  startVerseRotation();
   setInterval(()=>{if(!SB && !running){liveN+=(Math.random()>.5?1:-1);liveN=Math.max(12,Math.min(26,liveN));updateLive();}},4000);
 
   // ===== active prayer timer — 벽시계(실제 경과 시각) 기준. 화면이 꺼져도 시간 손실 없음 =====
