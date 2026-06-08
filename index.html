@@ -200,6 +200,20 @@
   .growth .gbar2{height:7px;border-radius:999px;background:var(--track);overflow:hidden;margin-top:9px;}
   .growth .gbar2 i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--amber),#eebb50);transition:width .8s cubic-bezier(.2,.8,.2,1);}
 
+  /* 내 정보 카드 (더보기) */
+  .mecard{display:flex;align-items:center;gap:13px;background:var(--surface);border-radius:18px;padding:15px 16px;margin-top:8px;box-shadow:0 8px 22px rgba(150,120,60,.08);}
+  .mecard .meavatar{width:50px;height:50px;border-radius:50%;background:var(--amber-tint);color:var(--amber-deep);display:flex;align-items:center;justify-content:center;font-family:"Gowun Dodum",sans-serif;font-size:21px;flex-shrink:0;}
+  .mecard .meinfo{flex:1;min-width:0;}
+  .mecard .mename{font-family:"Gowun Dodum",sans-serif;font-size:18px;color:var(--ink);}
+  .mecard .mestatus{margin-top:6px;}
+  .mebadge{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;padding:3px 10px;border-radius:999px;font-weight:600;}
+  .mebadge.ok{background:#e9f3e1;color:#4f7d3f;}
+  .mebadge.anon{background:var(--amber-tint);color:var(--amber-deep);cursor:pointer;}
+  .mecard .meedit{flex-shrink:0;font-size:12px;color:var(--amber-deep);background:var(--amber-tint);border:none;border-radius:999px;padding:7px 13px;font-family:"Gowun Dodum",sans-serif;cursor:pointer;}
+  .meprivacy{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--soft);margin-top:11px;padding:0 4px;line-height:1.55;}
+  .meprivacy svg{width:15px;height:15px;flex-shrink:0;color:var(--faint);margin-top:1px;}
+  .mrow.only{border-radius:14px;margin-top:12px;}
+
   /* more screen */
   .seclbl{font-size:11.5px;color:var(--soft);margin:18px 4px 8px;}
   .mrow{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;background:var(--surface);font-size:14px;}
@@ -477,9 +491,16 @@
         <div class="mrow"><span>기도 리마인더</span><span class="r">준비 중</span></div>
         <div class="mrow"><span>새벽기도 알림 (06:00)</span><span class="r">준비 중</span></div>
         <div class="seclbl">내 정보</div>
-        <div class="mrow" onclick="changeName()" style="cursor:pointer;"><span>별명</span><span class="r" id="myNameLabel">고요한 등불 ›</span></div>
-        <div class="mrow" onclick="go('joinzone')" style="cursor:pointer;"><span>내 구역</span><span class="r" id="myZoneLabel">독일열방 ›</span></div>
-        <div class="mrow"><span>참여 방식</span><span class="r" id="myModeLabel">익명 참여 중</span></div>
+        <div class="mecard">
+          <div class="meavatar" id="meAvatar">?</div>
+          <div class="meinfo">
+            <div class="mename" id="meName">별명 설정</div>
+            <div class="mestatus" id="meStatus"></div>
+          </div>
+          <button class="meedit" onclick="changeName()">별명 수정</button>
+        </div>
+        <div class="meprivacy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><span>내 기록과 정보는 나만 볼 수 있어요. 다른 사람에겐 공개되지 않습니다.</span></div>
+        <div class="mrow only" onclick="go('joinzone')" style="cursor:pointer;"><span>내 구역</span><span class="r" id="myZoneLabel">독일열방 ›</span></div>
         <div class="seclbl">캠페인</div>
         <div class="mrow"><span>현재 목표</span><span class="r">50,000 시간</span></div>
         <div class="mrow"><span>관리자 대시보드</span><span class="r">준비 중</span></div>
@@ -503,7 +524,7 @@
 
 <script>
   const TOTAL=50000;let current=0,liveN=0;
-  let SB=null, MY_GROUP_ID=null, GROUPS_BY_NAME={}, SERVER_ZONES=null, SERVER_DEPT_ITEMS=null, PRESENCE=null, ZONE_LIVE={}, myEmail=null, isAnon=true;
+  let SB=null, MY_GROUP_ID=null, GROUPS_BY_NAME={}, SERVER_ZONES=null, SERVER_DEPT_ITEMS=null, PRESENCE=null, ZONE_LIVE={}, myEmail=null, isAnon=true, authProvider=null;
   function syncAuthUI(){
     const linked = !!myEmail || isAnon===false;
     const ls=document.getElementById('linkRowState'); if(ls) ls.textContent = linked ? '연결됨' : '연결 ›';
@@ -514,6 +535,16 @@
         done.textContent = myEmail ? ('이미 '+myEmail+' 로 연결돼 있어요. 다른 기기에서 이 이메일로 로그인하면 기록이 복구됩니다.') : '카카오 계정으로 연결돼 있어요. 다른 기기에서도 기록이 복구됩니다.'; }
       else { done.style.display='none'; form.style.display='block'; }
     }
+    renderMeCard();
+  }
+  function renderMeCard(){
+    const na=document.getElementById('meName'); if(na) na.textContent=(myName||'별명 설정');
+    const av=document.getElementById('meAvatar'); if(av) av.textContent=(myName&&myName.trim()? myName.trim().charAt(0):'?');
+    const st=document.getElementById('meStatus'); if(!st) return;
+    const ok='<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4L19 7"/></svg>';
+    if(authProvider==='kakao'){ st.innerHTML='<span class="mebadge ok">'+ok+'카카오 연동됨 · 인증완료</span>'; }
+    else if(authProvider==='email'||myEmail){ st.innerHTML='<span class="mebadge ok">'+ok+'이메일 연결됨 · 인증완료</span>'; }
+    else { st.innerHTML='<span class="mebadge anon" onclick="go(\'connect\')">익명 참여 중 · 기록 지키기 ›</span>'; }
   }
   function changeName(){
     const v = window.prompt('표시할 별명을 입력하세요. (남에게 실명은 보이지 않아요)', myName||'');
@@ -593,7 +624,12 @@
     syncProfileUI();
     go('home');
   }
-  function logout(){ try{ localStorage.removeItem(PKEY); }catch(e){} myName=''; go('welcome'); }
+  async function logout(){
+    try{ localStorage.removeItem(PKEY); localStorage.removeItem('omansigan_active'); }catch(e){}
+    myName=''; myEmail=null; isAnon=true; authProvider=null;
+    if(SB){ try{ await SB.auth.signOut(); }catch(e){} }   // Supabase 세션까지 종료(이메일/카카오 로그아웃)
+    location.reload();                                      // 새로고침 → 깨끗한 익명 상태로 시작
+  }
   function restoreSession(){
     const s=loadProfile();
     if(s && s.joined){ if(s.dept)selDept=s.dept; if(s.zone)selZone=s.zone; if(s.mode)joinMode=s.mode; if(s.name)myName=s.name; syncProfileUI(); go('home'); return true; }
@@ -838,7 +874,7 @@
       SB = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       const { data:s } = await SB.auth.getSession();
       if(!s || !s.session){ await SB.auth.signInAnonymously(); }
-      try{ const { data:uu } = await SB.auth.getUser(); if(uu && uu.user){ myEmail = uu.user.email || null; isAnon = !!uu.user.is_anonymous; } }catch(e){}
+      try{ const { data:uu } = await SB.auth.getUser(); if(uu && uu.user){ const u=uu.user; myEmail=u.email||null; isAnon=!!u.is_anonymous; const ids=(u.identities||[]).map(function(i){return i.provider;}); authProvider = ids.indexOf('kakao')>=0?'kakao':((ids.indexOf('email')>=0||myEmail)?'email':null); } }catch(e){}
       syncAuthUI();
       const { data:gs } = await SB.from('groups').select('id,name,kind').order('id');
       SERVER_DEPT_ITEMS = { '장년부':[], '청년부':[], '청소년부':[] };
