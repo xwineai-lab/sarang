@@ -592,9 +592,10 @@
   const APP=['home','pray','zone','record','more','connect','topics'];
   function go(id){
     document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id));
-    const tabbarEl=document.querySelector('.tabbar'); tabbarEl.classList.toggle('on',APP.includes(id)); tabbarEl.classList.remove('tbhide');
+    const tabbarEl=document.querySelector('.tabbar'); tabbarEl.classList.toggle('on',APP.includes(id));
     document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.s===id));
     const el=document.getElementById(id); if(el) el.scrollTop=0;
+    if(el && APP.includes(id)){ tabbarEl.classList.toggle('tbhide', (el.scrollHeight-el.clientHeight)>40); }  // 맨 위 + 스크롤 가능하면 숨김
     if(id==='zone'){ buildZones(); loadDept(); }
     if(id==='joinzone') buildChips();
     if(id==='topics') buildTopics();
@@ -974,16 +975,13 @@
       await SB.from('profiles').upsert({ id:u.user.id, group_id:MY_GROUP_ID, is_anonymous:(joinMode!=='nick'), display_name:(name||null) });
     }catch(e){ console.warn('profile upsert:', e); }
   }
-  // 하단 탭바: 아래로 스크롤하면 숨김, 위로 올리면 다시 표시 (앱에서 흔한 방식)
+  // 하단 탭바: 평소(맨 위)엔 숨김, 아래로 스크롤하면 스르륵 나타남
   (function(){
     var tb=document.querySelector('.tabbar'); if(!tb) return;
-    var last={};
     document.querySelectorAll('.screen').forEach(function(sc){
       sc.addEventListener('scroll', function(){
-        var st=sc.scrollTop, prev=last[sc.id]||0;
-        if(st>prev && st>50) tb.classList.add('tbhide');
-        else if(st<prev-4) tb.classList.remove('tbhide');
-        last[sc.id]=st;
+        if(sc.scrollTop>30) tb.classList.remove('tbhide');
+        else tb.classList.add('tbhide');
       }, {passive:true});
     });
   })();
