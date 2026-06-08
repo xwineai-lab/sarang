@@ -191,6 +191,15 @@
   .encourage .lf{color:var(--green);width:28px;height:28px;}
   .encourage .tx{font-family:"Gowun Dodum",sans-serif;font-size:14px;color:var(--ink);line-height:1.5;}
 
+  /* 개인 성장(레벨) — 정원의 꽃 */
+  .growth{display:flex;align-items:center;gap:14px;background:var(--surface);border-radius:20px;padding:14px 16px;margin-top:14px;box-shadow:0 8px 22px rgba(150,120,60,.08);}
+  .growth .flower{width:64px;height:64px;flex-shrink:0;}
+  .growth .gt{flex:1;min-width:0;}
+  .growth .glv{font-family:"Gowun Dodum",sans-serif;font-size:16px;color:var(--amber-deep);}
+  .growth .gsub{font-size:12px;color:var(--soft);margin-top:3px;}
+  .growth .gbar2{height:7px;border-radius:999px;background:var(--track);overflow:hidden;margin-top:9px;}
+  .growth .gbar2 i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--amber),#eebb50);transition:width .8s cubic-bezier(.2,.8,.2,1);}
+
   /* more screen */
   .seclbl{font-size:11.5px;color:var(--soft);margin:18px 4px 8px;}
   .mrow{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;background:var(--surface);font-size:14px;}
@@ -318,12 +327,14 @@
         </div>
         <div class="card" id="connectDone" style="display:none;text-align:center;margin-top:22px;color:var(--ink);"></div>
         <div id="connectForm" style="margin-top:22px;">
-          <div class="field"><label>이메일</label><input id="linkEmail" type="email" placeholder="example@email.com" autocomplete="email" /></div>
+          <button class="lbtn2 kakao" onclick="linkKakao()">카카오로 기록 연결하기</button>
+          <div class="note" style="margin:8px 0 16px;color:var(--soft);">카카오로 연결하면 기기를 바꿔도 기록이 안전하게 복구돼요. 이름은 공개되지 않습니다.</div>
+          <div class="field"><label>또는 이메일로 연결</label><input id="linkEmail" type="email" placeholder="example@email.com" autocomplete="email" /></div>
           <button class="lbtn2 email" style="background:var(--amber);color:#fff;" onclick="linkEmailAccount()">이메일로 기록 연결하기</button>
           <button class="lbtn2" style="border:1.5px solid var(--line);background:var(--surface);color:var(--ink);" onclick="recoverByEmail()">이 이메일로 로그인 (다른 기기 복구)</button>
           <div class="note" id="linkMsg" style="margin-top:12px;min-height:18px;"></div>
         </div>
-        <div class="note" style="margin-top:14px;color:var(--soft);">메일의 링크를 누르면 지금까지의 기록이 이 이메일에 안전하게 연결됩니다. 카카오 연결은 준비 중입니다.</div>
+        <div class="note" style="margin-top:14px;color:var(--soft);">메일의 링크를 누르면 지금까지의 기록이 이 이메일에 안전하게 연결됩니다.</div>
         <div class="note" style="margin-top:16px;"><span class="link" onclick="go('more')">나중에 하기</span></div>
       </div>
     </div>
@@ -440,6 +451,7 @@
           <div class="h-title">나의 기록</div>
           <div class="h-desc" id="recSub" style="margin-top:7px;font-weight:600;color:var(--amber-deep);">고요한 등불 · 독일열방 구역</div>
         </div>
+        <div id="myGrowth"></div>
         <div class="statcard">
           <div class="col"><div class="cl">이번 주</div><div class="cv" id="st-week">0분</div></div>
           <div class="col"><div class="cl">연속</div><div class="cv" id="st-streak"><b>0</b>일</div></div>
@@ -493,13 +505,13 @@
   const TOTAL=50000;let current=0,liveN=0;
   let SB=null, MY_GROUP_ID=null, GROUPS_BY_NAME={}, SERVER_ZONES=null, SERVER_DEPT_ITEMS=null, PRESENCE=null, ZONE_LIVE={}, myEmail=null, isAnon=true;
   function syncAuthUI(){
-    const linked = !!myEmail;
+    const linked = !!myEmail || isAnon===false;
     const ls=document.getElementById('linkRowState'); if(ls) ls.textContent = linked ? '연결됨' : '연결 ›';
     const lr=document.getElementById('linkRow'); if(lr) lr.style.cursor = linked ? 'default' : 'pointer';
     const done=document.getElementById('connectDone'), form=document.getElementById('connectForm');
     if(done && form){
       if(linked){ done.style.display='block'; form.style.display='none';
-        done.textContent='이미 '+myEmail+' 로 연결돼 있어요. 다른 기기에서 이 이메일로 로그인하면 기록이 복구됩니다.'; }
+        done.textContent = myEmail ? ('이미 '+myEmail+' 로 연결돼 있어요. 다른 기기에서 이 이메일로 로그인하면 기록이 복구됩니다.') : '카카오 계정으로 연결돼 있어요. 다른 기기에서도 기록이 복구됩니다.'; }
       else { done.style.display='none'; form.style.display='block'; }
     }
   }
@@ -511,8 +523,32 @@
     if(SB) upsertProfile(name);
     syncProfileUI();
   }
-  const LEVELS=[[0,'씨앗'],[10,'새싹'],[40,'등불'],[120,'빛'],[300,'횃불'],[800,'불기둥']];
-  function levelOf(hours){ let lv=1,name='씨앗'; for(let i=0;i<LEVELS.length;i++){ if(hours>=LEVELS[i][0]){ lv=i+1; name=LEVELS[i][1]; } } return {lv:lv,name:name}; }
+  // 구역(공동체) 레벨 — 포도나무: 가지 → 풍성한 수확 (요 15장 "내 안에 거하면 열매를 많이 맺으리라")
+  const LEVELS=[[0,'가지'],[10,'새잎'],[40,'포도꽃'],[120,'풋포도'],[300,'포도송이'],[800,'풍성한 수확']];
+  const GRAPE='<svg width="11" height="11" viewBox="0 0 12 12" style="vertical-align:-1px"><g fill="#fff"><circle cx="4" cy="4.5" r="1.7"/><circle cx="8" cy="4.5" r="1.7"/><circle cx="6" cy="8" r="1.7"/><circle cx="6" cy="3" r="1.4"/></g></svg>';
+  function levelOf(hours){ let lv=1,name='가지'; for(let i=0;i<LEVELS.length;i++){ if(hours>=LEVELS[i][0]){ lv=i+1; name=LEVELS[i][1]; } } return {lv:lv,name:name}; }
+  // 개인 레벨 — 정원의 꽃: 씨앗 → 작은 정원 (개인 누적 기도시간 기준)
+  const PLEVELS=[[0,'씨앗'],[1,'새싹'],[5,'잎새'],[15,'꽃봉오리'],[40,'활짝 핀 꽃'],[100,'작은 정원']];
+  function miniF(x,y,p,c){ return '<g fill="'+p+'"><ellipse cx="'+x+'" cy="'+(y-5)+'" rx="3.5" ry="5.5"/><ellipse cx="'+x+'" cy="'+(y+5)+'" rx="3.5" ry="5.5"/><ellipse cx="'+(x-5)+'" cy="'+y+'" rx="5.5" ry="3.5"/><ellipse cx="'+(x+5)+'" cy="'+y+'" rx="5.5" ry="3.5"/></g><circle cx="'+x+'" cy="'+y+'" r="3" fill="'+c+'"/>'; }
+  function flowerSVG(lv){
+    const s='<svg viewBox="0 0 64 64" width="64" height="64">';
+    if(lv<=1) return s+'<path d="M12 54 Q32 44 52 54 Z" fill="#a9794a"/><ellipse cx="32" cy="48" rx="4" ry="5" fill="#7a5a33"/></svg>';
+    if(lv===2) return s+'<path d="M14 54 Q32 45 50 54 Z" fill="#a9794a"/><path d="M32 52 V38" stroke="#6fa45c" stroke-width="3" fill="none" stroke-linecap="round"/><ellipse cx="24" cy="38" rx="8" ry="4.5" fill="#7cb342" transform="rotate(-25 24 38)"/><ellipse cx="40" cy="38" rx="8" ry="4.5" fill="#7cb342" transform="rotate(25 40 38)"/></svg>';
+    if(lv===3) return s+'<path d="M32 56 V22" stroke="#6fa45c" stroke-width="3" fill="none" stroke-linecap="round"/><ellipse cx="21" cy="38" rx="10" ry="5" fill="#7cb342" transform="rotate(-30 21 38)"/><ellipse cx="43" cy="30" rx="10" ry="5" fill="#7cb342" transform="rotate(30 43 30)"/></svg>';
+    if(lv===4) return s+'<path d="M32 56 V20" stroke="#6fa45c" stroke-width="3" fill="none" stroke-linecap="round"/><ellipse cx="21" cy="40" rx="9" ry="4.5" fill="#7cb342" transform="rotate(-30 21 40)"/><path d="M32 16 C24 22 24 34 32 37 C40 34 40 22 32 16 Z" fill="#e0a93a"/></svg>';
+    if(lv===5) return s+'<path d="M32 56 V30" stroke="#6fa45c" stroke-width="3" fill="none" stroke-linecap="round"/><ellipse cx="21" cy="42" rx="9" ry="4.5" fill="#7cb342" transform="rotate(-30 21 42)"/><g fill="#e0a93a" stroke="#c5881d" stroke-width="0.3"><g transform="rotate(0 32 20)"><ellipse cx="32" cy="9" rx="5" ry="8.5"/></g><g transform="rotate(72 32 20)"><ellipse cx="32" cy="9" rx="5" ry="8.5"/></g><g transform="rotate(144 32 20)"><ellipse cx="32" cy="9" rx="5" ry="8.5"/></g><g transform="rotate(216 32 20)"><ellipse cx="32" cy="9" rx="5" ry="8.5"/></g><g transform="rotate(288 32 20)"><ellipse cx="32" cy="9" rx="5" ry="8.5"/></g></g><circle cx="32" cy="20" r="5" fill="#c5881d"/></svg>';
+    return s+'<path d="M22 56 V34 M42 56 V32 M32 56 V42" stroke="#6fa45c" stroke-width="2.5" fill="none" stroke-linecap="round"/>'+miniF(22,28,'#e0a93a','#c5881d')+miniF(42,26,'#d4537e','#993556')+miniF(32,39,'#e0a93a','#c5881d')+'</svg>';
+  }
+  function renderGrowth(totalMin){
+    const el=document.getElementById('myGrowth'); if(!el) return;
+    const hours=(totalMin||0)/60;
+    let i=0; for(let k=0;k<PLEVELS.length;k++){ if(hours>=PLEVELS[k][0]) i=k; }
+    const name=PLEVELS[i][1], lv=i+1, next=PLEVELS[i+1];
+    let pct, sub;
+    if(next){ const span=next[0]-PLEVELS[i][0]; pct=Math.round(Math.min((hours-PLEVELS[i][0])/span,1)*100); sub='다음 단계까지 '+fmtHM(Math.max(0,(next[0]-hours))*60); }
+    else { pct=100; sub='최고 단계 — 작은 정원을 이뤘어요'; }
+    el.innerHTML='<div class="growth"><div class="flower">'+flowerSVG(lv)+'</div><div class="gt"><div class="glv">Lv.'+lv+' '+name+'</div><div class="gsub">나의 기도 '+fmtHM(totalMin)+' · '+sub+'</div><div class="gbar2"><i style="width:'+pct+'%"></i></div></div></div>';
+  }
   let tickerTk=null;
   function pushTicker(zone){
     const el=document.getElementById('liveTicker'); if(!el) return;
@@ -608,6 +644,18 @@
       if(error){ if(msg) msg.textContent='오류: '+error.message; return; }
       if(msg) msg.textContent=email+' 로 로그인 링크를 보냈어요. 메일에서 링크를 누르면 기존 기록으로 들어옵니다.';
     }catch(e){ if(msg) msg.textContent='문제가 발생했어요.'; }
+  }
+  async function linkKakao(){
+    const msg=document.getElementById('linkMsg');
+    if(!SB){ if(msg) msg.textContent='서버 연결이 필요합니다.'; return; }
+    if(msg) msg.textContent='카카오로 이동 중...';
+    try{
+      const { error } = await SB.auth.linkIdentity({ provider:'kakao', options:{ redirectTo: location.href } });
+      if(error){
+        const r = await SB.auth.signInWithOAuth({ provider:'kakao', options:{ redirectTo: location.href } });
+        if(r.error && msg) msg.textContent='카카오 연결 오류: '+r.error.message;
+      }
+    }catch(e){ if(msg) msg.textContent='문제가 발생했어요. 잠시 후 다시 시도해주세요.'; }
   }
   const fmt=n=>n.toLocaleString('en-US');
   function updateLive(){
@@ -748,7 +796,7 @@
       const lv=levelOf(hours), live=ZONE_LIVE[z[0]]||0;
       const livePart = live>0 ? ('<span class="zlive">지금 '+live+'명</span> · ') : '';
       return '<div class="zcard'+(i===0?' top':'')+(me?' me':'')+'"><div class="zic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">'+IC[z[2]]+'</svg></div>'+
-      '<div class="zmid"><div class="zrow1"><span class="znm">'+z[0]+'<span class="lvtag">Lv.'+lv.lv+' '+lv.name+'</span>'+(me?'<span class="metag">우리 구역</span>':'')+'</span><span class="zh num">'+fmtHM(hours*60)+'</span></div>'+
+      '<div class="zmid"><div class="zrow1"><span class="znm">'+z[0]+'<span class="lvtag">'+GRAPE+' '+lv.name+'</span>'+(me?'<span class="metag">우리 구역</span>':'')+'</span><span class="zh num">'+fmtHM(hours*60)+'</span></div>'+
       '<div class="ztrack"><i style="width:'+pct+'%"></i></div><div class="zp">'+livePart+pct+'%</div></div><div class="ar">›</div></div>';
     }).join('');
   }
@@ -838,13 +886,14 @@
     if(!SB) return;
     const { data } = await SB.from('prayer_sessions').select('minutes,ended_at').order('ended_at',{ascending:false}).limit(500);
     const rows=data||[]; const now=new Date(); const key=d=>d.toISOString().slice(0,10);
-    const som=new Date(now.getFullYear(),now.getMonth(),1); let week=0,month=0; const days=new Set();
-    rows.forEach(r=>{ const d=new Date(r.ended_at); if(Math.floor((now-d)/86400000)<7) week+=r.minutes; if(d>=som) month+=r.minutes; days.add(key(d)); });
+    const som=new Date(now.getFullYear(),now.getMonth(),1); let week=0,month=0,total=0; const days=new Set();
+    rows.forEach(r=>{ const d=new Date(r.ended_at); total+=r.minutes; if(Math.floor((now-d)/86400000)<7) week+=r.minutes; if(d>=som) month+=r.minutes; days.add(key(d)); });
     let streak=0, cur=new Date(now); if(!days.has(key(cur))) cur.setDate(cur.getDate()-1);
     while(days.has(key(cur))){ streak++; cur.setDate(cur.getDate()-1); }
     const w=document.getElementById('st-week'); if(w) w.textContent=korDur(week);
     const s=document.getElementById('st-streak'); if(s) s.innerHTML='<b>'+streak+'</b>일';
     const mo=document.getElementById('st-month'); if(mo) mo.textContent=korDur(month);
+    renderGrowth(total);
     const rl=document.getElementById('recentList');
     if(rl){ rl.innerHTML = rows.length ? rows.slice(0,5).map(r=>{ const d=new Date(r.ended_at); return '<div class="recrow"><span class="d">'+(d.getMonth()+1)+'. '+d.getDate()+'</span><span class="v num">'+korDur(r.minutes)+'</span></div>'; }).join('') : '<div class="recrow"><span class="d">아직 기록이 없어요</span><span class="v num">—</span></div>'; }
     const heat=document.getElementById('heat');
