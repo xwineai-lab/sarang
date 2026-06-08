@@ -150,6 +150,20 @@
   .ring .ph svg{width:34px;height:34px;}
   .ring .clock{font-family:"Outfit";font-size:40px;font-weight:600;color:var(--ink);letter-spacing:1px;}
   .ring .msg{font-size:12px;color:var(--soft);text-align:center;line-height:1.5;max-width:170px;}
+  /* 기도하기 — 빛·새벽 글로우 타이머 */
+  .prayring{overflow:visible;}
+  .prayring .glowlayer{position:absolute;width:240px;height:240px;left:-22px;top:-22px;transform:none;pointer-events:none;z-index:0;}
+  .prayring .glowlayer .sunpulse{transform-origin:50% 50%;animation:sunpulse 4.5s ease-in-out infinite;}
+  .prayring .progsvg{position:absolute;inset:0;z-index:1;}
+  .prayring .sparklayer{position:absolute;inset:0;transform-origin:50% 50%;animation:ringspin 7s linear infinite;pointer-events:none;z-index:2;}
+  .prayring .orblayer{position:absolute;inset:0;transform:none;pointer-events:none;z-index:3;}
+  .prayring .inner{z-index:4;}
+  @keyframes ringspin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+  @keyframes sunpulse{0%,100%{opacity:.82;}50%{opacity:1;}}
+  @media (prefers-reduced-motion: reduce){
+    .prayring .sparklayer{animation:none;transform:none;}
+    .prayring .glowlayer .sunpulse{animation:none;}
+  }
   .finish{margin-top:30px;height:54px;padding:0 40px;border-radius:999px;border:1.5px solid var(--amber);background:var(--surface);color:var(--amber-deep);font-family:"Gowun Dodum",sans-serif;font-size:16px;cursor:pointer;transition:transform .15s;}
   .finish:active{transform:scale(.97);}
   .finish.start{background:var(--amber);color:#fff;border-color:var(--amber);}
@@ -408,10 +422,55 @@
           <div class="h-title" style="font-size:20px;">함께 기도하는 시간</div>
           <div class="h-desc">아래 제목을 따라 함께 기도해요</div>
         </div>
-        <div class="ring" style="width:196px;height:196px;margin:16px auto 0;">
-          <svg width="196" height="196" viewBox="0 0 196 196">
+        <div class="ring prayring" style="width:196px;height:196px;margin:28px auto 16px;">
+          <!-- 1) 황금빛 글로우 + 햇살 (고정) -->
+          <svg class="glowlayer" viewBox="0 0 240 240" aria-hidden="true">
+            <defs>
+              <radialGradient id="sunG" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#fff8e6" stop-opacity=".95"/>
+                <stop offset="36%" stop-color="#ffe6a4" stop-opacity=".72"/>
+                <stop offset="66%" stop-color="#f4be57" stop-opacity=".2"/>
+                <stop offset="100%" stop-color="#f4be57" stop-opacity="0"/>
+              </radialGradient>
+              <radialGradient id="sparkG" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#fffaec" stop-opacity="1"/>
+                <stop offset="40%" stop-color="#ffd877" stop-opacity=".7"/>
+                <stop offset="100%" stop-color="#ffd877" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+            <circle class="sunpulse" cx="120" cy="120" r="116" fill="url(#sunG)"/>
+            <g stroke="#edbe66" stroke-width="2.2" stroke-linecap="round" opacity=".36">
+              <line x1="120" y1="28" x2="120" y2="10" transform="rotate(0 120 120)"/>
+              <line x1="120" y1="28" x2="120" y2="10" transform="rotate(30 120 120)"/>
+              <line x1="120" y1="28" x2="120" y2="10" transform="rotate(60 120 120)"/>
+              <line x1="120" y1="28" x2="120" y2="10" transform="rotate(90 120 120)"/>
+              <line x1="120" y1="28" x2="120" y2="10" transform="rotate(120 120 120)"/>
+              <line x1="120" y1="28" x2="120" y2="10" transform="rotate(150 120 120)"/>
+              <line x1="120" y1="28" x2="120" y2="10" transform="rotate(180 120 120)"/>
+              <line x1="120" y1="28" x2="120" y2="10" transform="rotate(210 120 120)"/>
+              <line x1="120" y1="28" x2="120" y2="10" transform="rotate(240 120 120)"/>
+              <line x1="120" y1="28" x2="120" y2="10" transform="rotate(270 120 120)"/>
+              <line x1="120" y1="28" x2="120" y2="10" transform="rotate(300 120 120)"/>
+              <line x1="120" y1="28" x2="120" y2="10" transform="rotate(330 120 120)"/>
+            </g>
+          </svg>
+          <!-- 2) 진행 링 -->
+          <svg class="progsvg" width="196" height="196" viewBox="0 0 196 196">
             <circle cx="98" cy="98" r="86" fill="none" stroke="#ece2cf" stroke-width="12"/>
             <circle id="prog" cx="98" cy="98" r="86" fill="none" stroke="#e0a93a" stroke-width="12" stroke-linecap="round" stroke-dasharray="540" stroke-dashoffset="540"/>
+          </svg>
+          <!-- 3) 링을 따라 도는 빛점 (7초/바퀴) -->
+          <svg class="sparklayer" viewBox="0 0 196 196" aria-hidden="true">
+            <g transform="translate(98,12)">
+              <circle r="22" fill="url(#sparkG)"/>
+              <circle r="5" fill="#fff7d8"/>
+            </g>
+          </svg>
+          <!-- 4) 위쪽 빛나는 십자가 구슬 (고정) -->
+          <svg class="orblayer" viewBox="0 0 196 196" aria-hidden="true">
+            <circle cx="98" cy="12" r="9" fill="#f3c155"/>
+            <circle cx="98" cy="12" r="9" fill="none" stroke="#ffffff" stroke-opacity=".5" stroke-width="1"/>
+            <path d="M98 7 V17 M93.5 11 H102.5" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
           </svg>
           <div class="inner">
             <div class="clock" id="clock" style="font-size:33px;">00:00:00</div>
