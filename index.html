@@ -337,6 +337,12 @@
   .zcard .ztrack{height:7px;border-radius:999px;background:var(--track);overflow:hidden;margin-top:8px;}
   .zcard .ztrack i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--amber),#eebb50);}
   .zcard .zp{font-size:11px;color:var(--soft);text-align:right;margin-top:5px;}
+  .zcard .zbarrow{display:flex;align-items:center;gap:9px;margin-top:8px;}
+  .zcard .zbarrow .ztrack{flex:1;margin-top:0;}
+  .zcard .zlvsym{flex-shrink:0;width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;}
+  .zcard .zlvsym svg{width:26px;height:26px;}
+  .zcard .zic.flag{background:#fff;overflow:hidden;}
+  .zcard .zic.flag .zflag{width:100%;height:100%;object-fit:cover;display:block;border-radius:50%;}
   .zcard .ar{color:var(--faint);font-size:17px;}
   .zcard.me{outline:1.5px solid rgba(224,169,58,.55);background:var(--amber-tint);}
   .metag{font-size:10px;color:var(--amber-deep);background:#fff;border:1px solid rgba(224,169,58,.5);padding:1px 7px;border-radius:7px;margin-left:7px;vertical-align:2px;}
@@ -1224,6 +1230,29 @@
     book:'<path d="M12 6.5C10.5 5.3 8.5 4.8 5.5 4.8v12.6c3 0 5 .5 6.5 1.7 1.5-1.2 3.5-1.7 6.5-1.7V4.8c-3 0-5 .5-6.5 1.7z"/><path d="M12 6.5v12.3"/>'};
   function deptIcon(dept){ return dept==='청년부'?'house':(dept==='청소년부'?'book':'globe'); }
   function deptColor(dept){ return dept==='청년부'?'zic-young':(dept==='청소년부'?'zic-youth':'zic-jang'); }
+  // 선교지 국가/지역 → 국기 코드 (flagcdn)
+  var FLAG={'독일열방':'de','프랑크푸르트':'de','툴루즈':'fr','리옹':'fr','코소보':'xk','카메룬':'cm','세네갈':'sn','슬로베니아':'si','우크라이나':'ua','케냐':'ke','알바니아':'al','그리스':'gr','남아공':'za','요르단':'jo','태국':'th','영국':'gb','루마니아':'ro','이스라엘':'il','이집트':'eg','우간다':'ug','불가리아':'bg'};
+  // 비국가 구역 → 센스있는 전용 심볼
+  var ZSYM={
+    '교역자':'<path d="M12 6.5C10.5 5.3 8.5 4.8 5.5 4.8v12.6c3 0 5 .5 6.5 1.7 1.5-1.2 3.5-1.7 6.5-1.7V4.8c-3 0-5 .5-6.5 1.7z"/><path d="M12 6.5v12.3"/>',
+    '초록우산':'<path d="M12 4C7.3 4 3.7 7.5 3 12h18c-.7-4.5-4.3-8-9-8z"/><path d="M12 12v6a2 2 0 0 1-4 0"/>',
+    '오픈도어스':'<path d="M5 21V4a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v17"/><path d="M3 21h12"/><path d="M14 21V7l5-2v16"/><path d="M11.4 12h.01"/>',
+    '밀알':'<path d="M12 21V8"/><path d="M12 8C9.8 8 8.3 5.8 8.3 3.5 10.5 3.5 12 5.7 12 8z"/><path d="M12 8c2.2 0 3.7-2.2 3.7-4.5C13.5 3.5 12 5.7 12 8z"/><path d="M12 14c-2.2 0-3.7-2.2-3.7-4.5C10.5 9.5 12 11.7 12 14z"/><path d="M12 14c2.2 0 3.7-2.2 3.7-4.5C13.5 9.5 12 11.7 12 14z"/>',
+    '에벤에셀':'<ellipse cx="12" cy="15.5" rx="7.5" ry="3.8"/><ellipse cx="11" cy="9.3" rx="5" ry="3.1"/>',
+    '쇼니':'<path d="M12 4L3.5 20h17z"/><path d="M12 4v16"/><path d="M9 20l3-6 3 6"/>',
+    '구역 미정':'<circle cx="12" cy="12" r="9"/><path d="M9.6 9.6a2.5 2.5 0 0 1 4.6 1.4c0 1.7-2 2-2 3.5"/><path d="M12 17.5h.01"/>'
+  };
+  function zoneSymbol(name, dept){
+    if((dept||'장년부')==='장년부'){
+      if(FLAG[name]) return '<img class="zflag" src="https://flagcdn.com/w40/'+FLAG[name]+'.png" alt="" loading="lazy">';
+      if(ZSYM[name]) return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">'+ZSYM[name]+'</svg>';
+      return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">'+IC.globe+'</svg>';
+    }
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">'+IC[deptIcon(dept)]+'</svg>';
+  }
+  // 구역 레벨 (개인 성장과 동일한 PLEVELS·flowerSVG 재사용, 누적시간 기준)
+  function zoneLvIdx(hours){ var i=0; for(var k=0;k<PLEVELS.length;k++){ if(hours>=PLEVELS[k][0]) i=k; } return i; }
+  function zoneLvPct(hours){ var i=zoneLvIdx(hours); var nx=PLEVELS[i+1]; if(!nx) return 100; var span=nx[0]-PLEVELS[i][0]; return Math.round(Math.min((hours-PLEVELS[i][0])/span,1)*100); }
   var zoneDept='전체';
   function zonePrefix(dept){ return dept==='청년부'?'청년부 ':(dept==='청소년부'?'청소년부 ':''); }
   function zoneTab(d){
@@ -1249,15 +1278,18 @@
     const list=document.getElementById('zoneList');
     if(!Z.length){ list.innerHTML='<div class="myempty">아직 구역 정보가 없어요.</div>'; return; }
     list.innerHTML=Z.map(function(z,i){
-      const hours=z[1], pct=Math.round(hours/max*100), me=z[3]===true, live=ZONE_LIVE[z[0]]||0;
-      const livePart = live>0 ? ('<span class="zlive">지금 '+live+'명</span> · ') : '';
+      const hours=z[1], me=z[3]===true, live=ZONE_LIVE[z[0]]||0;
+      const lvPct=zoneLvPct(hours), lvNum=zoneLvIdx(hours)+1;
+      const isFlag = (z[4]||'장년부')==='장년부' && !!FLAG[z[0]];
+      const livePart = live>0 ? ('<div class="zp"><span class="zlive">지금 '+live+'명 기도 중</span></div>') : '';
       const rank = i<3
         ? '<div class="zrank '+medal[i]+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10v3a5 5 0 01-10 0z"/><path d="M12 12v3M9 19h6M10 17h4"/></svg><b>'+(i+1)+'</b></div>'
         : '<div class="zrank num">'+(i+1)+'</div>';
       return '<div class="zcard'+(i===0?' top':'')+(me?' me':'')+'">'+rank+
-        '<div class="zic '+deptColor(z[4])+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">'+IC[deptIcon(z[4])]+'</svg></div>'+
+        '<div class="zic '+deptColor(z[4])+(isFlag?' flag':'')+'">'+zoneSymbol(z[0],z[4])+'</div>'+
         '<div class="zmid"><div class="zrow1"><span class="znm">'+zonePrefix(z[4])+z[0]+(me?'<span class="metag">우리 구역</span>':'')+(live>0?'<span class="lvtag">지금 기도 중</span>':'')+'</span><span class="zh num">'+fmtHM(hours*60)+'</span></div>'+
-        '<div class="ztrack"><i style="width:'+pct+'%"></i></div><div class="zp">'+livePart+pct+'%</div></div><div class="ar">›</div></div>';
+        '<div class="zbarrow"><div class="ztrack"><i style="width:'+lvPct+'%"></i></div><span class="zlvsym" title="레벨 '+lvNum+'">'+flowerSVG(lvNum)+'</span></div>'+
+        livePart+'</div><div class="ar">›</div></div>';
     }).join('');
   }
   // 기도 제목 (교회를 위한 합심 기도제목 — 교회 이전 + 성도들의 모든 삶의 자리)
