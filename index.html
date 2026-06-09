@@ -147,6 +147,53 @@
   .presence i{display:block;width:20px;height:20px;border-radius:50%;border:2px solid var(--surface);margin-left:-7px;}
   .praylive{display:flex;align-items:center;gap:8px;margin-top:22px;font-family:"Gowun Dodum",sans-serif;font-size:13px;color:var(--ink);background:var(--amber-tint);padding:9px 15px;border-radius:999px;}
   .praylive b{color:var(--amber-deep);}
+  /* 나의 기도제목 (개인 저널) */
+  .rectabs{display:flex;background:var(--amber-tint);border-radius:14px;padding:4px;margin:14px 0 2px;}
+  .rectab{flex:1;border:none;background:none;padding:9px;border-radius:11px;font-family:"Gowun Dodum",sans-serif;font-size:14px;color:var(--soft);cursor:pointer;}
+  .rectab.on{background:var(--surface);color:var(--amber-deep);box-shadow:0 2px 8px rgba(150,120,60,.1);}
+  .mystats{display:flex;gap:9px;background:linear-gradient(135deg,#fffdf8,#fbf1da 55%,#f7e4be);border-radius:18px;padding:16px 12px;margin-top:14px;box-shadow:0 8px 22px rgba(150,120,60,.08);}
+  .mystats .ms{flex:1;text-align:center;}
+  .mystats .ms .v{font-family:"Outfit",sans-serif;font-size:22px;font-weight:600;color:var(--ink);}
+  .mystats .ms .l{font-size:11.5px;color:var(--soft);margin-top:3px;}
+  .myreclbl{font-size:13px;color:var(--soft);margin:18px 2px 2px;}
+  .mpcard{background:var(--surface);border-radius:16px;padding:14px 15px;margin-top:11px;box-shadow:0 6px 16px rgba(150,120,60,.07);cursor:pointer;border-left:3px solid var(--amber);}
+  .mpcard.answered{border-left-color:#6fa45c;}
+  .mpcard.thanks{border-left-color:#d08bb0;}
+  .mpcard .mt{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;}
+  .mpcard .mtt{font-family:"Gowun Dodum",sans-serif;font-size:16px;color:var(--ink);}
+  .mpcard .mn{font-size:12.5px;color:var(--soft);margin-top:5px;line-height:1.55;}
+  .mpcard .mm{font-size:11.5px;color:var(--faint);margin-top:9px;}
+  .stbadge{font-size:10.5px;padding:3px 9px;border-radius:999px;white-space:nowrap;flex-shrink:0;}
+  .stbadge.praying{background:var(--amber-tint);color:var(--amber-deep);}
+  .stbadge.answered{background:#eaf3e1;color:#5e8c49;}
+  .stbadge.thanks{background:#f8e9f1;color:#b65c90;}
+  .gatecard{text-align:center;background:var(--surface);border-radius:18px;padding:28px 22px;margin-top:18px;box-shadow:0 8px 22px rgba(150,120,60,.08);}
+  .gatecard .gt{font-family:"Gowun Dodum",sans-serif;font-size:16px;color:var(--ink);}
+  .gatecard .gd{font-size:13px;color:var(--soft);margin-top:8px;line-height:1.6;}
+  .gatecard button{margin-top:16px;}
+  .myempty{text-align:center;color:var(--soft);font-size:13px;padding:26px 10px;line-height:1.6;}
+  .fab{position:fixed;right:calc(50% - 178px);bottom:78px;width:54px;height:54px;border-radius:50%;border:none;background:var(--amber);color:#fff;font-size:30px;line-height:54px;text-align:center;cursor:pointer;box-shadow:0 8px 20px rgba(224,169,58,.42);z-index:55;}
+  @media (max-width:430px){ .fab{right:18px;bottom:74px;} }
+  .mypraytag{display:inline-flex;align-items:center;gap:8px;background:var(--amber-tint);color:var(--amber-deep);font-family:"Gowun Dodum",sans-serif;font-size:12.5px;padding:6px 13px;border-radius:999px;margin:0 auto 6px;}
+  .mypraytag .x{cursor:pointer;font-weight:700;opacity:.7;}
+  .modalmask{position:fixed;inset:0;background:rgba(40,33,20,.42);display:none;align-items:flex-end;justify-content:center;z-index:60;}
+  .modalmask .modalbox{max-width:430px;}
+  .modalmask.on{display:flex;}
+  .modalbox{background:var(--surface);width:100%;border-radius:22px 22px 0 0;padding:20px 18px calc(18px + env(safe-area-inset-bottom));max-height:88%;overflow:auto;animation:tickin .25s ease;}
+  .modalbox h3{font-family:"Gowun Dodum",sans-serif;font-size:18px;color:var(--ink);text-align:center;margin-bottom:14px;}
+  .minput{width:100%;border:1.5px solid var(--line);border-radius:13px;background:#fff;color:var(--ink);font-size:15px;padding:12px 14px;outline:none;font-family:"Pretendard",sans-serif;margin-bottom:10px;}
+  .minput:focus{border-color:var(--amber);}
+  textarea.minput{min-height:72px;resize:none;line-height:1.55;}
+  .mseglbl{font-size:12px;color:var(--soft);margin:2px 2px 7px;}
+  .mseg{display:flex;gap:7px;margin-bottom:10px;}
+  .mseg button{flex:1;padding:9px;border-radius:11px;border:1.5px solid var(--line);background:#fff;font-size:13px;font-family:"Gowun Dodum",sans-serif;color:var(--soft);cursor:pointer;}
+  .mseg button.on{border-color:var(--amber);background:var(--amber-tint);color:var(--amber-deep);}
+  .mpray{width:100%;padding:13px;border-radius:13px;border:1.5px solid var(--amber);background:#fff;color:var(--amber-deep);font-size:15px;font-family:"Gowun Dodum",sans-serif;cursor:pointer;margin-bottom:12px;}
+  .mbtns{display:flex;gap:9px;}
+  .mbtns button{flex:1;padding:13px;border-radius:13px;border:none;font-size:15px;font-family:"Gowun Dodum",sans-serif;cursor:pointer;}
+  .mbtns .save{background:var(--amber);color:#fff;}
+  .mbtns .cancel{background:var(--track);color:var(--ink);}
+  .mbtns .del{flex:0 0 auto;background:#fff;border:1.5px solid #e6b9b9;color:#c4503c;padding:13px 15px;}
 
   /* big circular prayer button (home) */
   .circlewrap{display:flex;justify-content:center;margin:16px 0 8px;}
@@ -465,6 +512,7 @@
           <div class="h-title" style="font-size:20px;">함께 기도하는 시간</div>
           <div class="h-desc">아래 제목을 따라 함께 기도해요</div>
         </div>
+        <div style="text-align:center;margin-top:8px;"><span class="mypraytag" id="myPrayTag" style="display:none;"></span></div>
         <div class="ring prayring" style="width:196px;height:196px;margin:28px auto 16px;">
           <!-- 1) 황금빛 글로우 + 햇살 (고정) -->
           <svg class="glowlayer" viewBox="0 0 240 240" aria-hidden="true">
@@ -571,19 +619,64 @@
           <div class="h-title">나의 기록</div>
           <div class="h-desc" id="recSub" style="margin-top:7px;font-weight:600;color:var(--amber-deep);">고요한 등불 · 독일열방 구역</div>
         </div>
-        <div id="myGrowth"></div>
-        <div class="statcard">
-          <div class="col"><div class="cl">이번 주</div><div class="cv" id="st-week">0분</div></div>
-          <div class="col"><div class="cl">연속</div><div class="cv" id="st-streak"><b>0</b>일</div></div>
-          <div class="col"><div class="cl">이번 달</div><div class="cv" id="st-month">0분</div></div>
+        <div class="rectabs">
+          <button class="rectab on" id="rt-log" onclick="recTab('log')">기도 기록</button>
+          <button class="rectab" id="rt-my" onclick="recTab('my')">나의 기도제목</button>
         </div>
-        <div class="reclbl">최근 기도 기록</div>
-        <div id="recentList">
-          <div class="recrow"><span class="d">아직 기록이 없어요</span><span class="v num">—</span></div>
+        <div id="recPaneLog">
+          <div id="myGrowth"></div>
+          <div class="statcard">
+            <div class="col"><div class="cl">이번 주</div><div class="cv" id="st-week">0분</div></div>
+            <div class="col"><div class="cl">연속</div><div class="cv" id="st-streak"><b>0</b>일</div></div>
+            <div class="col"><div class="cl">이번 달</div><div class="cv" id="st-month">0분</div></div>
+          </div>
+          <div class="reclbl">최근 기도 기록</div>
+          <div id="recentList">
+            <div class="recrow"><span class="d">아직 기록이 없어요</span><span class="v num">—</span></div>
+          </div>
+          <div class="encourage">
+            <div class="lf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 21c-1-6 2-10 8-11-1 6-4 10-8 11zM12 21C8 20 5 16 4 10c6 1 9 5 8 11z"/></svg></div>
+            <div class="tx">작은 기도가 모여<br>큰 변화를 만듭니다.</div>
+          </div>
         </div>
-        <div class="encourage">
-          <div class="lf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 21c-1-6 2-10 8-11-1 6-4 10-8 11zM12 21C8 20 5 16 4 10c6 1 9 5 8 11z"/></svg></div>
-          <div class="tx">작은 기도가 모여<br>큰 변화를 만듭니다.</div>
+        <div id="recPaneMy" style="display:none;">
+          <div id="myPrayGate" class="gatecard" style="display:none;">
+            <div class="gt">나만의 기도제목</div>
+            <div class="gd">로그인하면 내가 직접 쓴 기도제목을<br>어디서나 안전하게 보관하고 응답을 기록할 수 있어요.<br>(내 기록은 나만 봅니다)</div>
+            <button class="primary" onclick="go('connect')">로그인하고 시작하기</button>
+          </div>
+          <div id="myPrayWrap" style="display:none;">
+            <div class="mystats">
+              <div class="ms"><div class="v" id="ms-praying">0</div><div class="l">기도중</div></div>
+              <div class="ms"><div class="v" id="ms-answered">0</div><div class="l">응답됨</div></div>
+              <div class="ms"><div class="v" id="ms-thanks">0</div><div class="l">감사</div></div>
+            </div>
+            <div class="myreclbl">나의 기도제목 목록</div>
+            <div id="myPrayList"></div>
+          </div>
+        </div>
+      </div>
+      <button class="fab" id="myFab" style="display:none;" onclick="openMyEditor(null)">+</button>
+      <div class="modalmask" id="myModal">
+        <div class="modalbox">
+          <h3 id="myModalTitle">기도제목 추가</h3>
+          <input class="minput" id="mpTitle" maxlength="100" placeholder="기도제목 (예: 가족의 건강)">
+          <textarea class="minput" id="mpNote" maxlength="1000" placeholder="기도 내용을 적어보세요 (선택)"></textarea>
+          <div id="mpStatusWrap" style="display:none;">
+            <div class="mseglbl">상태</div>
+            <div class="mseg">
+              <button id="seg-praying" onclick="setModalStatus('praying')">기도중</button>
+              <button id="seg-answered" onclick="setModalStatus('answered')">응답됨</button>
+              <button id="seg-thanks" onclick="setModalStatus('thanks')">감사</button>
+            </div>
+            <textarea class="minput" id="mpAnswer" maxlength="1000" placeholder="응답·간증을 기록해보세요 (선택)" style="display:none;"></textarea>
+          </div>
+          <button class="mpray" id="mpPrayBtn" style="display:none;" onclick="prayFromModal()">이 제목으로 기도 시작</button>
+          <div class="mbtns">
+            <button class="del" id="mpDelBtn" style="display:none;" onclick="delMyPrayer()">삭제</button>
+            <button class="cancel" onclick="closeMyModal()">취소</button>
+            <button class="save" onclick="saveMyPrayer()">저장</button>
+          </div>
         </div>
       </div>
     </div>
@@ -631,6 +724,7 @@
 <script>
   const TOTAL=50000;let current=0,liveN=0;
   let SB=null, MY_GROUP_ID=null, GROUPS_BY_NAME={}, SERVER_ZONES=null, SERVER_DEPT_ITEMS=null, PRESENCE=null, ZONE_LIVE={}, myEmail=null, isAnon=true, authProvider=null;
+  let MY_PRAYER_ID=null, MY_PRAYER_TITLE='', MY_PRAYERS=[], myEditId=null, modalStatus='praying';
   function syncAuthUI(){
     const linked = !!authProvider || !!myEmail || isAnon===false;
     var everLI=false; try{ everLI = localStorage.getItem('om_li')==='1'; }catch(e){}
@@ -702,10 +796,12 @@
     document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.s===id));
     const el=document.getElementById(id); if(el) el.scrollTop=0;
     tabbarEl.classList.remove('tbhide');  // 탭바는 항상 하단 고정
+    if(id!=='pray') MY_PRAYER_ID=null;        // 개인 제목 연동은 prayMyTopic 진입에서만 유지
+    if(id==='pray') updateMyPrayTag();
     if(id==='zone'){ buildZones(); loadDept(); }
     if(id==='joinzone') buildChips();
     if(id==='topics') buildTopics();
-    if(id==='record') loadMyRecord();
+    if(id==='record'){ loadMyRecord(); recTab(window._recTab||'log'); }
     if(id==='more' || id==='connect') syncAuthUI();
   }
   /* 프로필 기억하기 + 익명 가상 닉네임 */
@@ -1054,12 +1150,111 @@
     if(data){ current = Number(data.total_hours)||0; renderGauge(); }
   }
   async function recordPrayer(mins){
+    const linkedId = MY_PRAYER_ID;   // 이 세션에서 연동된 개인 제목
     try{
       await SB.from('prayer_sessions').insert({ minutes: mins, group_id: MY_GROUP_ID,
+        my_prayer_id: linkedId || null,
         started_at: new Date(Date.now()-mins*60000).toISOString() });
+      if(linkedId){ try{ await SB.rpc('log_my_prayer', { p_id: linkedId, p_minutes: mins }); }catch(e){} }
       await refreshProgress(); await loadRankings(); await loadMyRecord(); await loadDept();
     }catch(e){ console.warn('기록 저장 실패:', e); }
+    MY_PRAYER_ID=null; MY_PRAYER_TITLE='';
   }
+  /* ===== 나의 기도제목 (개인 저널) ===== */
+  function mpEsc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+  function mpRelDay(iso){ try{ var d=new Date(iso),t=new Date(); var a=new Date(t.getFullYear(),t.getMonth(),t.getDate()),b=new Date(d.getFullYear(),d.getMonth(),d.getDate()); var diff=Math.round((a-b)/86400000); if(diff<=0)return'오늘'; if(diff===1)return'어제'; if(diff<7)return diff+'일 전'; return (d.getMonth()+1)+'.'+d.getDate(); }catch(e){ return ''; } }
+  function recTab(which){
+    window._recTab=which;
+    var l=document.getElementById('rt-log'), m=document.getElementById('rt-my');
+    if(l) l.classList.toggle('on',which==='log'); if(m) m.classList.toggle('on',which==='my');
+    var pl=document.getElementById('recPaneLog'), pm=document.getElementById('recPaneMy');
+    if(pl) pl.style.display=which==='log'?'block':'none';
+    if(pm) pm.style.display=which==='my'?'block':'none';
+    if(which==='my'){ loadMyPrayers(); } else { var f=document.getElementById('myFab'); if(f) f.style.display='none'; }
+  }
+  function myLoggedIn(){ return (!!authProvider || !!myEmail || isAnon===false); }
+  async function loadMyPrayers(){
+    var gate=document.getElementById('myPrayGate'), wrap=document.getElementById('myPrayWrap'), fab=document.getElementById('myFab');
+    if(!SB || !myLoggedIn()){ if(gate)gate.style.display='block'; if(wrap)wrap.style.display='none'; if(fab)fab.style.display='none'; return; }
+    if(gate)gate.style.display='none'; if(wrap)wrap.style.display='block'; if(fab)fab.style.display='block';
+    try{
+      var res=await SB.from('my_prayers').select('id,title,note,status,pray_count,last_prayed_at,answered_note,created_at').eq('archived',false).order('created_at',{ascending:false});
+      MY_PRAYERS=res.data||[];
+    }catch(e){ MY_PRAYERS=[]; }
+    renderMyPrayers();
+  }
+  function renderMyPrayers(){
+    var list=document.getElementById('myPrayList'); if(!list) return;
+    var cnt={praying:0,answered:0,thanks:0};
+    MY_PRAYERS.forEach(function(p){ cnt[p.status]=(cnt[p.status]||0)+1; });
+    document.getElementById('ms-praying').textContent=cnt.praying||0;
+    document.getElementById('ms-answered').textContent=cnt.answered||0;
+    document.getElementById('ms-thanks').textContent=cnt.thanks||0;
+    if(!MY_PRAYERS.length){ list.innerHTML='<div class="myempty">아직 기도제목이 없어요.<br>오른쪽 아래 + 버튼으로 첫 기도제목을 더해보세요.</div>'; return; }
+    var lab={praying:'기도중',answered:'응답됨',thanks:'감사'};
+    list.innerHTML=MY_PRAYERS.map(function(p){
+      var last=p.last_prayed_at?('마지막 기도 '+mpRelDay(p.last_prayed_at)):'아직 기도 전';
+      var note=p.note?('<div class="mn">'+mpEsc(p.note)+'</div>'):'';
+      return '<div class="mpcard '+p.status+'" onclick="openMyEditor('+p.id+')"><div class="mt"><div class="mtt">'+mpEsc(p.title)+'</div><span class="stbadge '+p.status+'">'+lab[p.status]+'</span></div>'+note+'<div class="mm">'+last+' · 총 '+(p.pray_count||0)+'회</div></div>';
+    }).join('');
+  }
+  function openMyEditor(id){
+    myEditId=id;
+    var t=document.getElementById('mpTitle'),n=document.getElementById('mpNote'),a=document.getElementById('mpAnswer');
+    var stWrap=document.getElementById('mpStatusWrap'),prayBtn=document.getElementById('mpPrayBtn'),delBtn=document.getElementById('mpDelBtn'),title=document.getElementById('myModalTitle');
+    if(id){
+      var p=MY_PRAYERS.find(function(x){return x.id===id;})||{};
+      t.value=p.title||''; n.value=p.note||''; a.value=p.answered_note||''; modalStatus=p.status||'praying';
+      stWrap.style.display='block'; prayBtn.style.display='block'; delBtn.style.display='block'; title.textContent='기도제목';
+    } else {
+      t.value=''; n.value=''; a.value=''; modalStatus='praying';
+      stWrap.style.display='none'; prayBtn.style.display='none'; delBtn.style.display='none'; title.textContent='기도제목 추가';
+    }
+    applyModalStatusUI();
+    document.getElementById('myModal').classList.add('on');
+    setTimeout(function(){ try{t.focus();}catch(e){} },60);
+  }
+  function closeMyModal(){ document.getElementById('myModal').classList.remove('on'); }
+  function setModalStatus(s){ modalStatus=s; applyModalStatusUI(); }
+  function applyModalStatusUI(){
+    ['praying','answered','thanks'].forEach(function(s){ var b=document.getElementById('seg-'+s); if(b) b.classList.toggle('on', s===modalStatus); });
+    var a=document.getElementById('mpAnswer'); if(a) a.style.display=(modalStatus==='answered'||modalStatus==='thanks')?'block':'none';
+  }
+  async function saveMyPrayer(){
+    var title=document.getElementById('mpTitle').value.trim();
+    if(!title){ alert('기도제목을 입력해주세요.'); return; }
+    var note=document.getElementById('mpNote').value.trim();
+    if(!SB){ closeMyModal(); return; }
+    try{
+      if(myEditId){
+        var ans=document.getElementById('mpAnswer').value.trim();
+        var patch={ title:title, note:note, status:modalStatus, answered_note: ans||null };
+        if(modalStatus!=='praying') patch.answered_at=new Date().toISOString();
+        await SB.from('my_prayers').update(patch).eq('id', myEditId);
+      } else {
+        await SB.from('my_prayers').insert({ title:title, note:note, status:'praying' });
+      }
+    }catch(e){ console.warn('기도제목 저장 실패:', e); alert('저장에 실패했어요. 로그인 상태를 확인해주세요.'); return; }
+    closeMyModal(); loadMyPrayers();
+  }
+  async function delMyPrayer(){
+    if(!myEditId) return;
+    if(!confirm('이 기도제목을 삭제할까요?')) return;
+    try{ await SB.from('my_prayers').update({archived:true}).eq('id', myEditId); }catch(e){}
+    closeMyModal(); loadMyPrayers();
+  }
+  function prayFromModal(){
+    if(!myEditId) return;
+    var p=MY_PRAYERS.find(function(x){return x.id===myEditId;})||{};
+    MY_PRAYER_ID=myEditId; MY_PRAYER_TITLE=p.title||'';
+    closeMyModal(); go('pray');
+  }
+  function updateMyPrayTag(){
+    var t=document.getElementById('myPrayTag'); if(!t) return;
+    if(MY_PRAYER_ID && MY_PRAYER_TITLE){ t.style.display='inline-flex'; t.innerHTML='나의 기도: '+mpEsc(MY_PRAYER_TITLE)+' <span class="x" onclick="clearMyPrayLink(event)">✕</span>'; }
+    else { t.style.display='none'; t.innerHTML=''; }
+  }
+  function clearMyPrayLink(e){ if(e){e.stopPropagation();} MY_PRAYER_ID=null; MY_PRAYER_TITLE=''; updateMyPrayTag(); }
   function korDur(m){ m=Math.round(m||0); if(m<=0) return '0분'; const h=Math.floor(m/60), r=m%60; return h?(h+'시간'+(r?' '+r+'분':'')):(r+'분'); }
   async function loadMyRecord(){
     if(!SB) return;
