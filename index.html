@@ -337,6 +337,9 @@
   .zcard .ztrack{height:7px;border-radius:999px;background:var(--track);overflow:hidden;margin-top:8px;}
   .zcard .ztrack i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--amber),#eebb50);}
   .zcard .zp{font-size:11px;color:var(--soft);text-align:right;margin-top:5px;}
+  .zcard .zlivec .zlc-pray{color:#b5742a;font-weight:600;}
+  .zcard .zic.zic-tone{background:var(--amber-tint);color:var(--amber-deep);}
+  .zcard .zic svg{width:20px;height:20px;}
   .zcard .zbarrow{display:flex;align-items:center;gap:9px;margin-top:6px;}
   .zcard .zbarrow .ztrack{flex:1;margin-top:0;}
   .zcard .zlvsym{flex-shrink:0;width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;}
@@ -914,7 +917,7 @@
 
 <script>
   const TOTAL=50000;let current=0,liveN=0,connN=0,_livePhase=0;
-  let SB=null, MY_GROUP_ID=null, GROUPS_BY_NAME={}, SERVER_ZONES=null, SERVER_DEPT_ITEMS=null, PRESENCE=null, ZONE_LIVE={}, myEmail=null, isAnon=true, authProvider=null, amPraying=false, _prevPray={};
+  let SB=null, MY_GROUP_ID=null, GROUPS_BY_NAME={}, SERVER_ZONES=null, SERVER_DEPT_ITEMS=null, PRESENCE=null, ZONE_LIVE={}, ZONE_CONN={}, myEmail=null, isAnon=true, authProvider=null, amPraying=false, _prevPray={};
   function trackPresence(){ if(PRESENCE){ try{ PRESENCE.track({ zone:selZone, praying:amPraying, at:Date.now() }); }catch(e){} } }
   let MY_PRAYER_ID=null, MY_PRAYER_TITLE='', MY_PRAYERS=[], myEditId=null, modalStatus='praying';
   function syncAuthUI(){
@@ -1275,17 +1278,24 @@
     '쇼니':{bg:'#fbe2d4',fg:'#c96b3e'},
     '구역 미정':{bg:'#ece9f1',fg:'#8a83a0'}
   };
-  // 비국가 구역 → 센스있는 이모지
-  var ZEMO={'교역자':'✝️','초록우산':'☂️','오픈도어스':'🚪','밀알':'🌾','에벤에셀':'🪨','쇼니':'⛺','구역 미정':'📍'};
-  function zicStyle(name, dept){ if((dept||'장년부')==='장년부' && !FLAG[name] && ZSYMCOL[name]){ var c=ZSYMCOL[name]; return ' style="background:'+c.bg+';color:'+c.fg+';"'; } return ''; }
+  // 단일 톤(앱 앰버) 채움 글리프 — 색상 통일, 또렷하게
+  var GLY={
+    house:'<path d="M12 3 3 10.6V12h2.2v8.4h4.3V15h5v5.4h4.3V12H21z"/>',
+    cap:'<path d="M12 4 2 9l10 5 10-5z"/><path d="M6.5 12.2V16c0 1.3 2.5 2.4 5.5 2.4s5.5-1.1 5.5-2.4v-3.8L12 15z"/><path d="M20.4 9.3h1.1V14h-1.1z"/>',
+    globe:'<path d="M12 3a9 9 0 100 18 9 9 0 000-18z"/><path d="M3.5 12h17M12 3.3v17.4M12 3.3c2.7 2.3 4.2 5.5 4.2 8.7S14.7 18.4 12 20.7C9.3 18.4 7.8 15.2 7.8 12 7.8 8.8 9.3 5.6 12 3.3z" fill="none" stroke="#f6e8d2" stroke-width="1.2"/>',
+    cross:'<path d="M10.3 3h3.4v4.6H18v3.4h-4.3V21h-3.4V11H6V7.6h4.3z"/>',
+    umbrella:'<path d="M12 2.5C6.7 2.5 2.6 6.3 2 11c-.05.4.4.55.74.32.85-.57 1.66-.85 2.5-.85.86 0 1.66.28 2.5.85.32.22.74.22 1.06 0 .84-.57 1.64-.85 2.5-.85.84 0 1.65.28 2.5.85.32.22.74.22 1.06 0 .84-.57 1.64-.85 2.5-.85.84 0 1.65.28 2.5.85.34.23.79.08.74-.32C21.4 6.3 17.3 2.5 12 2.5z"/><path d="M11.2 11.5v6a1.6 1.6 0 01-3.2 0h1.6a.4.4 0 00.8 0v-6z"/>',
+    door:'<path d="M6 3h8a1 1 0 011 1v17H6z"/><circle cx="12" cy="12.5" r="1" fill="#f6e8d2"/><path d="M15.5 5.2 19 4v17h-3.5z"/>',
+    wheat:'<path d="M11.3 21V8.5h1.4V21z"/><path d="M12 9.5C9.7 9.5 8.1 7.2 8.1 4.7 10.4 4.7 12 7 12 9.5z"/><path d="M12 9.5c2.3 0 3.9-2.3 3.9-4.8C13.6 4.7 12 7 12 9.5z"/><path d="M12 14.5c-2.3 0-3.9-2.3-3.9-4.8C10.4 9.7 12 12 12 14.5z"/><path d="M12 14.5c2.3 0 3.9-2.3 3.9-4.8C13.6 9.7 12 12 12 14.5z"/>',
+    stone:'<ellipse cx="12" cy="16" rx="7.5" ry="3.6"/><ellipse cx="11" cy="9.6" rx="5" ry="3"/>',
+    tent:'<path d="M12 4 2.5 20.5h6.2L12 14.5l3.3 6H21.5z"/>',
+    pin:'<path d="M12 2a7 7 0 00-7 7c0 5.1 7 12 7 12s7-6.9 7-12a7 7 0 00-7-7z"/><circle cx="12" cy="9" r="2.6" fill="#f6e8d2"/>'
+  };
+  var ZGLY={'교역자':'cross','초록우산':'umbrella','오픈도어스':'door','밀알':'wheat','에벤에셀':'stone','쇼니':'tent','구역 미정':'pin'};
   function zoneSymbol(name, dept){
-    if((dept||'장년부')==='장년부'){
-      if(FLAG[name]) return '<img class="zflag" src="https://flagcdn.com/w40/'+FLAG[name]+'.png" srcset="https://flagcdn.com/w80/'+FLAG[name]+'.png 2x" alt="">';
-      if(ZEMO[name]) return '<span class="zemo">'+ZEMO[name]+'</span>';
-      if(ZSYM[name]) return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">'+ZSYM[name]+'</svg>';
-      return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">'+IC.globe+'</svg>';
-    }
-    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">'+IC[deptIcon(dept)]+'</svg>';
+    if((dept||'장년부')==='장년부' && FLAG[name]) return '<img class="zflag" src="https://flagcdn.com/w40/'+FLAG[name]+'.png" srcset="https://flagcdn.com/w80/'+FLAG[name]+'.png 2x" alt="">';
+    var key = dept==='청년부' ? 'house' : (dept==='청소년부' ? 'cap' : (ZGLY[name] || 'globe'));
+    return '<svg viewBox="0 0 24 24" fill="currentColor">'+GLY[key]+'</svg>';
   }
   // 구역 레벨 (개인 성장과 동일한 PLEVELS·flowerSVG 재사용, 누적시간 기준)
   function zoneLvIdx(hours){ var i=0; for(var k=0;k<PLEVELS.length;k++){ if(hours>=PLEVELS[k][0]) i=k; } return i; }
@@ -1315,16 +1325,18 @@
     const list=document.getElementById('zoneList');
     if(!Z.length){ list.innerHTML='<div class="myempty">아직 구역 정보가 없어요.</div>'; return; }
     list.innerHTML=Z.map(function(z,i){
-      const hours=z[1], me=z[3]===true, live=ZONE_LIVE[z[0]]||0;
+      const hours=z[1], me=z[3]===true;
+      const pray=ZONE_LIVE[z[0]]||0, conn=ZONE_CONN[z[0]]||0, prep=Math.max(0,conn-pray);
       const lvPct=zoneLvPct(hours), lvNum=zoneLvIdx(hours)+1;
       const isFlag = (z[4]||'장년부')==='장년부' && !!FLAG[z[0]];
-      const livePart = live>0 ? ('<div class="zp"><span class="zlive">지금 '+live+'명 기도 중</span></div>') : '';
+      // 실제 라이브(접속/기도)가 있을 때만 표시
+      const livePart = conn>0 ? ('<div class="zp zlivec"><span class="zlc-pray">기도 중 '+pray+'</span> · <span>준비 중 '+prep+'</span></div>') : '';
       const rank = i<3
         ? '<div class="zrank '+medal[i]+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10v3a5 5 0 01-10 0z"/><path d="M12 12v3M9 19h6M10 17h4"/></svg><b>'+(i+1)+'</b></div>'
         : '<div class="zrank num">'+(i+1)+'</div>';
       return '<div class="zcard'+(i===0?' top':'')+(me?' me':'')+'">'+rank+
-        '<div class="zic '+deptColor(z[4])+(isFlag?' flag':'')+'"'+zicStyle(z[0],z[4])+'>'+zoneSymbol(z[0],z[4])+'</div>'+
-        '<div class="zmid"><div class="zrow1"><span class="znm">'+zonePrefix(z[4])+z[0]+(me?'<span class="metag">우리 구역</span>':'')+(live>0?'<span class="lvtag">지금 기도 중</span>':'')+'</span><span class="zh num">'+fmtHM(hours*60)+'</span></div>'+
+        '<div class="zic '+(isFlag?'flag':'zic-tone')+'">'+zoneSymbol(z[0],z[4])+'</div>'+
+        '<div class="zmid"><div class="zrow1"><span class="znm">'+zonePrefix(z[4])+z[0]+(me?'<span class="metag">우리 구역</span>':'')+(pray>0?'<span class="lvtag">지금 기도 중</span>':'')+'</span><span class="zh num">'+fmtHM(hours*60)+'</span></div>'+
         '<div class="zbarrow"><div class="ztrack"><i style="width:'+lvPct+'%"></i></div><span class="zlvsym" title="레벨 '+lvNum+'">'+flowerSVG(lvNum)+'</span></div>'+
         livePart+'</div><div class="ar">›</div></div>';
     }).join('');
@@ -1734,15 +1746,16 @@
     const key = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Math.random());
     PRESENCE = SB.channel('prayer-room', { config:{ presence:{ key: key } } });
     PRESENCE.on('presence', { event:'sync' }, function(){
-      const st = PRESENCE.presenceState(); let prayCount=0, connCount=0; const zc={}; var nowPray={};
+      const st = PRESENCE.presenceState(); let prayCount=0, connCount=0; const zc={}, zcc={}; var nowPray={};
       Object.keys(st).forEach(function(k){
         var arr=st[k]||[]; var m=arr[0]||{}; connCount++;            // 접속(준비) 포함 전체
+        var z=m.zone; if(z) zcc[z]=(zcc[z]||0)+1;                      // 구역별 접속 수
         var praying=arr.some(function(x){ return x && x.praying; });   // 타이머가 도는 사람만
         nowPray[k]=praying;
-        if(praying){ prayCount++; var z=m.zone; if(z){ zc[z]=(zc[z]||0)+1; if(!_prevPray[k]) pushTicker(z); } }   // 기도 시작 순간 티커
+        if(praying){ prayCount++; if(z){ zc[z]=(zc[z]||0)+1; if(!_prevPray[k]) pushTicker(z); } }   // 기도 시작 순간 티커
       });
       _prevPray=nowPray;
-      liveN = prayCount; connN = connCount; ZONE_LIVE = zc; updateLive();
+      liveN = prayCount; connN = connCount; ZONE_LIVE = zc; ZONE_CONN = zcc; updateLive();
       if(document.getElementById('zone').classList.contains('on')) buildZones();
     });
     PRESENCE.subscribe(function(status){ if(status==='SUBSCRIBED'){ trackPresence(); } });
