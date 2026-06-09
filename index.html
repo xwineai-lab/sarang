@@ -345,8 +345,8 @@
   .zcard .zlvsym{flex-shrink:0;width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;}
   .zcard .zlvsym svg{width:26px;height:26px;}
   .zcard .zic .zemo{font-size:18px;line-height:1;}
-  .zcard .zic.flag{background:#fff;overflow:hidden;}
-  .zcard .zic.flag .zflag{width:100%;height:100%;object-fit:cover;display:block;border-radius:50%;}
+  .zcard .zic.flag{background:#eceae6;overflow:hidden;}
+  .zcard .zic.flag .zflag{width:100%;height:100%;object-fit:cover;display:block;border-radius:50%;filter:grayscale(1) contrast(.95) brightness(1.02);}
   .zcard .ar{color:var(--faint);font-size:17px;}
   .zcard.me{outline:1.5px solid rgba(224,169,58,.55);background:var(--amber-tint);}
   .metag{font-size:10px;color:var(--amber-deep);background:#fff;border:1px solid rgba(224,169,58,.5);padding:1px 7px;border-radius:7px;margin-left:7px;vertical-align:2px;}
@@ -1278,24 +1278,12 @@
     '쇼니':{bg:'#fbe2d4',fg:'#c96b3e'},
     '구역 미정':{bg:'#ece9f1',fg:'#8a83a0'}
   };
-  // 단일 톤(앱 앰버) 채움 글리프 — 색상 통일, 또렷하게
-  var GLY={
-    house:'<path d="M12 3 3 10.6V12h2.2v8.4h4.3V15h5v5.4h4.3V12H21z"/>',
-    cap:'<path d="M12 4 2 9l10 5 10-5z"/><path d="M6.5 12.2V16c0 1.3 2.5 2.4 5.5 2.4s5.5-1.1 5.5-2.4v-3.8L12 15z"/><path d="M20.4 9.3h1.1V14h-1.1z"/>',
-    globe:'<path d="M12 3a9 9 0 100 18 9 9 0 000-18z"/><path d="M3.5 12h17M12 3.3v17.4M12 3.3c2.7 2.3 4.2 5.5 4.2 8.7S14.7 18.4 12 20.7C9.3 18.4 7.8 15.2 7.8 12 7.8 8.8 9.3 5.6 12 3.3z" fill="none" stroke="#f6e8d2" stroke-width="1.2"/>',
-    cross:'<path d="M10.3 3h3.4v4.6H18v3.4h-4.3V21h-3.4V11H6V7.6h4.3z"/>',
-    umbrella:'<path d="M12 2.5C6.7 2.5 2.6 6.3 2 11c-.05.4.4.55.74.32.85-.57 1.66-.85 2.5-.85.86 0 1.66.28 2.5.85.32.22.74.22 1.06 0 .84-.57 1.64-.85 2.5-.85.84 0 1.65.28 2.5.85.32.22.74.22 1.06 0 .84-.57 1.64-.85 2.5-.85.84 0 1.65.28 2.5.85.34.23.79.08.74-.32C21.4 6.3 17.3 2.5 12 2.5z"/><path d="M11.2 11.5v6a1.6 1.6 0 01-3.2 0h1.6a.4.4 0 00.8 0v-6z"/>',
-    door:'<path d="M6 3h8a1 1 0 011 1v17H6z"/><circle cx="12" cy="12.5" r="1" fill="#f6e8d2"/><path d="M15.5 5.2 19 4v17h-3.5z"/>',
-    wheat:'<path d="M11.3 21V8.5h1.4V21z"/><path d="M12 9.5C9.7 9.5 8.1 7.2 8.1 4.7 10.4 4.7 12 7 12 9.5z"/><path d="M12 9.5c2.3 0 3.9-2.3 3.9-4.8C13.6 4.7 12 7 12 9.5z"/><path d="M12 14.5c-2.3 0-3.9-2.3-3.9-4.8C10.4 9.7 12 12 12 14.5z"/><path d="M12 14.5c2.3 0 3.9-2.3 3.9-4.8C13.6 9.7 12 12 12 14.5z"/>',
-    stone:'<ellipse cx="12" cy="16" rx="7.5" ry="3.6"/><ellipse cx="11" cy="9.6" rx="5" ry="3"/>',
-    tent:'<path d="M12 4 2.5 20.5h6.2L12 14.5l3.3 6H21.5z"/>',
-    pin:'<path d="M12 2a7 7 0 00-7 7c0 5.1 7 12 7 12s7-6.9 7-12a7 7 0 00-7-7z"/><circle cx="12" cy="9" r="2.6" fill="#f6e8d2"/>'
-  };
-  var ZGLY={'교역자':'cross','초록우산':'umbrella','오픈도어스':'door','밀알':'wheat','에벤에셀':'stone','쇼니':'tent','구역 미정':'pin'};
+  // 비국가 구역 → 이모지 / 부서 → 이모지 (국가 구역은 국기를 그레이로 통일)
+  var ZEMO={'교역자':'✝️','초록우산':'☂️','오픈도어스':'🚪','밀알':'🌾','에벤에셀':'🪨','쇼니':'⛺','구역 미정':'📍'};
   function zoneSymbol(name, dept){
     if((dept||'장년부')==='장년부' && FLAG[name]) return '<img class="zflag" src="https://flagcdn.com/w40/'+FLAG[name]+'.png" srcset="https://flagcdn.com/w80/'+FLAG[name]+'.png 2x" alt="">';
-    var key = dept==='청년부' ? 'house' : (dept==='청소년부' ? 'cap' : (ZGLY[name] || 'globe'));
-    return '<svg viewBox="0 0 24 24" fill="currentColor">'+GLY[key]+'</svg>';
+    var emo = dept==='청년부' ? '🏘️' : (dept==='청소년부' ? '🎒' : (ZEMO[name] || '🌍'));
+    return '<span class="zemo">'+emo+'</span>';
   }
   // 구역 레벨 (개인 성장과 동일한 PLEVELS·flowerSVG 재사용, 누적시간 기준)
   function zoneLvIdx(hours){ var i=0; for(var k=0;k<PLEVELS.length;k++){ if(hours>=PLEVELS[k][0]) i=k; } return i; }
