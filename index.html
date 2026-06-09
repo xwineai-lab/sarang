@@ -267,18 +267,22 @@
   .ringcard .rc-btn{margin-top:5px;border:none;cursor:pointer;background:linear-gradient(135deg,#9cb070,#7e9a54);color:#fff;font-family:"Gowun Dodum",sans-serif;font-size:15px;padding:9px 20px;border-radius:999px;box-shadow:0 6px 14px rgba(120,150,80,.3);display:inline-flex;align-items:center;gap:6px;}
   .ringcard .rc-tri{font-size:10px;}
   .ringcard .rc-spin{transform-origin:100px 100px;animation:rcspin 12s linear infinite;}
+  .ringcard .rc-arc{animation:rcsweep 12s linear infinite;}
   @keyframes rcspin{to{transform:rotate(360deg);}}
-  @media (prefers-reduced-motion: reduce){ .ringcard .rc-spin{animation:none;} }
+  @keyframes rcsweep{to{stroke-dashoffset:-578;}}
+  @media (prefers-reduced-motion: reduce){ .ringcard .rc-spin,.ringcard .rc-arc{animation:none;} }
   /* ===== 업로드 배경 이미지 적용 ===== */
   .versecard4{background-image:url('bg-verse.png');background-size:cover;background-position:right bottom;}
   .versecard4 .vc4-olive{display:none;}
-  .sloganstrip{aspect-ratio:1086/362; padding:0 7% 0 6%; gap:14px; background:url('bg-banner.png') center/cover no-repeat !important; animation:none !important; box-shadow:none !important; overflow:hidden;}
+  .sloganstrip{aspect-ratio:1086/362; padding:0 8% 0 6%; gap:14px; background:url('bg-banner.png') center/cover no-repeat !important; background-color:transparent !important; animation:none !important; box-shadow:none !important; overflow:hidden;}
   .sloganstrip .ss-deco{display:none;}
   .sloganstrip .ss-ico{background:transparent;box-shadow:none;}
   .sloganstrip .ss-tx{padding-right:18%;}
   /* 전체 배경 + 라이브 카드 배경 (업로드 후 적용) */
   #home{background:url('bg-home.png') top center/cover no-repeat;}
   .livecard2{background-image:url('bg-green.png');background-size:cover;background-position:right center;}
+  .progcard2{background-image:url('bg-progress.png');background-size:cover;background-position:right bottom;}
+  .progcard2 .pc2-leaf{display:none;}
   .live-ava{flex-shrink:0;width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#eef6e9,#e1eed7);display:flex;align-items:center;justify-content:center;position:relative;}
   .live-ava svg{width:19px;height:19px;stroke:var(--green);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;}
   .live-ava::after{content:"";position:absolute;inset:-3px;border-radius:50%;border:1.5px solid var(--green);opacity:.35;animation:livepulse 2s ease-out infinite;}
@@ -729,9 +733,9 @@
             <svg viewBox="0 0 200 200" class="rc-svg">
               <circle cx="100" cy="100" r="92" fill="none" stroke="#cdbfa0" stroke-width="2" stroke-dasharray="1.5 7" opacity=".65"/>
               <circle cx="100" cy="100" r="84" fill="rgba(255,255,255,.5)"/>
-              <circle cx="100" cy="100" r="92" fill="none" stroke="#8aa363" stroke-width="5" stroke-linecap="round" stroke-dasharray="372 578" transform="rotate(-90 100 100)"/>
+              <circle class="rc-arc" cx="100" cy="100" r="92" fill="none" stroke="#8aa363" stroke-width="5" stroke-linecap="round" stroke-dasharray="150 578" transform="rotate(-90 100 100)"/>
               <g class="rc-spin">
-                <circle cx="100" cy="8" r="5" fill="#fff" stroke="#8aa363" stroke-width="2"/>
+                <g transform="rotate(93 100 100)"><circle cx="100" cy="8" r="5" fill="#fff" stroke="#8aa363" stroke-width="2"/></g>
               </g>
             </svg>
             <div class="rc-center">
