@@ -110,8 +110,10 @@
   .topicdots{display:flex;gap:6px;justify-content:center;margin-top:14px;}
   .topicdots span{width:6px;height:6px;border-radius:50%;background:var(--track);transition:all .2s;}
   .topicdots span.on{background:var(--amber);width:18px;border-radius:999px;}
-  .topicnav{display:flex;justify-content:space-between;margin-top:12px;}
-  .topicnav button{background:none;border:none;color:var(--amber-deep);font-family:"Gowun Dodum",sans-serif;font-size:14px;cursor:pointer;padding:4px 8px;}
+  .topicnav{display:flex;justify-content:space-between;align-items:center;margin-top:16px;}
+  .topicnav button{background:rgba(255,255,255,.62);border:1.5px solid #e2e6d6;color:#6f7d52;font-family:"Gowun Dodum",sans-serif;font-size:13.5px;cursor:pointer;padding:8px 20px;border-radius:999px;transition:all .15s;box-shadow:0 2px 6px rgba(140,120,70,.06);}
+  .topicnav button:last-child{background:#8aa363;border-color:#8aa363;color:#fff;font-weight:600;box-shadow:0 4px 12px rgba(120,140,80,.28);}
+  .topicnav button:active{transform:scale(.96);}
   /* 함께 기도 / 나의 기도 토글 + 세이지 그린(나의 기도) */
   .praymode{display:flex;gap:4px;background:#efe9dd;border-radius:13px;padding:4px;margin-bottom:6px;}
   .praymode button{flex:1;border:none;background:none;padding:8px 0;border-radius:10px;font-family:"Gowun Dodum",sans-serif;font-size:13px;color:var(--soft);cursor:pointer;}
@@ -123,6 +125,7 @@
   .topicmeta{font-size:12px;color:#5d8268;text-align:center;margin-top:8px;}
   .topiccard.mine .topicdots span.on{background:#5aa776;}
   .topiccard.mine .topicnav button{color:#3a8a5a;}
+  .topiccard.mine .topicnav button:last-child{background:#5aa776;border-color:#5aa776;color:#fff;}
   .minegate{text-align:center;padding:18px 8px 8px;}
   .minegate .mg-t{font-family:"Gowun Dodum",sans-serif;font-size:15px;color:var(--ink);}
   .minegate .mg-d{font-size:12.5px;color:var(--soft);line-height:1.6;margin:8px 0 16px;}
@@ -300,12 +303,16 @@
   .praylivebar .plb-ava{display:inline-flex;}
   .praylivebar .plb-ava i{width:22px;height:22px;border-radius:50%;margin-left:-7px;border:2px solid #fff;display:inline-block;}
   .praylivebar b{color:#6f9150;font-weight:700;}
+  .wava{width:27px;height:27px;border-radius:50%;border:2.5px solid #fff;display:inline-flex;overflow:hidden;margin-left:-9px;box-shadow:0 2px 5px rgba(120,100,60,.16);vertical-align:middle;flex-shrink:0;}
+  .wava:first-child{margin-left:0;}
+  .wava svg{width:100%;height:100%;display:block;}
   #pray .topiccard{background:rgba(255,255,255,.82);backdrop-filter:blur(3px);}
   .praysame{display:flex;align-items:center;gap:11px;background:rgba(238,241,232,.9);border-radius:18px;padding:13px 16px;margin-top:14px;text-align:left;box-shadow:0 6px 16px rgba(150,120,60,.07);}
   .praysame .ps-ico{width:36px;height:36px;border-radius:50%;background:#cdd9bb;color:#56703c;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
   .praysame .ps-ico svg{width:20px;height:20px;}
   .praysame .ps-tx{flex:1;font-size:13px;color:var(--ink);line-height:1.5;}
   .praysame .ps-tx b{color:#6f9150;}
+  .praysame .ps-avas{display:flex;flex-shrink:0;}
   .praysame .ps-ar{color:var(--faint);font-size:18px;}
   .live-ava{flex-shrink:0;width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#eef6e9,#e1eed7);display:flex;align-items:center;justify-content:center;position:relative;}
   .live-ava svg{width:19px;height:19px;stroke:var(--green);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;}
@@ -828,7 +835,7 @@
           </svg>
           <div class="clock" id="clock">00:00:00</div>
         </div>
-        <div class="praylivebar"><span class="plb-ava"><i style="background:#cdb89a"></i><i style="background:#8ba36a"></i><i style="background:#e7c98c"></i></span><span class="plb-tx">지금 <b id="prayLiveN">0</b>명이 함께 기도 중</span></div>
+        <div class="praylivebar"><span class="plb-ava"><span class="wava" style="background:#cdb89a"><svg viewBox="0 0 36 36"><circle cx="18" cy="14" r="6.3" fill="#fff" opacity=".92"/><path d="M6 33c0-6.6 5.4-10 12-10s12 3.4 12 10" fill="#fff" opacity=".92"/></svg></span><span class="wava" style="background:#9aa6a0"><svg viewBox="0 0 36 36"><circle cx="18" cy="14" r="6.3" fill="#fff" opacity=".92"/><path d="M6 33c0-6.6 5.4-10 12-10s12 3.4 12 10" fill="#fff" opacity=".92"/></svg></span><span class="wava" style="background:#e3b86a"><svg viewBox="0 0 36 36"><circle cx="18" cy="14" r="6.3" fill="#fff" opacity=".92"/><path d="M6 33c0-6.6 5.4-10 12-10s12 3.4 12 10" fill="#fff" opacity=".92"/></svg></span></span><span class="plb-tx">지금 <b id="prayLiveN">0</b>명이 함께 기도 중</span></div>
 
         <div class="topiccard" id="topicCard">
           <div class="praymode">
@@ -847,7 +854,7 @@
           <div id="mineGate" style="display:none;"></div>
         </div>
 
-        <div class="praysame"><span class="ps-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.3"/><path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5M15 19c0-2 1-3.4 3-3.4s3 1.4 3 3.4"/></svg></span><span class="ps-tx">지금 <b id="liveText2">0</b>명이 같은 기도제목으로<br>기도하고 있어요</span><span class="ps-ar">›</span></div>
+        <div class="praysame"><span class="ps-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.3"/><path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5M15 19c0-2 1-3.4 3-3.4s3 1.4 3 3.4"/></svg></span><span class="ps-tx">지금 <b id="liveText2">0</b>명이 같은 기도제목으로<br>기도하고 있어요</span><span class="ps-avas"><span class="wava" style="background:#cdb89a"><svg viewBox="0 0 36 36"><circle cx="18" cy="14" r="6.3" fill="#fff" opacity=".92"/><path d="M6 33c0-6.6 5.4-10 12-10s12 3.4 12 10" fill="#fff" opacity=".92"/></svg></span><span class="wava" style="background:#9aa6a0"><svg viewBox="0 0 36 36"><circle cx="18" cy="14" r="6.3" fill="#fff" opacity=".92"/><path d="M6 33c0-6.6 5.4-10 12-10s12 3.4 12 10" fill="#fff" opacity=".92"/></svg></span><span class="wava" style="background:#e3b86a"><svg viewBox="0 0 36 36"><circle cx="18" cy="14" r="6.3" fill="#fff" opacity=".92"/><path d="M6 33c0-6.6 5.4-10 12-10s12 3.4 12 10" fill="#fff" opacity=".92"/></svg></span></span><span class="ps-ar">›</span></div>
         <button class="finish start" id="finishBtn" onclick="togglePray()" style="margin-top:16px;">기도 시작</button>
       </div>
     </div>
