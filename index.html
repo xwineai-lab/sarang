@@ -1115,7 +1115,7 @@
   function updateLive(){
     renderLive(false);
     var zs=document.getElementById('zoneLiveSum');
-    if(zs){ var prep=Math.max(0,(connN||0)-(liveN||0)); zs.innerHTML='<span class="zls-pray">🔥 기도 중 <b>'+(liveN||0)+'</b></span><span class="zls-prep">기도 준비 중 <b>'+prep+'</b></span>'; }
+    if(zs){ var prep=Math.max(0,(connN||0)-(liveN||0)); zs.innerHTML='<span class="zls-pray">🙏 기도 중 <b>'+(liveN||0)+'</b></span><span class="zls-prep">📖 기도 준비 중 <b>'+prep+'</b></span>'; }
   }
   setInterval(function(){ _livePhase=_livePhase?0:1; renderLive(true); }, 4500);
   const PC=['#e0a93a','#6fa45c','#7aa7d8','#d98b5e','#b59ad8'];
@@ -1305,31 +1305,44 @@
   }
   function buildZones(){
     const all = SERVER_ZONES || ZONES.map(function(z){ return [z[0],z[1],z[2],z[3],'장년부']; });
+    // 청년부·청소년부는 마을/반 구분 없이 부서 단위 한 줄로 합산
+    var aggLive={'청년부':0,'청소년부':0}, aggConn={'청년부':0,'청소년부':0};
+    var jang=[], yH=0,yMe=false, sH=0,sMe=false;
+    all.forEach(function(z){
+      var d=z[4]||'장년부';
+      if(d==='청년부'){ yH+=z[1]; if(z[3]===true)yMe=true; aggLive['청년부']+=(ZONE_LIVE[z[0]]||0); aggConn['청년부']+=(ZONE_CONN[z[0]]||0); }
+      else if(d==='청소년부'){ sH+=z[1]; if(z[3]===true)sMe=true; aggLive['청소년부']+=(ZONE_LIVE[z[0]]||0); aggConn['청소년부']+=(ZONE_CONN[z[0]]||0); }
+      else jang.push(z);
+    });
+    var disp=jang.slice();
+    disp.push(['청년부', yH, 'people', yMe, '청년부']);
+    disp.push(['청소년부', sH, 'people', sMe, '청소년부']);
+    function zPray(nm){ return (nm==='청년부'||nm==='청소년부')?(aggLive[nm]||0):(ZONE_LIVE[nm]||0); }
+    function zConn(nm){ return (nm==='청년부'||nm==='청소년부')?(aggConn[nm]||0):(ZONE_CONN[nm]||0); }
     var tot=0, zc=0, lv=0;
-    all.forEach(function(z){ tot+=z[1]; if(z[1]>0) zc++; if((ZONE_LIVE[z[0]]||0)>0) lv++; });
+    disp.forEach(function(z){ tot+=z[1]; if(z[1]>0) zc++; if(zPray(z[0])>0) lv++; });
     var e;
     e=document.getElementById('zstat-total'); if(e) e.textContent=fmtHM(tot*60);
     e=document.getElementById('zstat-zones'); if(e) e.textContent=zc+' 구역';
     e=document.getElementById('zstat-live'); if(e) e.textContent=lv+' 구역';
-    var Z = (zoneDept==='전체') ? all.slice() : all.filter(function(z){ return (z[4]||'장년부')===zoneDept; });
+    var Z = (zoneDept==='전체') ? disp.slice() : disp.filter(function(z){ return (z[4]||'장년부')===zoneDept; });
     Z.sort(function(a,b){ return b[1]-a[1]; });
-    const max=Math.max.apply(null, Z.map(function(z){ return z[1]; }))||1;
     const medal=['gold','silver','bronze'];
     const list=document.getElementById('zoneList');
     if(!Z.length){ list.innerHTML='<div class="myempty">아직 구역 정보가 없어요.</div>'; return; }
     list.innerHTML=Z.map(function(z,i){
-      const hours=z[1], me=z[3]===true;
-      const pray=ZONE_LIVE[z[0]]||0, conn=ZONE_CONN[z[0]]||0, prep=Math.max(0,conn-pray);
+      var nm=z[0]; const hours=z[1], me=z[3]===true;
+      const pray=zPray(nm), conn=zConn(nm), prep=Math.max(0,conn-pray);
       const lvPct=zoneLvPct(hours), lvNum=zoneLvIdx(hours)+1;
-      const isFlag = (z[4]||'장년부')==='장년부' && !!FLAG[z[0]];
+      const pfx=(nm==='청년부'||nm==='청소년부')?'':zonePrefix(z[4]);
       // 실제 라이브(접속/기도)가 있을 때만 표시
       const livePart = conn>0 ? ('<div class="zp zlivec"><span class="zlc-pray">기도 중 '+pray+'</span> · <span>준비 중 '+prep+'</span></div>') : '';
       const rank = i<3
         ? '<div class="zrank '+medal[i]+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10v3a5 5 0 01-10 0z"/><path d="M12 12v3M9 19h6M10 17h4"/></svg><b>'+(i+1)+'</b></div>'
         : '<div class="zrank num">'+(i+1)+'</div>';
       return '<div class="zcard'+(i===0?' top':'')+(me?' me':'')+'">'+rank+
-        '<div class="zic '+zicClass(z[0],z[4])+'">'+zoneSymbol(z[0],z[4])+'</div>'+
-        '<div class="zmid"><div class="zrow1"><span class="znm">'+zonePrefix(z[4])+z[0]+(me?'<span class="metag">우리 구역</span>':'')+(pray>0?'<span class="lvtag">지금 기도 중</span>':'')+'</span><span class="zh num">'+fmtHM(hours*60)+'</span></div>'+
+        '<div class="zic '+zicClass(nm,z[4])+'">'+zoneSymbol(nm,z[4])+'</div>'+
+        '<div class="zmid"><div class="zrow1"><span class="znm">'+pfx+nm+(me?'<span class="metag">우리 구역</span>':'')+(pray>0?'<span class="lvtag">지금 기도 중</span>':'')+'</span><span class="zh num">'+fmtHM(hours*60)+'</span></div>'+
         '<div class="zbarrow"><div class="ztrack"><i style="width:'+lvPct+'%"></i></div><span class="zlvsym" title="레벨 '+lvNum+'">'+flowerSVG(lvNum)+'</span></div>'+
         livePart+'</div><div class="ar">›</div></div>';
     }).join('');
