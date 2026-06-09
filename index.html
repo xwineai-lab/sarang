@@ -283,6 +283,22 @@
   .livecard2{background-image:url('bg-green.png');background-size:cover;background-position:right center;}
   .progcard2{background-image:url('bg-progress.png');background-size:cover;background-position:right bottom;}
   .progcard2 .pc2-leaf{display:none;}
+  /* ===== 기도하기 화면 (교회 배경 + 수채화 링) ===== */
+  #pray{background:url('pray-bg.png') top center/cover no-repeat, #f6efe2;}
+  #pray .subhead .ttl,#pray .h-title,#pray .h-desc{position:relative;z-index:1;}
+  .prayring2{position:relative;width:224px;height:224px;margin:14px auto 8px;background:url('pray-ring.png') center/contain no-repeat;}
+  .prayring2 .clock{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding-top:30px;font-family:"Outfit";font-weight:600;font-size:34px;letter-spacing:1px;color:#5d6f49;}
+  .praylivebar{display:flex;align-items:center;justify-content:center;gap:9px;margin:0 auto 14px;font-size:13px;color:var(--ink);}
+  .praylivebar .plb-ava{display:inline-flex;}
+  .praylivebar .plb-ava i{width:22px;height:22px;border-radius:50%;margin-left:-7px;border:2px solid #fff;display:inline-block;}
+  .praylivebar b{color:#6f9150;font-weight:700;}
+  #pray .topiccard{background:rgba(255,255,255,.82);backdrop-filter:blur(3px);}
+  .praysame{display:flex;align-items:center;gap:11px;background:rgba(238,241,232,.9);border-radius:18px;padding:13px 16px;margin-top:14px;text-align:left;box-shadow:0 6px 16px rgba(150,120,60,.07);}
+  .praysame .ps-ico{width:36px;height:36px;border-radius:50%;background:#cdd9bb;color:#56703c;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .praysame .ps-ico svg{width:20px;height:20px;}
+  .praysame .ps-tx{flex:1;font-size:13px;color:var(--ink);line-height:1.5;}
+  .praysame .ps-tx b{color:#6f9150;}
+  .praysame .ps-ar{color:var(--faint);font-size:18px;}
   .live-ava{flex-shrink:0;width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#eef6e9,#e1eed7);display:flex;align-items:center;justify-content:center;position:relative;}
   .live-ava svg{width:19px;height:19px;stroke:var(--green);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;}
   .live-ava::after{content:"";position:absolute;inset:-3px;border-radius:50%;border:1.5px solid var(--green);opacity:.35;animation:livepulse 2s ease-out infinite;}
@@ -792,60 +808,10 @@
           <div class="h-desc" id="prayHDesc">아래 제목을 따라 함께 기도해요</div>
         </div>
         <div style="text-align:center;margin-top:8px;"><span class="mypraytag" id="myPrayTag" style="display:none;"></span></div>
-        <div class="ring prayring" style="width:196px;height:196px;margin:28px auto 16px;">
-          <!-- 1) 황금빛 글로우 + 햇살 (고정) -->
-          <svg class="glowlayer" viewBox="0 0 240 240" aria-hidden="true">
-            <defs>
-              <radialGradient id="sunG" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stop-color="#fff8e6" stop-opacity=".95"/>
-                <stop offset="36%" stop-color="#ffe6a4" stop-opacity=".72"/>
-                <stop offset="66%" stop-color="#f4be57" stop-opacity=".2"/>
-                <stop offset="100%" stop-color="#f4be57" stop-opacity="0"/>
-              </radialGradient>
-              <radialGradient id="sparkG" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stop-color="#fffaec" stop-opacity="1"/>
-                <stop offset="40%" stop-color="#ffd877" stop-opacity=".7"/>
-                <stop offset="100%" stop-color="#ffd877" stop-opacity="0"/>
-              </radialGradient>
-            </defs>
-            <circle class="sunpulse" cx="120" cy="120" r="116" fill="url(#sunG)"/>
-            <g stroke="#edbe66" stroke-width="2.2" stroke-linecap="round" opacity=".36">
-              <line x1="120" y1="28" x2="120" y2="10" transform="rotate(0 120 120)"/>
-              <line x1="120" y1="28" x2="120" y2="10" transform="rotate(30 120 120)"/>
-              <line x1="120" y1="28" x2="120" y2="10" transform="rotate(60 120 120)"/>
-              <line x1="120" y1="28" x2="120" y2="10" transform="rotate(90 120 120)"/>
-              <line x1="120" y1="28" x2="120" y2="10" transform="rotate(120 120 120)"/>
-              <line x1="120" y1="28" x2="120" y2="10" transform="rotate(150 120 120)"/>
-              <line x1="120" y1="28" x2="120" y2="10" transform="rotate(180 120 120)"/>
-              <line x1="120" y1="28" x2="120" y2="10" transform="rotate(210 120 120)"/>
-              <line x1="120" y1="28" x2="120" y2="10" transform="rotate(240 120 120)"/>
-              <line x1="120" y1="28" x2="120" y2="10" transform="rotate(270 120 120)"/>
-              <line x1="120" y1="28" x2="120" y2="10" transform="rotate(300 120 120)"/>
-              <line x1="120" y1="28" x2="120" y2="10" transform="rotate(330 120 120)"/>
-            </g>
-          </svg>
-          <!-- 2) 진행 링 -->
-          <svg class="progsvg" width="196" height="196" viewBox="0 0 196 196">
-            <circle cx="98" cy="98" r="86" fill="none" stroke="#ece2cf" stroke-width="12"/>
-            <circle id="prog" cx="98" cy="98" r="86" fill="none" stroke="#e0a93a" stroke-width="12" stroke-linecap="round" stroke-dasharray="540" stroke-dashoffset="540"/>
-          </svg>
-          <!-- 3) 링을 따라 도는 빛점 (7초/바퀴) -->
-          <svg class="sparklayer" viewBox="0 0 196 196" aria-hidden="true">
-            <g transform="translate(98,12)">
-              <circle r="22" fill="url(#sparkG)"/>
-              <circle r="5" fill="#fff7d8"/>
-            </g>
-          </svg>
-          <!-- 4) 위쪽 빛나는 십자가 구슬 (고정) -->
-          <svg class="orblayer" viewBox="0 0 196 196" aria-hidden="true">
-            <circle cx="98" cy="12" r="9" fill="#f3c155"/>
-            <circle cx="98" cy="12" r="9" fill="none" stroke="#ffffff" stroke-opacity=".5" stroke-width="1"/>
-            <path d="M98 7 V17 M93.5 11 H102.5" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
-          </svg>
-          <div class="inner">
-            <div class="clock" id="clock" style="font-size:33px;">00:00:00</div>
-          </div>
+        <div class="prayring2">
+          <div class="clock" id="clock">00:00:00</div>
         </div>
+        <div class="praylivebar"><span class="plb-ava"><i style="background:#cdb89a"></i><i style="background:#8ba36a"></i><i style="background:#e7c98c"></i></span><span class="plb-tx">지금 <b id="prayLiveN">0</b>명이 함께 기도 중</span></div>
 
         <div class="topiccard" id="topicCard">
           <div class="praymode">
@@ -864,7 +830,7 @@
           <div id="mineGate" style="display:none;"></div>
         </div>
 
-        <div class="praylive" style="justify-content:center;"><span class="livedot"></span><span id="liveText2">지금 함께 기도해요</span></div>
+        <div class="praysame"><span class="ps-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.3"/><path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5M15 19c0-2 1-3.4 3-3.4s3 1.4 3 3.4"/></svg></span><span class="ps-tx">지금 <b id="liveText2">0</b>명이 같은 기도제목으로<br>기도하고 있어요</span><span class="ps-ar">›</span></div>
         <button class="finish start" id="finishBtn" onclick="togglePray()" style="margin-top:16px;">기도 시작</button>
       </div>
     </div>
@@ -1265,7 +1231,7 @@
   }
   function renderLive(fade){
     var t=liveLineText();
-    ['liveText','liveText2'].forEach(function(id){
+    ['liveText'].forEach(function(id){
       var e=document.getElementById(id); if(!e) return;
       if(fade){ e.style.transition='opacity .3s'; e.style.opacity='0'; setTimeout(function(){ e.innerHTML=t; e.style.opacity='1'; },280); }
       else { e.innerHTML=t; }
@@ -1277,6 +1243,8 @@
     if(zs){ var prep=Math.max(0,(connN||0)-(liveN||0)); zs.innerHTML='<span class="zls-pray">🙏 기도 중 <b>'+(liveN||0)+'</b></span><span class="zls-prep">📖 기도 준비 중 <b>'+prep+'</b></span>'; }
     var nc=document.getElementById('liveCount'); if(nc) nc.textContent=(connN||0);
     var am=document.getElementById('avaMore'); if(am) am.textContent='+'+Math.max(0,(connN||0)-5);
+    var pn=document.getElementById('prayLiveN'); if(pn) pn.textContent=(connN||0);
+    var lt2=document.getElementById('liveText2'); if(lt2) lt2.textContent=(connN||0);
   }
   setInterval(function(){ _livePhase=_livePhase?0:1; renderLive(true); }, 4500);
   const PC=['#e0a93a','#6fa45c','#7aa7d8','#d98b5e','#b59ad8'];
