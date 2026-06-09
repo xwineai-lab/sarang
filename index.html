@@ -341,6 +341,7 @@
   .zcard .zbarrow .ztrack{flex:1;margin-top:0;}
   .zcard .zlvsym{flex-shrink:0;width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;}
   .zcard .zlvsym svg{width:26px;height:26px;}
+  .zcard .zic .zemo{font-size:18px;line-height:1;}
   .zcard .zic.flag{background:#fff;overflow:hidden;}
   .zcard .zic.flag .zflag{width:100%;height:100%;object-fit:cover;display:block;border-radius:50%;}
   .zcard .ar{color:var(--faint);font-size:17px;}
@@ -907,7 +908,8 @@
 
 <script>
   const TOTAL=50000;let current=0,liveN=0;
-  let SB=null, MY_GROUP_ID=null, GROUPS_BY_NAME={}, SERVER_ZONES=null, SERVER_DEPT_ITEMS=null, PRESENCE=null, ZONE_LIVE={}, myEmail=null, isAnon=true, authProvider=null;
+  let SB=null, MY_GROUP_ID=null, GROUPS_BY_NAME={}, SERVER_ZONES=null, SERVER_DEPT_ITEMS=null, PRESENCE=null, ZONE_LIVE={}, myEmail=null, isAnon=true, authProvider=null, amPraying=false, _prevPray={};
+  function trackPresence(){ if(PRESENCE){ try{ PRESENCE.track({ zone:selZone, praying:amPraying, at:Date.now() }); }catch(e){} } }
   let MY_PRAYER_ID=null, MY_PRAYER_TITLE='', MY_PRAYERS=[], myEditId=null, modalStatus='praying';
   function syncAuthUI(){
     const linked = !!authProvider || !!myEmail || isAnon===false;
@@ -1013,7 +1015,7 @@
     let name = (joinMode==='nick' && typed) ? typed : ((prev&&prev.name) || makeAlias());
     saveProfile({ joined:true, dept:selDept, zone:selZone, mode:joinMode, name:name });
     myName=name;
-    if(SB){ MY_GROUP_ID = GROUPS_BY_NAME[selZone] || null; upsertProfile(name); if(PRESENCE){ try{ PRESENCE.track({ zone: selZone, at: Date.now() }); }catch(e){} } }
+    if(SB){ MY_GROUP_ID = GROUPS_BY_NAME[selZone] || null; upsertProfile(name); trackPresence(); }
     syncProfileUI();
     go('home');
   }
@@ -1167,7 +1169,7 @@
   }
   function tickLoop(){ clearInterval(tk); tk=setInterval(function(){ paintTimer(); if(Date.now()>=nextCheck) askStillPraying(); },1000); }
   function startPray(){
-    running=true; startAt=Date.now(); nextCheck=startAt+CHECK_MS;
+    running=true; amPraying=true; trackPresence(); startAt=Date.now(); nextCheck=startAt+CHECK_MS;
     try{ localStorage.setItem(AKEY, JSON.stringify({ startAt:startAt })); }catch(e){}
     const b=document.getElementById('finishBtn'); if(b){ b.textContent='기도 마치기'; b.classList.remove('start'); }
     if(!autoOn) toggleAuto();
@@ -1176,7 +1178,7 @@
   }
   function finishPray(capAt){
     if(!running) return;
-    running=false; clearInterval(tk); clearTimeout(graceTk); hideStill();
+    running=false; amPraying=false; trackPresence(); clearInterval(tk); clearTimeout(graceTk); hideStill();
     try{ localStorage.removeItem(AKEY); }catch(e){}
     const endMs = capAt ? Math.min(Date.now(), capAt) : Date.now();
     const mins = Math.round((endMs - startAt)/60000);   // 벽시계: 시작~종료 실제 차이
@@ -1252,10 +1254,13 @@
     '쇼니':{bg:'#fbe2d4',fg:'#c96b3e'},
     '구역 미정':{bg:'#ece9f1',fg:'#8a83a0'}
   };
+  // 비국가 구역 → 센스있는 이모지
+  var ZEMO={'교역자':'✝️','초록우산':'☂️','오픈도어스':'🚪','밀알':'🌾','에벤에셀':'🪨','쇼니':'⛺','구역 미정':'📍'};
   function zicStyle(name, dept){ if((dept||'장년부')==='장년부' && !FLAG[name] && ZSYMCOL[name]){ var c=ZSYMCOL[name]; return ' style="background:'+c.bg+';color:'+c.fg+';"'; } return ''; }
   function zoneSymbol(name, dept){
     if((dept||'장년부')==='장년부'){
       if(FLAG[name]) return '<img class="zflag" src="https://flagcdn.com/w40/'+FLAG[name]+'.png" srcset="https://flagcdn.com/w80/'+FLAG[name]+'.png 2x" alt="">';
+      if(ZEMO[name]) return '<span class="zemo">'+ZEMO[name]+'</span>';
       if(ZSYM[name]) return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">'+ZSYM[name]+'</svg>';
       return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">'+IC.globe+'</svg>';
     }
@@ -1708,15 +1713,18 @@
     const key = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Math.random());
     PRESENCE = SB.channel('prayer-room', { config:{ presence:{ key: key } } });
     PRESENCE.on('presence', { event:'sync' }, function(){
-      const st = PRESENCE.presenceState(); let total=0; const zc={};
-      Object.keys(st).forEach(function(k){ (st[k]||[]).forEach(function(m){ total++; const z=m.zone; if(z) zc[z]=(zc[z]||0)+1; }); });
+      const st = PRESENCE.presenceState(); let total=0; const zc={}; var nowPray={};
+      Object.keys(st).forEach(function(k){
+        var arr=st[k]||[]; var m=arr[0]||{};
+        var praying=arr.some(function(x){ return x && x.praying; });   // 타이머가 도는 사람만
+        nowPray[k]=praying;
+        if(praying){ total++; var z=m.zone; if(z){ zc[z]=(zc[z]||0)+1; if(!_prevPray[k]) pushTicker(z); } }   // 기도 시작 순간 티커
+      });
+      _prevPray=nowPray;
       liveN = total; ZONE_LIVE = zc; updateLive();
       if(document.getElementById('zone').classList.contains('on')) buildZones();
     });
-    PRESENCE.on('presence', { event:'join' }, function(payload){
-      (payload.newPresences||[]).forEach(function(p){ if(p && p.zone) pushTicker(p.zone); });
-    });
-    PRESENCE.subscribe(function(status){ if(status==='SUBSCRIBED'){ PRESENCE.track({ zone: selZone, at: Date.now() }); } });
+    PRESENCE.subscribe(function(status){ if(status==='SUBSCRIBED'){ trackPresence(); } });
     window.addEventListener('beforeunload', function(){ try{ PRESENCE.untrack(); }catch(e){} });
   }
   async function upsertProfile(name){
