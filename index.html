@@ -241,12 +241,12 @@
   .link{color:var(--amber-deep);font-weight:600;cursor:pointer;}
 
   /* tabbar */
-  .tabbar{position:absolute;left:0;right:0;bottom:0;height:76px;display:none;justify-content:space-around;align-items:flex-start;padding-top:10px;
-    background:rgba(255,255,255,.86);backdrop-filter:blur(14px);border-top:1px solid var(--line);transition:transform .28s cubic-bezier(.2,.8,.2,1);}
+  .tabbar{position:absolute;left:0;right:0;bottom:0;height:58px;display:none;justify-content:space-around;align-items:flex-start;padding-top:7px;
+    background:rgba(255,255,255,.9);backdrop-filter:blur(14px);border-top:1px solid var(--line);}
   .tabbar.on{display:flex;}
-  .tabbar.tbhide{transform:translateY(130%);}
-  .tab{display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--faint);font-size:10.5px;cursor:pointer;}
-  .tab svg{width:24px;height:24px;stroke:var(--faint);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
+  .tabbar.tbhide{transform:none;}
+  .tab{display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--faint);font-size:9.5px;cursor:pointer;}
+  .tab svg{width:21px;height:21px;stroke:var(--faint);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
   .tab.active{color:var(--amber-deep);}
   .tab.active svg{stroke:var(--amber-deep);}
 
@@ -270,8 +270,8 @@
     .statusbar{ display:none; }
     .wrap, .pad{ padding-top: max(28px, env(safe-area-inset-top)); }
     .entry-pad{ padding-top: max(36px, env(safe-area-inset-top)); }
-    .tabbar{ height: calc(76px + env(safe-area-inset-bottom)); padding-bottom: calc(10px + env(safe-area-inset-bottom)); }
-    .pad{ padding-bottom: calc(124px + env(safe-area-inset-bottom)); }
+    .tabbar{ height: calc(58px + env(safe-area-inset-bottom)); padding-bottom: calc(8px + env(safe-area-inset-bottom)); }
+    .pad{ padding-bottom: calc(100px + env(safe-area-inset-bottom)); }
   }
 </style>
   <meta name="theme-color" content="#e0a93a" />
@@ -657,7 +657,7 @@
     const tabbarEl=document.querySelector('.tabbar'); tabbarEl.classList.toggle('on',APP.includes(id));
     document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.s===id));
     const el=document.getElementById(id); if(el) el.scrollTop=0;
-    if(el && APP.includes(id)){ tabbarEl.classList.toggle('tbhide', (el.scrollHeight-el.clientHeight)>40); }  // 맨 위 + 스크롤 가능하면 숨김
+    tabbarEl.classList.remove('tbhide');  // 탭바는 항상 하단 고정
     if(id==='zone'){ buildZones(); loadDept(); }
     if(id==='joinzone') buildChips();
     if(id==='topics') buildTopics();
@@ -1037,16 +1037,7 @@
       await SB.from('profiles').upsert({ id:u.user.id, group_id:MY_GROUP_ID, is_anonymous:(joinMode!=='nick'), display_name:(name||null) });
     }catch(e){ console.warn('profile upsert:', e); }
   }
-  // 하단 탭바: 평소(맨 위)엔 숨김, 아래로 스크롤하면 스르륵 나타남
-  (function(){
-    var tb=document.querySelector('.tabbar'); if(!tb) return;
-    document.querySelectorAll('.screen').forEach(function(sc){
-      sc.addEventListener('scroll', function(){
-        if(sc.scrollTop>30) tb.classList.remove('tbhide');
-        else tb.classList.add('tbhide');
-      }, {passive:true});
-    });
-  })();
+  // 하단 탭바: 항상 하단 고정 (스크롤 숨김 없음)
   restoreSession();
   initBackend();
 
