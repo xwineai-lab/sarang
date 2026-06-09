@@ -348,6 +348,11 @@
   .zcard.me{outline:1.5px solid rgba(224,169,58,.55);background:var(--amber-tint);}
   .metag{font-size:10px;color:var(--amber-deep);background:#fff;border:1px solid rgba(224,169,58,.5);padding:1px 7px;border-radius:7px;margin-left:7px;vertical-align:2px;}
   /* 구역별 — 통계카드/부서탭/메달 */
+  .zlivesum{display:flex;justify-content:center;gap:8px;margin-top:12px;}
+  .zlivesum span{font-size:12px;padding:4px 13px;border-radius:999px;display:inline-flex;align-items:center;gap:4px;}
+  .zlivesum .zls-pray{background:#fdeccd;color:#b5742a;}
+  .zlivesum .zls-prep{background:#eef1f5;color:#6b7280;}
+  .zlivesum b{font-weight:700;}
   .zstats{display:flex;gap:9px;margin-top:8px;}
   .zst{flex:1;background:var(--surface);border-radius:16px;padding:13px 8px;text-align:center;box-shadow:0 6px 16px rgba(150,120,60,.06);}
   .zst .zst-ic{width:30px;height:30px;border-radius:50%;margin:0 auto 7px;display:flex;align-items:center;justify-content:center;}
@@ -725,6 +730,7 @@
           <div class="zst"><div class="zst-ic icp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.3"/><path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5M15 19c0-2 1-3.4 3-3.4s3 1.4 3 3.4"/></svg></div><div class="zst-l">참여 구역</div><div class="zst-v" id="zstat-zones">0</div></div>
           <div class="zst"><div class="zst-ic icl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21 V11"/><path d="M12 14 C8.5 14 6.5 11.3 6.5 8 9.8 8 12 10.2 12 13.2"/><path d="M12 13 C15.5 13 17.5 10.3 17.5 7 14.2 7 12 9.2 12 12.2"/></svg></div><div class="zst-l">지금 기도 중</div><div class="zst-v" id="zstat-live">0</div></div>
         </div>
+        <div class="zlivesum" id="zoneLiveSum"></div>
         <div class="zdepttabs">
           <button class="zdtab on" id="zdt-all" onclick="zoneTab('전체')">전체<small id="dept-all">0분</small></button>
           <button class="zdtab" id="zdt-jang" onclick="zoneTab('장년부')">장년부<small id="dept-jang">0분</small></button>
@@ -1102,7 +1108,11 @@
       else { e.innerHTML=t; }
     });
   }
-  function updateLive(){ renderLive(false); }
+  function updateLive(){
+    renderLive(false);
+    var zs=document.getElementById('zoneLiveSum');
+    if(zs){ var prep=Math.max(0,(connN||0)-(liveN||0)); zs.innerHTML='<span class="zls-pray">🔥 기도 중 <b>'+(liveN||0)+'</b></span><span class="zls-prep">기도 준비 중 <b>'+prep+'</b></span>'; }
+  }
   setInterval(function(){ _livePhase=_livePhase?0:1; renderLive(true); }, 4500);
   const PC=['#e0a93a','#6fa45c','#7aa7d8','#d98b5e','#b59ad8'];
   function buildPresence(){
