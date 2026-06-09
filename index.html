@@ -221,8 +221,7 @@
   .gatecard .gd{font-size:13px;color:var(--soft);margin-top:8px;line-height:1.6;}
   .gatecard button{margin-top:16px;}
   .myempty{text-align:center;color:var(--soft);font-size:13px;padding:26px 10px;line-height:1.6;}
-  .fab{position:fixed;right:calc(50% - 178px);bottom:78px;width:54px;height:54px;border-radius:50%;border:none;background:var(--amber);color:#fff;font-size:30px;line-height:54px;text-align:center;cursor:pointer;box-shadow:0 8px 20px rgba(224,169,58,.42);z-index:55;}
-  @media (max-width:430px){ .fab{right:18px;bottom:74px;} }
+  .fab{position:absolute;right:18px;bottom:calc(74px + env(safe-area-inset-bottom));width:56px;height:56px;border-radius:50%;border:none;background:var(--amber);color:#fff;font-size:30px;line-height:56px;text-align:center;cursor:pointer;box-shadow:0 8px 20px rgba(224,169,58,.45);z-index:45;}
   .mypraytag{display:inline-flex;align-items:center;gap:8px;background:var(--amber-tint);color:var(--amber-deep);font-family:"Gowun Dodum",sans-serif;font-size:12.5px;padding:6px 13px;border-radius:999px;margin:0 auto 6px;}
   .mypraytag .x{cursor:pointer;font-weight:700;opacity:.7;}
   .modalmask{position:fixed;inset:0;background:rgba(40,33,20,.42);display:none;align-items:flex-end;justify-content:center;z-index:60;}
@@ -732,7 +731,6 @@
           </div>
         </div>
       </div>
-      <button class="fab" id="myFab" style="display:none;" onclick="openMyEditor(null)">+</button>
       <div class="modalmask" id="myModal">
         <div class="modalbox">
           <h3 id="myModalTitle">기도제목 추가</h3>
@@ -828,6 +826,7 @@
       <div class="tab" data-s="record" onclick="go('record')"><svg viewBox="0 0 24 24"><path d="M5 4h14M5 9h14M5 14h9M5 19h9"/></svg>기록</div>
       <div class="tab" data-s="more" onclick="go('more')"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="19" cy="12" r="1.2"/></svg>더보기</div>
     </div>
+    <button class="fab" id="myFab" style="display:none;" onclick="openMyEditor(null)">+</button>
   </div>
 
 <script>
@@ -907,6 +906,7 @@
     tabbarEl.classList.remove('tbhide');  // 탭바는 항상 하단 고정
     if(id!=='pray') MY_PRAYER_ID=null;        // 개인 제목 연동은 prayMyTopic 진입에서만 유지
     if(id==='pray') updateMyPrayTag();
+    var _fab=document.getElementById('myFab'); if(_fab && id!=='record') _fab.style.display='none';  // FAB는 기록 화면에서만
     if(id==='zone'){ buildZones(); loadDept(); }
     if(id==='joinzone') buildChips();
     if(id==='topics') buildTopics();
