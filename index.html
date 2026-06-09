@@ -150,6 +150,54 @@
   .glive .dot{width:7px;height:7px;border-radius:50%;background:var(--green);}
   /* live presence */
   .livecard{display:flex;align-items:center;gap:11px;background:var(--surface);border-radius:16px;padding:12px 14px;margin-top:14px;box-shadow:0 6px 16px rgba(150,120,60,.07);}
+  /* ===== 홈 '기도실' 디자인 ===== */
+  .homehero{display:flex;align-items:center;gap:4px;margin-top:14px;}
+  .homehero .hh-text{flex:1;min-width:0;}
+  .bigheadline{font-family:"Gowun Dodum",sans-serif;font-weight:700;font-size:30px;line-height:1.22;color:var(--ink);letter-spacing:-.5px;}
+  .bigheadline .hl-accent{color:#d99a2c;}
+  .hh-sub{font-size:13.5px;color:var(--soft);margin-top:12px;}
+  .heroart{flex-shrink:0;width:138px;height:168px;}
+  .heroart svg{width:100%;height:100%;}
+  .doorzone{position:relative;display:flex;justify-content:center;align-items:flex-end;margin:8px 0 2px;min-height:198px;}
+  .roomdoor{position:relative;z-index:2;width:170px;height:158px;border:none;cursor:pointer;border-radius:85px 85px 16px 16px;background:linear-gradient(180deg,#c89b54 0%,#b07f34 60%,#9b6d28 100%);box-shadow:0 0 0 6px #f4e8d0,0 0 32px 6px rgba(231,176,80,.5),0 14px 26px rgba(150,110,40,.28);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:#fff8ec;transition:transform .15s;}
+  .roomdoor:active{transform:scale(.97);}
+  .roomdoor .rd-hands{width:30px;height:30px;margin-bottom:2px;}
+  .roomdoor .rd-hands svg{width:100%;height:100%;stroke:#fff7e3;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;}
+  .roomdoor .rd-title{font-family:"Gowun Dodum",sans-serif;font-weight:700;font-size:25px;letter-spacing:1px;}
+  .roomdoor .rd-sub{font-size:13px;opacity:.95;}
+  .livepill{position:absolute;left:0;top:22px;z-index:3;background:var(--surface);border-radius:14px;padding:9px 11px;box-shadow:0 6px 16px rgba(150,120,60,.13);display:flex;align-items:center;gap:8px;max-width:120px;}
+  .livepill .lp-ic{width:24px;height:24px;border-radius:50%;background:#dff0e0;color:#3f9a52;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .livepill .lp-ic svg{width:14px;height:14px;}
+  .livepill .lp-tx{font-size:11px;line-height:1.35;color:var(--ink);}
+  .joinnote{position:absolute;right:0;top:40px;z-index:3;font-family:"Gowun Dodum",sans-serif;font-size:12px;color:var(--amber-deep);text-align:center;line-height:1.4;}
+  .joinnote svg{width:34px;height:24px;margin-top:3px;}
+  .nowcard{display:flex;align-items:center;gap:11px;background:var(--surface);border-radius:16px;padding:12px 14px;margin-top:8px;box-shadow:0 6px 16px rgba(150,120,60,.07);}
+  .nowcard .nc-ico{width:34px;height:34px;border-radius:50%;background:#dff0e0;color:#3f9a52;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .nowcard .nc-ico svg{width:19px;height:19px;}
+  .nowcard .nc-tx{flex:1;min-width:0;}
+  .nowcard .nc-m{font-size:13.5px;color:var(--ink);}
+  .nowcard .nc-s{font-size:11.5px;color:var(--soft);margin-top:2px;}
+  .nowcard .nc-ava{display:flex;align-items:center;}
+  .nowcard .nc-ava i{width:26px;height:26px;border-radius:50%;margin-left:-7px;border:2px solid var(--surface);display:flex;align-items:center;justify-content:center;font-style:normal;font-size:11px;color:#fff;font-family:"Gowun Dodum",sans-serif;}
+  .nowcard .nc-ava .more{margin-left:5px;font-size:11px;color:var(--soft);}
+  .progcard{display:flex;align-items:center;gap:12px;background:var(--surface);border-radius:18px;padding:15px 17px;margin-top:10px;box-shadow:0 8px 22px rgba(150,120,60,.08);}
+  .progcard .pc-leaf{width:34px;height:34px;flex-shrink:0;}
+  .progcard .pc-leaf svg{width:100%;height:100%;}
+  .progcard .pc-tx{flex:1;min-width:0;}
+  .progcard .pc-lbl{font-size:12px;color:var(--soft);}
+  .progcard .pc-num{display:flex;align-items:baseline;gap:6px;margin-top:2px;}
+  .progcard .pc-num .big{font-family:"Outfit";font-weight:700;font-size:24px;color:var(--ink);}
+  .progcard .pc-num .tot{font-size:12px;color:var(--soft);}
+  .progcard .pc-num .gpct{margin-left:auto;font-family:"Outfit";font-weight:700;font-size:14px;color:var(--amber-deep);}
+  .progcard .gbar{height:8px;border-radius:999px;background:var(--track);overflow:hidden;margin-top:8px;}
+  .progcard .gbar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--amber),#eebb50);}
+  .versebook{display:flex;align-items:center;gap:12px;background:var(--surface);border-radius:18px;padding:16px 18px;margin-top:10px;box-shadow:0 8px 22px rgba(150,120,60,.08);}
+  .versebook .vb-tx{flex:1;min-width:0;position:relative;}
+  .versebook .vb-tx .vc-quote{font-family:"Outfit";font-size:32px;line-height:1;color:rgba(224,169,58,.32);position:absolute;top:-6px;left:-2px;}
+  .versebook .vc-text{font-family:"Gowun Dodum",sans-serif;font-size:14.5px;color:var(--ink);line-height:1.5;padding-left:16px;transition:opacity .3s;}
+  .versebook .vc-ref{font-size:12px;color:var(--soft);margin-top:5px;padding-left:16px;transition:opacity .3s;}
+  .versebook .vb-book{width:44px;height:44px;flex-shrink:0;}
+  .versebook .vb-book svg{width:100%;height:100%;}
   .live-ava{flex-shrink:0;width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#eef6e9,#e1eed7);display:flex;align-items:center;justify-content:center;position:relative;}
   .live-ava svg{width:19px;height:19px;stroke:var(--green);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;}
   .live-ava::after{content:"";position:absolute;inset:-3px;border-radius:50%;border:1.5px solid var(--green);opacity:.35;animation:livepulse 2s ease-out infinite;}
@@ -588,28 +636,65 @@
           </svg>
         </div>
 
-        <div class="h-title">함께 채워가는 기도</div>
-        <div class="h-desc">작은 기도가 모여 큰 변화를 만듭니다.</div>
-
-        <div class="gnum"><span class="big num" id="cur">0분</span><span class="tot">/ 50,000시간</span></div>
-        <div class="gbarwrap"><div class="gbar"><i id="bar"></i></div><span class="gpct" id="pct">64%</span></div>
-        <div class="versecard2">
-          <span class="vc-quote">“</span>
-          <div class="vc-text" id="verseLine"></div>
-          <div class="vc-ref" id="verseRef"></div>
-          <div class="vc-div"><span></span><span class="sp">✦</span><span></span></div>
+        <!-- 헤드라인 + 히어로 일러스트 -->
+        <div class="homehero">
+          <div class="hh-text">
+            <div class="bigheadline">지금<br><span class="hl-accent">기도실</span>이<br>열려 있어요</div>
+            <div class="hh-sub">지금 함께 하나님 앞에 나아가요</div>
+          </div>
+          <div class="heroart">
+            <svg viewBox="0 0 150 190" fill="none">
+              <defs>
+                <radialGradient id="winG" cx="50%" cy="46%" r="56%"><stop offset="0%" stop-color="#fff7e4"/><stop offset="55%" stop-color="#ffe9b8"/><stop offset="100%" stop-color="#f3d79a"/></radialGradient>
+                <radialGradient id="crG" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#fff7d6"/><stop offset="100%" stop-color="#ffd877" stop-opacity="0"/></radialGradient>
+              </defs>
+              <path d="M28 180 V70 Q28 30 75 16 Q122 30 122 70 V180 Z" fill="#ece0c8"/>
+              <path d="M36 180 V72 Q36 38 75 26 Q114 38 114 72 V180 Z" fill="url(#winG)"/>
+              <circle cx="75" cy="96" r="42" fill="url(#crG)"/>
+              <g fill="#e7a82f"><rect x="71" y="64" width="8" height="80" rx="2"/><rect x="56" y="90" width="38" height="8" rx="2"/></g>
+              <g stroke="#f3cf7a" stroke-width="2" stroke-linecap="round" opacity=".7"><path d="M75 50 V40"/><path d="M55 58 L49 50"/><path d="M95 58 L101 50"/></g>
+              <g fill="#fff" opacity=".96"><path d="M100 56 C104 50 112 48 119 50 C115 51 113 54 114 57 C118 56 121 58 123 61 C117 63 110 62 106 58 C104 61 101 62 98 61 C100 59 100 57 100 56 Z"/><circle cx="117.5" cy="51.5" r="1" fill="#caa44a"/></g>
+              <path d="M120 152 q10 -16 6 -34" stroke="#c2b187" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+              <g fill="#aecb8c"><ellipse cx="123" cy="142" rx="4" ry="2.2" transform="rotate(-30 123 142)"/><ellipse cx="126" cy="132" rx="4" ry="2.2" transform="rotate(-25 126 132)"/><ellipse cx="128" cy="122" rx="3.6" ry="2" transform="rotate(-20 128 122)"/></g>
+            </svg>
+          </div>
         </div>
-        <div class="livecard">
-          <span class="live-ava"><svg viewBox="0 0 24 24"><path d="M12 21 V8"/><path d="M12 13 C8.5 13 6.5 10.3 6.5 7 C9.8 7 12 9.2 12 12.2"/><path d="M12 11 C15.5 11 17.5 8.3 17.5 5 C14.2 5 12 7.2 12 10.2"/></svg></span>
-          <span class="livetx" id="liveText">지금 함께 기도해요</span>
-          <span class="presence" id="presence"></span>
-        </div>
 
-        <div class="circlewrap">
-          <button class="pbtn" onclick="go('pray')">
-            <svg viewBox="0 0 48 56" fill="none" stroke="#c5881d" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M24 8 C19 16 14 28 13 36 C12.4 42 16 47 24 48 Z"/><path d="M24 8 C29 16 34 28 35 36 C35.6 42 32 47 24 48 Z"/><path d="M24 12 L24 46"/></svg>
-            <span class="t">기도 시작</span>
+        <!-- 기도실 문 -->
+        <div class="doorzone">
+          <div class="livepill">
+            <span class="lp-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.3"/><path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5M15 19c0-2 1-3.4 3-3.4s3 1.4 3 3.4"/></svg></span>
+            <span class="lp-tx" id="liveText">지금 함께 기도해요</span>
+          </div>
+          <button class="roomdoor" onclick="go('pray')">
+            <span class="rd-hands"><svg viewBox="0 0 24 24"><path d="M12 4 C10.6 7.5 8.8 10.4 8.3 14 C8 16.8 9.7 19.5 12 19.5 Z"/><path d="M12 4 C13.4 7.5 15.2 10.4 15.7 14 C16 16.8 14.3 19.5 12 19.5 Z"/><path d="M8.6 11 L6.3 13.2 C5.4 14 5.4 15.8 6.4 16.7 M15.4 11 L17.7 13.2 C18.6 14 18.6 15.8 17.6 16.7"/></svg></span>
+            <span class="rd-title">기도실</span>
+            <span class="rd-sub">들어가기 →</span>
           </button>
+          <div class="joinnote">함께 기도에<br>참여하기<br><svg viewBox="0 0 34 24" fill="none" stroke="#d9a94e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M30 4 C24 6 14 7 6 17"/><path d="M5 11 L5 18 L12 18"/></svg></div>
+        </div>
+
+        <!-- 현재 기도중 인원 -->
+        <div class="nowcard">
+          <span class="nc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.3"/><path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5M15 19c0-2 1-3.4 3-3.4s3 1.4 3 3.4"/></svg></span>
+          <div class="nc-tx"><div class="nc-m">현재 <b id="nowCount">0</b>명이 함께 기도 중입니다</div><div class="nc-s">지금 입장해서 함께 기도해요</div></div>
+          <div class="nc-ava"><i style="background:#e0a93a">기</i><i style="background:#7fae5e">도</i><i style="background:#7aa7d8">실</i><span class="more" id="avaMore">+0</span></div>
+        </div>
+
+        <!-- 누적 진행 -->
+        <div class="progcard">
+          <span class="pc-leaf"><svg viewBox="0 0 24 24"><path d="M12 21c-1-6 2-10 8-11-1 6-4 10-8 11z" fill="#9cc47a"/><path d="M12 21C8 20 5 16 4 10c6 1 9 5 8 11z" fill="#7fae5e"/></svg></span>
+          <div class="pc-tx">
+            <div class="pc-lbl">우리의 기도는 교회의 기둥입니다</div>
+            <div class="pc-num"><span class="big num" id="cur">0분</span><span class="tot">/ 50,000시간</span><span class="gpct" id="pct">0%</span></div>
+            <div class="gbar"><i id="bar"></i></div>
+          </div>
+        </div>
+
+        <!-- 말씀 -->
+        <div class="versebook">
+          <div class="vb-tx"><span class="vc-quote">“</span><div class="vc-text" id="verseLine"></div><div class="vc-ref" id="verseRef"></div></div>
+          <span class="vb-book"><svg viewBox="0 0 24 24"><path d="M4 4.5C4 3.7 4.7 3 5.5 3H19a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H5.5C4.7 20 4 19.3 4 18.5z" fill="#c79a55"/><path d="M7 3v17" stroke="#fff" stroke-width="1" opacity=".5"/><path d="M14 7.5h3M15.5 6v3" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/></svg></span>
         </div>
 
         <div class="liveticker" id="liveTicker"></div>
@@ -1116,6 +1201,8 @@
     renderLive(false);
     var zs=document.getElementById('zoneLiveSum');
     if(zs){ var prep=Math.max(0,(connN||0)-(liveN||0)); zs.innerHTML='<span class="zls-pray">🙏 기도 중 <b>'+(liveN||0)+'</b></span><span class="zls-prep">📖 기도 준비 중 <b>'+prep+'</b></span>'; }
+    var nc=document.getElementById('nowCount'); if(nc) nc.textContent=(liveN||0);
+    var am=document.getElementById('avaMore'); if(am) am.textContent='+'+Math.max(0,(connN||0)-3);
   }
   setInterval(function(){ _livePhase=_livePhase?0:1; renderLive(true); }, 4500);
   const PC=['#e0a93a','#6fa45c','#7aa7d8','#d98b5e','#b59ad8'];
