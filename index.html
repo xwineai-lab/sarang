@@ -260,6 +260,9 @@
   .todaycard.ringcard{position:relative;overflow:hidden;background:#eef1e8 url('bg-today.png') center/cover no-repeat !important;border-radius:22px;padding:24px 18px 28px;margin-top:16px;box-shadow:0 8px 22px rgba(150,130,80,.08);}
   .ringcard .rc-ring{position:relative;width:196px;height:196px;margin:4px auto 0;}
   .ringcard .rc-svg{width:100%;height:100%;display:block;}
+  .ringcard .rc-rot{transform-origin:100px 100px;animation:rcrot 20s linear infinite;}
+  @keyframes rcrot{to{transform:rotate(360deg);}}
+  @media (prefers-reduced-motion: reduce){ .ringcard .rc-rot{animation:none;} }
   .ringcard .rc-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;}
   .ringcard .rc-sprig{width:22px;height:22px;}
   .ringcard .rc-sprig svg{width:100%;height:100%;}
@@ -750,8 +753,10 @@
             <svg viewBox="0 0 200 200" class="rc-svg">
               <circle cx="100" cy="100" r="86" fill="none" stroke="#bfb086" stroke-width="5" stroke-dasharray="1.4 7.606" opacity=".5" transform="rotate(-90 100 100)"/>
               <circle cx="100" cy="100" r="80" fill="rgba(255,255,255,.42)"/>
-              <circle cx="100" cy="100" r="92" fill="none" stroke="#8aa363" stroke-width="6" stroke-linecap="round" stroke-dasharray="393 578" transform="rotate(-90 100 100)"/>
-              <circle cx="100" cy="8" r="6" fill="#fff" stroke="#8aa363" stroke-width="2.5"/>
+              <g class="rc-rot">
+                <circle cx="100" cy="100" r="92" fill="none" stroke="#8aa363" stroke-width="6" stroke-linecap="round" stroke-dasharray="393 578" transform="rotate(-90 100 100)"/>
+                <circle cx="100" cy="8" r="6" fill="#fff" stroke="#8aa363" stroke-width="2.5"/>
+              </g>
             </svg>
             <div class="rc-center">
               <span class="rc-sprig"><svg viewBox="0 0 24 24"><path d="M5 19c5-1 9-5 11-12" stroke="#8aa363" stroke-width="1.3" fill="none" stroke-linecap="round"/><g fill="#9cb878"><ellipse cx="11" cy="12" rx="2.6" ry="1.4" transform="rotate(-30 11 12)"/><ellipse cx="14" cy="8" rx="2.6" ry="1.4" transform="rotate(-22 14 8)"/></g></svg></span>
