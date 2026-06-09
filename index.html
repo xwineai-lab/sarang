@@ -147,6 +147,32 @@
   .presence i{display:block;width:20px;height:20px;border-radius:50%;border:2px solid var(--surface);margin-left:-7px;}
   .praylive{display:flex;align-items:center;gap:8px;margin-top:22px;font-family:"Gowun Dodum",sans-serif;font-size:13px;color:var(--ink);background:var(--amber-tint);padding:9px 15px;border-radius:999px;}
   .praylive b{color:var(--amber-deep);}
+  /* 기도 기록 — 목업 */
+  .todaycard{display:flex;align-items:center;gap:12px;background:var(--surface);border-radius:18px;padding:18px;margin-top:14px;box-shadow:0 8px 22px rgba(150,120,60,.08);}
+  .todaycard .tcleft{flex:1;}
+  .todaycard .tct{font-family:"Gowun Dodum",sans-serif;font-size:16px;color:var(--ink);}
+  .todaycard .tcs{font-size:12px;color:var(--soft);margin-top:4px;}
+  .todaycard .tcbig{margin-top:11px;font-family:"Outfit",sans-serif;font-weight:600;color:var(--amber-deep);line-height:1;}
+  .todaycard .tcbig span{font-size:38px;letter-spacing:-1px;}
+  .todaycard .tcbig .u{font-size:18px;color:var(--soft);margin-left:3px;font-weight:500;}
+  .todaycard .tcmeta{font-size:11.5px;color:var(--soft);margin-top:10px;}
+  .todaycard .tcmeta b{color:var(--amber-deep);}
+  .todaycard .tcleaf{width:60px;height:auto;flex-shrink:0;opacity:.9;align-self:flex-start;}
+  .weekchart{background:var(--surface);border-radius:18px;padding:16px 14px 12px;margin-top:14px;box-shadow:0 6px 16px rgba(150,120,60,.06);}
+  .weekchart .wcl{font-size:13px;color:var(--soft);margin-bottom:12px;}
+  .wcbars{display:flex;align-items:flex-end;justify-content:space-between;gap:6px;}
+  .wcbars .wcd{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;}
+  .wcbars .wcv{font-size:10px;color:var(--faint);margin-bottom:5px;}
+  .wcbars .wcb{width:62%;max-width:22px;background:linear-gradient(180deg,#eebb50,var(--amber));border-radius:6px;min-height:3px;}
+  .wcbars .wcb.today{background:linear-gradient(180deg,#84b56f,var(--green));}
+  .wcbars .wclb{font-size:11px;color:var(--soft);margin-top:8px;}
+  .anscard{display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,#fffdf8,#f3f8ee);border-radius:16px;padding:14px 15px;margin-top:16px;cursor:pointer;box-shadow:0 6px 16px rgba(150,120,60,.06);}
+  .anscard .lf{width:30px;height:30px;color:var(--green);flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+  .anscard .lf svg{width:26px;height:26px;}
+  .anscard .tx{flex:1;}
+  .anscard .tx .t{font-family:"Gowun Dodum",sans-serif;font-size:14px;color:var(--ink);}
+  .anscard .tx .s{font-size:11.5px;color:var(--soft);margin-top:3px;line-height:1.5;}
+  .anscard .more{font-size:12px;color:var(--amber-deep);white-space:nowrap;font-family:"Gowun Dodum",sans-serif;}
   /* 나의 기도제목 (개인 저널) */
   .rectabs{display:flex;background:var(--amber-tint);border-radius:14px;padding:4px;margin:14px 0 2px;}
   .rectab{flex:1;border:none;background:none;padding:9px;border-radius:11px;font-family:"Gowun Dodum",sans-serif;font-size:14px;color:var(--soft);cursor:pointer;}
@@ -624,19 +650,41 @@
           <button class="rectab" id="rt-my" onclick="recTab('my')">나의 기도제목</button>
         </div>
         <div id="recPaneLog">
-          <div id="myGrowth"></div>
+          <div class="todaycard">
+            <div class="tcleft">
+              <div class="tct">오늘 하나님께 드린 기도</div>
+              <div class="tcs">오늘의 기도 시간을 돌아보세요</div>
+              <div class="tcbig"><span id="rc-today">0</span><span class="u">분</span></div>
+              <div class="tcmeta">기도 <b id="rc-todaycnt">0</b>회 · 마지막 기도 <span id="rc-last">—</span></div>
+            </div>
+            <svg class="tcleaf" viewBox="0 0 44 54" fill="none">
+              <path d="M9 50 C11 37 15 28 23 20" stroke="#c9b487" stroke-width="1.5" stroke-linecap="round"/>
+              <g fill="#b9d097" opacity=".9">
+                <ellipse cx="12" cy="41" rx="4.2" ry="2.3" transform="rotate(-35 12 41)"/>
+                <ellipse cx="17" cy="33" rx="4.2" ry="2.3" transform="rotate(-30 17 33)"/>
+                <ellipse cx="22" cy="24" rx="4" ry="2.2" transform="rotate(-25 22 24)"/>
+                <ellipse cx="8" cy="37" rx="3.6" ry="2" transform="rotate(22 8 37)"/>
+                <ellipse cx="13" cy="29" rx="3.6" ry="2" transform="rotate(26 13 29)"/>
+              </g>
+            </svg>
+          </div>
           <div class="statcard">
             <div class="col"><div class="cl">이번 주</div><div class="cv" id="st-week">0분</div></div>
             <div class="col"><div class="cl">연속</div><div class="cv" id="st-streak"><b>0</b>일</div></div>
             <div class="col"><div class="cl">이번 달</div><div class="cv" id="st-month">0분</div></div>
           </div>
+          <div class="weekchart">
+            <div class="wcl">이번 주 기도 흐름</div>
+            <div class="wcbars" id="rc-bars"></div>
+          </div>
           <div class="reclbl">최근 기도 기록</div>
           <div id="recentList">
             <div class="recrow"><span class="d">아직 기록이 없어요</span><span class="v num">—</span></div>
           </div>
-          <div class="encourage">
+          <div class="anscard" id="rc-anscard" onclick="recTab('my')">
             <div class="lf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 21c-1-6 2-10 8-11-1 6-4 10-8 11zM12 21C8 20 5 16 4 10c6 1 9 5 8 11z"/></svg></div>
-            <div class="tx">작은 기도가 모여<br>큰 변화를 만듭니다.</div>
+            <div class="tx"><div class="t">응답으로 이어진 기도</div><div class="s" id="rc-anstx">기도제목의 응답을 기록해보세요.</div></div>
+            <div class="more">응답 기록 ›</div>
           </div>
         </div>
         <div id="recPaneMy" style="display:none;">
@@ -1256,6 +1304,8 @@
   }
   function clearMyPrayLink(e){ if(e){e.stopPropagation();} MY_PRAYER_ID=null; MY_PRAYER_TITLE=''; updateMyPrayTag(); }
   function korDur(m){ m=Math.round(m||0); if(m<=0) return '0분'; const h=Math.floor(m/60), r=m%60; return h?(h+'시간'+(r?' '+r+'분':'')):(r+'분'); }
+  function setTxt(id,v){ var e=document.getElementById(id); if(e) e.textContent=v; }
+  function fmtAmPm(d){ var h=d.getHours(),m=d.getMinutes(); var ap=h<12?'오전':'오후'; var hh=h%12; if(hh===0)hh=12; return ap+' '+hh+':'+String(m).padStart(2,'0'); }
   async function loadMyRecord(){
     if(!SB) return;
     const { data } = await SB.from('prayer_sessions').select('minutes,ended_at').order('ended_at',{ascending:false}).limit(500);
@@ -1267,11 +1317,36 @@
     const w=document.getElementById('st-week'); if(w) w.textContent=korDur(week);
     const s=document.getElementById('st-streak'); if(s) s.innerHTML='<b>'+streak+'</b>일';
     const mo=document.getElementById('st-month'); if(mo) mo.textContent=korDur(month);
-    renderGrowth(total);
+    // 오늘 (로컬 날짜 기준)
+    const lkey=d=>d.getFullYear()+'-'+d.getMonth()+'-'+d.getDate();
+    const tk=lkey(now); let todayMin=0,todayCnt=0,lastT=null;
+    rows.forEach(r=>{ const d=new Date(r.ended_at); if(lkey(d)===tk){ todayMin+=r.minutes; todayCnt++; if(!lastT||d>lastT) lastT=d; } });
+    setTxt('rc-today', todayMin); setTxt('rc-todaycnt', todayCnt);
+    const lastEl=document.getElementById('rc-last'); if(lastEl) lastEl.textContent = lastT? fmtAmPm(lastT) : '—';
+    // 이번 주 막대 (월~일)
+    const mon=new Date(now.getFullYear(),now.getMonth(),now.getDate()); const dow=(mon.getDay()+6)%7; mon.setDate(mon.getDate()-dow);
+    const buckets=[0,0,0,0,0,0,0];
+    rows.forEach(r=>{ const d=new Date(r.ended_at); const diff=Math.floor((d-mon)/86400000); if(diff>=0&&diff<7) buckets[diff]+=r.minutes; });
+    const names=['월','화','수','목','금','토','일']; const todayIdx=(now.getDay()+6)%7;
+    const maxB=Math.max(30, Math.max.apply(null, buckets));
+    const bars=document.getElementById('rc-bars');
+    if(bars){ bars.innerHTML=buckets.map(function(v,i){ var h=Math.max(3, Math.round(v/maxB*64)); return '<div class="wcd"><div class="wcv">'+v+'분</div><div class="wcb'+(i===todayIdx?' today':'')+'" style="height:'+h+'px"></div><div class="wclb">'+names[i]+'</div></div>'; }).join(''); }
+    // 최근 기록
     const rl=document.getElementById('recentList');
-    if(rl){ rl.innerHTML = rows.length ? rows.slice(0,5).map(r=>{ const d=new Date(r.ended_at); return '<div class="recrow"><span class="d">'+(d.getMonth()+1)+'. '+d.getDate()+'</span><span class="v num">'+korDur(r.minutes)+'</span></div>'; }).join('') : '<div class="recrow"><span class="d">아직 기록이 없어요</span><span class="v num">—</span></div>'; }
+    if(rl){ rl.innerHTML = rows.length ? rows.slice(0,5).map(function(r){ return '<div class="recrow"><span class="d">'+mpRelDay(r.ended_at)+'</span><span class="v num">'+korDur(r.minutes)+'</span></div>'; }).join('') : '<div class="recrow"><span class="d">아직 기록이 없어요</span><span class="v num">—</span></div>'; }
+    loadAnsweredCard();
     const heat=document.getElementById('heat');
     if(heat){ let h=''; for(let i=83;i>=0;i--){ const d=new Date(now); d.setDate(d.getDate()-i); h+='<span style="background:'+(days.has(key(d))?'var(--amber)':'rgba(120,90,40,.08)')+'"></span>'; } heat.innerHTML=h; }
+  }
+  async function loadAnsweredCard(){
+    var tx=document.getElementById('rc-anstx'); if(!tx) return;
+    if(!SB || !myLoggedIn()){ tx.textContent='로그인하면 기도제목의 응답을 기록할 수 있어요.'; return; }
+    try{
+      var res=await SB.from('my_prayers').select('status,answered_at').eq('archived',false);
+      var rows=res.data||[]; var now=new Date(); var cnt=0;
+      rows.forEach(function(p){ if((p.status==='answered'||p.status==='thanks')&&p.answered_at){ var d=new Date(p.answered_at); if(d.getFullYear()===now.getFullYear()&&d.getMonth()===now.getMonth()) cnt++; } });
+      tx.textContent = cnt>0 ? ('이번 달 '+cnt+'개의 기도가 응답으로 기록되었어요.') : '기도제목의 응답을 기록해보세요.';
+    }catch(e){ tx.textContent='기도제목의 응답을 기록해보세요.'; }
   }
   async function loadDept(){
     if(!SB) return;
