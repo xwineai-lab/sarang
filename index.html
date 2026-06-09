@@ -541,6 +541,15 @@
   .zrank b{font-family:"Outfit",sans-serif;font-size:11px;margin-top:-15px;color:#fff;z-index:1;}
   .zrank.gold{color:#e0a93a;} .zrank.silver{color:#b9bcc4;} .zrank.bronze{color:#cd9b6a;}
   .zrank.num{font-family:"Outfit",sans-serif;font-size:14px;color:var(--faint);font-weight:600;}
+  /* 구역 빛(기도 온기) — 등수 대신 누적 기도에 따라 밝아지는 따뜻한 빛 */
+  .zglow{width:30px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+  .zglow .zg-core{width:16px;height:16px;border-radius:50%;background:radial-gradient(circle at 50% 42%, rgba(255,243,212,calc(.55 + .45*var(--g,0))), rgba(243,186,94,calc(.4 + .55*var(--g,0))) 58%, rgba(223,148,66,calc(.18 + .42*var(--g,0))) 100%);box-shadow:0 0 calc(3px + 13px*var(--g,0)) calc(1px + 4px*var(--g,0)) rgba(244,182,92,calc(.15 + .42*var(--g,0)));}
+  .zglow.live .zg-core{animation:zgpulse 2.2s ease-in-out infinite;}
+  @keyframes zgpulse{0%,100%{transform:scale(1);}50%{transform:scale(1.2);}}
+  @media (prefers-reduced-motion: reduce){ .zglow.live .zg-core{animation:none;} }
+  /* 청년부 Light & Salt 로고 */
+  .zcard .zic.zic-logo{background:#fff;overflow:hidden;}
+  .zcard .zic.zic-logo .zlogo{width:100%;height:100%;object-fit:cover;border-radius:50%;transform:scale(1.32);}
 
   /* record */
   .statcard{display:flex;background:var(--surface);border-radius:20px;box-shadow:0 8px 22px rgba(150,120,60,.08);margin-top:16px;overflow:hidden;}
@@ -1443,10 +1452,11 @@
   function zoneSymbol(name, dept){
     if(name==='프랑크푸르트') return FFM_SKYLINE;
     if((dept||'장년부')==='장년부' && FLAG[name]) return '<img class="zflag" src="https://flagcdn.com/w40/'+FLAG[name]+'.png" srcset="https://flagcdn.com/w80/'+FLAG[name]+'.png 2x" alt="">';
+    if(dept==='청년부') return '<img class="zlogo" src="logo-young.png" alt="Light & Salt">';
     var emo = dept==='청년부' ? '🏘️' : (dept==='청소년부' ? '🎒' : (ZEMO[name] || '🌍'));
     return '<span class="zemo">'+emo+'</span>';
   }
-  function zicClass(name, dept){ if(name==='프랑크푸르트') return 'zic-ffm'; if((dept||'장년부')==='장년부' && FLAG[name]) return 'flag'; return 'zic-tone'; }
+  function zicClass(name, dept){ if(name==='프랑크푸르트') return 'zic-ffm'; if(dept==='청년부') return 'zic-logo'; if((dept||'장년부')==='장년부' && FLAG[name]) return 'flag'; return 'zic-tone'; }
   // 구역 레벨 (개인 성장과 동일한 PLEVELS·flowerSVG 재사용, 누적시간 기준)
   function zoneLvIdx(hours){ var i=0; for(var k=0;k<PLEVELS.length;k++){ if(hours>=PLEVELS[k][0]) i=k; } return i; }
   function zoneLvPct(hours){ var i=zoneLvIdx(hours); var nx=PLEVELS[i+1]; if(!nx) return 100; var span=nx[0]-PLEVELS[i][0]; return Math.round(Math.min((hours-PLEVELS[i][0])/span,1)*100); }
@@ -1489,6 +1499,7 @@
     const medal=['gold','silver','bronze'];
     const list=document.getElementById('zoneList');
     if(!Z.length){ list.innerHTML='<div class="myempty">아직 구역 정보가 없어요.</div>'; return; }
+    var maxH=Z[0][1]||0;
     list.innerHTML=Z.map(function(z,i){
       var nm=z[0]; const hours=z[1], me=z[3]===true;
       const pray=zPray(nm), conn=zConn(nm), prep=Math.max(0,conn-pray);
@@ -1496,9 +1507,8 @@
       const pfx=(nm==='청년부'||nm==='청소년부')?'':zonePrefix(z[4]);
       // 실제 라이브(접속/기도)가 있을 때만 표시
       const livePart = conn>0 ? ('<div class="zp zlivec"><span class="zlc-pray">기도 중 '+pray+'</span> · <span>준비 중 '+prep+'</span></div>') : '';
-      const rank = i<3
-        ? '<div class="zrank '+medal[i]+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10v3a5 5 0 01-10 0z"/><path d="M12 12v3M9 19h6M10 17h4"/></svg><b>'+(i+1)+'</b></div>'
-        : '<div class="zrank num">'+(i+1)+'</div>';
+      var inten = maxH>0 ? Math.min(hours/maxH,1) : 0;
+      const rank = '<div class="zglow'+(pray>0?' live':'')+'" style="--g:'+inten.toFixed(2)+'"><span class="zg-core"></span></div>';
       return '<div class="zcard'+(i===0?' top':'')+(me?' me':'')+'">'+rank+
         '<div class="zic '+zicClass(nm,z[4])+'">'+zoneSymbol(nm,z[4])+'</div>'+
         '<div class="zmid"><div class="zrow1"><span class="znm">'+pfx+zoneDisplayName(nm)+(me?'<span class="metag">우리 구역</span>':'')+(pray>0?'<span class="lvtag">지금 기도 중</span>':'')+'</span><span class="zh num">'+fmtHM(hours*60)+'</span></div>'+
