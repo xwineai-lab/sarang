@@ -246,6 +246,16 @@
   .versecard3 .vc3-dots{display:flex;gap:6px;justify-content:center;margin-top:14px;}
   .versecard3 .vc3-dots span{width:6px;height:6px;border-radius:50%;background:var(--track);}
   .versecard3 .vc3-dots span.on{background:var(--amber);width:16px;border-radius:999px;}
+  .versecard4{position:relative;overflow:hidden;display:flex;align-items:flex-start;gap:12px;background:var(--surface);border-radius:18px;padding:17px 18px;margin-top:12px;box-shadow:0 8px 22px rgba(150,120,60,.08);}
+  .versecard4 .vc4-ico{width:38px;height:38px;border-radius:50%;background:#e2eed5;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .versecard4 .vc4-ico svg{width:21px;height:21px;}
+  .versecard4 .vc4-body{flex:1;min-width:0;padding-top:1px;position:relative;z-index:1;}
+  .versecard4 .vc4-lbl{font-size:12px;color:var(--soft);}
+  .versecard4 .vc-text{font-family:"Gowun Dodum",sans-serif;font-size:16px;color:var(--ink);line-height:1.45;margin-top:3px;transition:opacity .3s;}
+  .versecard4 .vc-ref{font-size:12.5px;color:var(--soft);margin-top:6px;transition:opacity .3s;}
+  .versecard4 .vc4-spark{position:absolute;top:12px;right:14px;width:16px;height:16px;opacity:.8;}
+  .versecard4 .vc4-spark svg{width:100%;height:100%;}
+  .versecard4 .vc4-olive{position:absolute;right:6px;bottom:0;width:58px;height:54px;opacity:.9;pointer-events:none;}
   .live-ava{flex-shrink:0;width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#eef6e9,#e1eed7);display:flex;align-items:center;justify-content:center;position:relative;}
   .live-ava svg{width:19px;height:19px;stroke:var(--green);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;}
   .live-ava::after{content:"";position:absolute;inset:-3px;border-radius:50%;border:1.5px solid var(--green);opacity:.35;animation:livepulse 2s ease-out infinite;}
@@ -721,12 +731,16 @@
           <div class="pc2-foot"><span>작은 기도가 모여 큰 변화를 만듭니다.</span><svg class="pc2-leaf" viewBox="0 0 24 24"><path d="M12 21c-1-6 2-10 8-11-1 6-4 10-8 11z" fill="#9cc47a"/><path d="M12 21C8 20 5 16 4 10c6 1 9 5 8 11z" fill="#7fae5e"/></svg></div>
         </div>
 
-        <!-- 말씀 -->
-        <div class="versecard3">
-          <span class="vc3-q">“</span>
-          <div class="vc3-bar"></div>
-          <div class="vc3-tx"><div class="vc-text" id="verseLine"></div><div class="vc-ref" id="verseRef"></div></div>
-          <div class="vc3-dots"><span></span><span class="on"></span><span></span></div>
+        <!-- 오늘의 말씀 (리치 카드) -->
+        <div class="versecard4">
+          <span class="vc4-ico"><svg viewBox="0 0 24 24"><path d="M4 5.2C4 4.5 4.6 4 5.3 4H11c.6 0 1 .3 1.3.8.3-.5.7-.8 1.3-.8h5.1c.7 0 1.3.5 1.3 1.2v12.3c0 .7-.6 1.2-1.3 1.2h-5.1c-.6 0-1 .3-1.3.7-.3-.4-.7-.7-1.3-.7H5.3C4.6 18.7 4 18.2 4 17.5z" fill="#6f9150"/><path d="M12 5.6v12.6" stroke="#fff" stroke-width="1" opacity=".55"/></svg></span>
+          <div class="vc4-body">
+            <div class="vc4-lbl">오늘의 말씀</div>
+            <div class="vc-text" id="verseLine"></div>
+            <div class="vc-ref" id="verseRef"></div>
+          </div>
+          <span class="vc4-spark"><svg viewBox="0 0 24 24" fill="#e3b048"><path d="M12 3l1.6 6.4L20 11l-6.4 1.6L12 19l-1.6-6.4L4 11l6.4-1.6z"/></svg></span>
+          <svg class="vc4-olive" viewBox="0 0 60 56" fill="none"><path d="M8 52C16 40 26 32 40 28" stroke="#aac285" stroke-width="2" stroke-linecap="round"/><g fill="#bcd29c"><ellipse cx="16" cy="44" rx="6" ry="3" transform="rotate(-32 16 44)"/><ellipse cx="24" cy="38" rx="6" ry="3" transform="rotate(-28 24 38)"/><ellipse cx="32" cy="33" rx="5.5" ry="2.8" transform="rotate(-24 32 33)"/><ellipse cx="12" cy="48" rx="5" ry="2.6" transform="rotate(20 12 48)"/><ellipse cx="20" cy="42" rx="5" ry="2.6" transform="rotate(24 20 42)"/></g></svg>
         </div>
 
         <div class="liveticker" id="liveTicker"></div>
