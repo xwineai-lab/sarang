@@ -1244,7 +1244,7 @@
   };
   function zoneSymbol(name, dept){
     if((dept||'장년부')==='장년부'){
-      if(FLAG[name]) return '<img class="zflag" src="https://flagcdn.com/w40/'+FLAG[name]+'.png" alt="" loading="lazy">';
+      if(FLAG[name]) return '<img class="zflag" src="https://flagcdn.com/w40/'+FLAG[name]+'.png" srcset="https://flagcdn.com/w80/'+FLAG[name]+'.png 2x" alt="">';
       if(ZSYM[name]) return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">'+ZSYM[name]+'</svg>';
       return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">'+IC.globe+'</svg>';
     }
