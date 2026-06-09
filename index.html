@@ -112,6 +112,21 @@
   .topicdots span.on{background:var(--amber);width:18px;border-radius:999px;}
   .topicnav{display:flex;justify-content:space-between;margin-top:12px;}
   .topicnav button{background:none;border:none;color:var(--amber-deep);font-family:"Gowun Dodum",sans-serif;font-size:14px;cursor:pointer;padding:4px 8px;}
+  /* 함께 기도 / 나의 기도 토글 + 세이지 그린(나의 기도) */
+  .praymode{display:flex;gap:4px;background:#efe9dd;border-radius:13px;padding:4px;margin-bottom:6px;}
+  .praymode button{flex:1;border:none;background:none;padding:8px 0;border-radius:10px;font-family:"Gowun Dodum",sans-serif;font-size:13px;color:var(--soft);cursor:pointer;}
+  .praymode button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.08);}
+  .topiccard.mine{background:#f2f7ef;box-shadow:0 8px 22px rgba(90,140,80,.12);}
+  .topiccard.mine .praymode{background:#e4efdd;}
+  .topiccard.mine .praymode button.on{color:#2f6b46;}
+  .topiccat.tcmine{background:#dcecd6;color:#2f7d4f;}
+  .topicmeta{font-size:12px;color:#5d8268;text-align:center;margin-top:8px;}
+  .topiccard.mine .topicdots span.on{background:#5aa776;}
+  .topiccard.mine .topicnav button{color:#3a8a5a;}
+  .minegate{text-align:center;padding:18px 8px 8px;}
+  .minegate .mg-t{font-family:"Gowun Dodum",sans-serif;font-size:15px;color:var(--ink);}
+  .minegate .mg-d{font-size:12.5px;color:var(--soft);line-height:1.6;margin:8px 0 16px;}
+  .minegate button{background:#3a8a5a;color:#fff;border:none;border-radius:11px;padding:10px 20px;font-family:"Gowun Dodum",sans-serif;font-size:13.5px;cursor:pointer;}
   /* 부서 선택 / 요약 */
   .deptpills{display:flex;gap:8px;margin-top:18px;}
   .deptpill{flex:1;padding:11px 4px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);font-size:13px;font-family:"Gowun Dodum",sans-serif;color:var(--ink);cursor:pointer;}
@@ -598,8 +613,8 @@
         <div class="statusbar"><span>9:41</span><span class="r">5G &nbsp; 87%</span></div>
         <div class="subhead"><span class="bk" onclick="go('home')">‹</span><span class="ttl">기도하기</span></div>
         <div style="margin-top:6px;">
-          <div class="h-title" style="font-size:20px;">함께 기도하는 시간</div>
-          <div class="h-desc">아래 제목을 따라 함께 기도해요</div>
+          <div class="h-title" style="font-size:20px;" id="prayHTitle">함께 기도하는 시간</div>
+          <div class="h-desc" id="prayHDesc">아래 제목을 따라 함께 기도해요</div>
         </div>
         <div style="text-align:center;margin-top:8px;"><span class="mypraytag" id="myPrayTag" style="display:none;"></span></div>
         <div class="ring prayring" style="width:196px;height:196px;margin:28px auto 16px;">
@@ -658,12 +673,20 @@
         </div>
 
         <div class="topiccard" id="topicCard">
-          <div class="topiclabel"><span id="topicIdx">1 / 6</span><span class="autobtn" id="autoBtn" onclick="toggleAuto()">자동 넘김</span></div>
-          <div style="text-align:center;"><span class="topiccat" id="topicCat"></span></div>
-          <div class="topictitle" id="topicTitle">교회와 목회자를 위해</div>
-          <div class="topicdesc" id="topicDesc">담임목사님과 교회 공동체의 부흥을 위해</div>
-          <div class="topicdots" id="topicDots"></div>
-          <div class="topicnav"><button onclick="prevTopic()">‹ 이전</button><button onclick="nextTopic()">다음 ›</button></div>
+          <div class="praymode">
+            <button id="pm-together" class="on" onclick="setPrayMode('together')">함께 기도</button>
+            <button id="pm-mine" onclick="setPrayMode('mine')">나의 기도</button>
+          </div>
+          <div id="topicMain">
+            <div class="topiclabel"><span id="topicIdx">1 / 6</span><span class="autobtn" id="autoBtn" onclick="toggleAuto()">자동 넘김</span></div>
+            <div style="text-align:center;"><span class="topiccat" id="topicCat"></span></div>
+            <div class="topictitle" id="topicTitle">교회와 목회자를 위해</div>
+            <div class="topicdesc" id="topicDesc">담임목사님과 교회 공동체의 부흥을 위해</div>
+            <div class="topicmeta" id="topicMeta" style="display:none;"></div>
+            <div class="topicdots" id="topicDots"></div>
+            <div class="topicnav"><button onclick="prevTopic()">‹ 이전</button><button onclick="nextTopic()">다음 ›</button></div>
+          </div>
+          <div id="mineGate" style="display:none;"></div>
         </div>
 
         <div class="praylive" style="justify-content:center;"><span class="livedot"></span><span>지금 당신을 포함해 <b id="liveN2">19</b>명이 함께 기도하고 있어요</span></div>
@@ -952,7 +975,7 @@
     const el=document.getElementById(id); if(el) el.scrollTop=0;
     tabbarEl.classList.remove('tbhide');  // 탭바는 항상 하단 고정
     if(id!=='pray') MY_PRAYER_ID=null;        // 개인 제목 연동은 prayMyTopic 진입에서만 유지
-    if(id==='pray') updateMyPrayTag();
+    if(id==='pray'){ setPrayMode(MY_PRAYER_ID ? 'mine' : 'together'); updateMyPrayTag(); }
     var _fab=document.getElementById('myFab'); if(_fab && id!=='record') _fab.style.display='none';  // FAB는 기록 화면에서만
     if(id==='zone'){ buildZones(); loadDept(); }
     if(id==='joinzone') buildChips();
@@ -1254,12 +1277,72 @@
     ['성도들의 삶의 자리를 위하여','각 성도가 살아가는 모든 삶의 자리가 기도의 영역이 되어, 묶였던 매임이 풀리고 영적 지경이 넓어지게 하소서.']
   ];
   let ti=0,autoOn=false,autoTk=null;
+  var prayMode='together', mti=0;
   const LIFE_START=6;                       // 0~5: 교회 이전 기도 / 6~: 삶의 자리 기도(담임목사 기도편지)
   const LIFE_DATE='6월 8일';                 // 목사님 기도편지 날짜
   function isLife(i){ return i>=LIFE_START; }
+  async function ensureMyPrayers(){
+    if(!SB || !myLoggedIn()) return;
+    try{ var res=await SB.from('my_prayers').select('id,title,note,status,pray_count,last_prayed_at').eq('archived',false).order('created_at',{ascending:false}); MY_PRAYERS=res.data||[]; }catch(e){}
+  }
+  function setPrayMode(m){
+    prayMode=m;
+    var bt=document.getElementById('pm-together'), bm=document.getElementById('pm-mine');
+    if(bt) bt.classList.toggle('on', m==='together');
+    if(bm) bm.classList.toggle('on', m==='mine');
+    var card=document.getElementById('topicCard'); if(card) card.classList.toggle('mine', m==='mine');
+    var ht=document.getElementById('prayHTitle'), hd=document.getElementById('prayHDesc');
+    if(m==='mine'){
+      if(ht) ht.textContent='나의 기도 시간'; if(hd) hd.textContent='나만 보는 기도제목으로 기도해요';
+      if(autoOn) toggleAuto();
+      if(SB && myLoggedIn()){
+        ensureMyPrayers().then(function(){
+          var idx=0; if(MY_PRAYER_ID){ var f=MY_PRAYERS.findIndex(function(x){return x.id===MY_PRAYER_ID;}); if(f>=0) idx=f; }
+          mti=idx; renderTopic();
+        });
+      } else { renderTopic(); }
+    } else {
+      if(ht) ht.textContent='함께 기도하는 시간'; if(hd) hd.textContent='아래 제목을 따라 함께 기도해요';
+      clearMyPrayLink(); renderTopic();
+    }
+  }
   function renderTopic(){
-    const card=document.getElementById('topicCard'); if(card) card.classList.toggle('cardlife', isLife(ti));
-    const cat=document.getElementById('topicCat');
+    var card=document.getElementById('topicCard');
+    var main=document.getElementById('topicMain'), gate=document.getElementById('mineGate');
+    var meta=document.getElementById('topicMeta'), autoB=document.getElementById('autoBtn');
+    var cat=document.getElementById('topicCat');
+    if(prayMode==='mine'){
+      if(autoB) autoB.style.display='none';
+      if(card) card.classList.remove('cardlife');
+      if(!SB || !myLoggedIn()){
+        if(main) main.style.display='none';
+        if(gate){ gate.style.display='block'; gate.innerHTML='<div class="minegate"><div class="mg-t">나의 기도는 로그인 후 등록할 수 있어요</div><div class="mg-d">로그인하면 나만 보는 기도제목을 만들고,<br>어느 기기에서나 안전하게 보관돼요.</div><button onclick="go(\'connect\')">로그인하고 시작하기</button></div>'; }
+        clearMyPrayLink(); return;
+      }
+      if(!MY_PRAYERS.length){
+        if(main) main.style.display='none';
+        if(gate){ gate.style.display='block'; gate.innerHTML='<div class="minegate"><div class="mg-t">아직 나의 기도가 없어요</div><div class="mg-d">첫 기도제목을 추가하고<br>그 제목으로 기도를 시작해보세요.</div><button onclick="openMyEditor(null)">＋ 나의 기도 추가</button></div>'; }
+        clearMyPrayLink(); return;
+      }
+      if(gate) gate.style.display='none';
+      if(main) main.style.display='block';
+      if(mti>=MY_PRAYERS.length) mti=0;
+      var p=MY_PRAYERS[mti];
+      if(cat){ cat.className='topiccat tcmine'; cat.textContent='나의 기도 · 나만 볼 수 있어요'; }
+      document.getElementById('topicTitle').textContent=p.title||'';
+      document.getElementById('topicDesc').textContent=p.note||'이 제목으로 기도를 시작해보세요.';
+      var last=p.last_prayed_at?('마지막 기도 '+mpRelDay(p.last_prayed_at)):'아직 기도 전';
+      if(meta){ meta.style.display='block'; meta.textContent=last+' · 총 '+(p.pray_count||0)+'회'; }
+      document.getElementById('topicIdx').textContent=(mti+1)+' / '+MY_PRAYERS.length;
+      document.getElementById('topicDots').innerHTML=MY_PRAYERS.map(function(_,i){return '<span class="'+(i===mti?'on':'')+'"></span>';}).join('');
+      MY_PRAYER_ID=p.id; MY_PRAYER_TITLE=p.title||''; updateMyPrayTag();
+      return;
+    }
+    if(autoB) autoB.style.display='';
+    if(gate) gate.style.display='none';
+    if(main) main.style.display='block';
+    if(meta) meta.style.display='none';
+    if(card) card.classList.toggle('cardlife', isLife(ti));
     if(cat){
       if(isLife(ti)){ cat.className='topiccat tcl'; cat.textContent='삶의 자리를 위한 기도 · '+LIFE_DATE; }
       else { cat.className='topiccat tcm'; cat.textContent='교회 이전을 위한 기도'; }
@@ -1267,10 +1350,10 @@
     document.getElementById('topicTitle').textContent=TOPICS[ti][0];
     document.getElementById('topicDesc').textContent=TOPICS[ti][1];
     document.getElementById('topicIdx').textContent=(ti+1)+' / '+TOPICS.length;
-    document.getElementById('topicDots').innerHTML=TOPICS.map((_,i)=>'<span class="'+(i===ti?'on':'')+'"></span>').join('');
+    document.getElementById('topicDots').innerHTML=TOPICS.map(function(_,i){return '<span class="'+(i===ti?'on':'')+'"></span>';}).join('');
   }
-  function nextTopic(){ti=(ti+1)%TOPICS.length;renderTopic();}
-  function prevTopic(){ti=(ti-1+TOPICS.length)%TOPICS.length;renderTopic();}
+  function nextTopic(){ if(prayMode==='mine'){ if(MY_PRAYERS.length){ mti=(mti+1)%MY_PRAYERS.length; renderTopic(); } } else { ti=(ti+1)%TOPICS.length; renderTopic(); } }
+  function prevTopic(){ if(prayMode==='mine'){ if(MY_PRAYERS.length){ mti=(mti-1+MY_PRAYERS.length)%MY_PRAYERS.length; renderTopic(); } } else { ti=(ti-1+TOPICS.length)%TOPICS.length; renderTopic(); } }
   function toggleAuto(){autoOn=!autoOn;const b=document.getElementById('autoBtn');if(b){b.classList.toggle('on',autoOn);b.textContent=autoOn?'자동 넘김 켜짐':'자동 넘김 꺼짐';}clearInterval(autoTk);if(autoOn){autoTk=setInterval(nextTopic,15000);}}
   function buildTopics(){
     function cardHTML(t,i,life){
@@ -1432,6 +1515,7 @@
       }
     }catch(e){ console.warn('기도제목 저장 실패:', e); alert('저장에 실패했어요. 로그인 상태를 확인해주세요.'); return; }
     closeMyModal(); loadMyPrayers();
+    if(document.getElementById('pray').classList.contains('on')){ if(!myEditId) MY_PRAYER_ID=null; setPrayMode('mine'); }
   }
   async function delMyPrayer(){
     if(!myEditId) return;
