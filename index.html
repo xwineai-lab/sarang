@@ -72,6 +72,14 @@
   .primary{width:100%;height:54px;border-radius:16px;border:none;cursor:pointer;background:var(--amber);color:#fff;font-family:"Gowun Dodum",sans-serif;font-size:17px;margin-top:16px;transition:transform .15s;}
   .primary:active{transform:scale(.98);}
   .note{font-size:12px;color:var(--soft);text-align:center;margin-top:14px;line-height:1.55;}
+  /* 인트로(WELCOME) 배경 사진 */
+  #welcome{background:url('bg-intro.png') top center/cover no-repeat, #f3ece0;}
+  #welcome .welcome-t{text-shadow:0 1px 10px rgba(255,250,240,.85);}
+  #welcome .welcome-d{color:#7a6a4f;text-shadow:0 1px 8px rgba(255,250,240,.8);}
+  #welcome .welcome-slogan{background:rgba(255,255,255,.82);color:#b07a2e;backdrop-filter:blur(3px);box-shadow:0 4px 14px rgba(150,120,60,.12);}
+  #welcome .bigemblem{background:rgba(255,255,255,.92);}
+  #welcome .welcome-card{background:rgba(255,255,255,.86);backdrop-filter:blur(7px);border-radius:24px;padding:20px 18px 18px;box-shadow:0 12px 34px rgba(120,95,45,.16);}
+  #welcome .welcome-card .field input{background:#fff;}
   .chipgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin:18px 0;}
   .chip{padding:13px 4px;text-align:center;font-size:13px;font-weight:600;border-radius:13px;background:var(--surface);border:1.5px solid var(--line);cursor:pointer;color:var(--ink);box-shadow:0 4px 10px rgba(150,120,60,.05);}
   .chip.sel{background:var(--amber-tint);border-color:var(--amber);color:var(--amber-deep);}
@@ -660,7 +668,7 @@
           <div class="welcome-d">함께 채우는 오만 시간의 기도</div>
           <div class="welcome-slogan">우리가 기도하면, 하나님이 일하신다</div>
         </div>
-        <div>
+        <div class="welcome-card">
           <div class="field"><label>교회 코드 또는 초대 링크</label><input id="codeIn" value="FSC2026" autocomplete="off"></div>
           <button class="primary" onclick="go('joinzone')">우리 교회로 들어가기</button>
           <div class="note">이름은 공개되지 않습니다.<br>익명으로도 함께 기도할 수 있어요.</div>
