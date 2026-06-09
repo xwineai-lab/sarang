@@ -339,6 +339,7 @@
   .zcard .zp{font-size:11px;color:var(--soft);text-align:right;margin-top:5px;}
   .zcard .zlivec .zlc-pray{color:#b5742a;font-weight:600;}
   .zcard .zic.zic-tone{background:var(--amber-tint);color:var(--amber-deep);}
+  .zcard .zic.zic-ffm{background:#dce8f6;color:#3a6ea5;}
   .zcard .zic svg{width:20px;height:20px;}
   .zcard .zbarrow{display:flex;align-items:center;gap:9px;margin-top:6px;}
   .zcard .zbarrow .ztrack{flex:1;margin-top:0;}
@@ -1257,7 +1258,9 @@
   function deptIcon(dept){ return dept==='청년부'?'house':(dept==='청소년부'?'book':'globe'); }
   function deptColor(dept){ return dept==='청년부'?'zic-young':(dept==='청소년부'?'zic-youth':'zic-jang'); }
   // 선교지 국가/지역 → 국기 코드 (flagcdn)
-  var FLAG={'독일열방':'de','프랑크푸르트':'de','툴루즈':'fr','리옹':'fr','코소보':'xk','카메룬':'cm','세네갈':'sn','슬로베니아':'si','우크라이나':'ua','케냐':'ke','알바니아':'al','그리스':'gr','남아공':'za','요르단':'jo','태국':'th','영국':'gb','루마니아':'ro','이스라엘':'il','이집트':'eg','우간다':'ug','불가리아':'bg'};
+  var FLAG={'독일열방':'de','툴루즈':'fr','리옹':'fr','코소보':'xk','카메룬':'cm','세네갈':'sn','슬로베니아':'si','우크라이나':'ua','케냐':'ke','알바니아':'al','그리스':'gr','남아공':'za','요르단':'jo','태국':'th','영국':'gb','루마니아':'ro','이스라엘':'il','이집트':'eg','우간다':'ug','불가리아':'bg'};
+  // 프랑크푸르트 — 직접 그린 오리지널 스카이라인 (클럽 로고 미사용)
+  var FFM_SKYLINE='<svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="14" width="3.6" height="8"/><rect x="7.2" y="9" width="3.6" height="13"/><rect x="15" y="11" width="3.6" height="11"/><rect x="19" y="7" width="3.8" height="15"/><path d="M11.4 22V5l1.4-2.2 1.4 2.2v17z"/><rect x="12.4" y="1" width="0.9" height="2.6"/></svg>';
   // 비국가 구역 → 센스있는 전용 심볼
   var ZSYM={
     '교역자':'<path d="M12 6.5C10.5 5.3 8.5 4.8 5.5 4.8v12.6c3 0 5 .5 6.5 1.7 1.5-1.2 3.5-1.7 6.5-1.7V4.8c-3 0-5 .5-6.5 1.7z"/><path d="M12 6.5v12.3"/>',
@@ -1281,10 +1284,12 @@
   // 비국가 구역 → 이모지 / 부서 → 이모지 (국가 구역은 국기를 그레이로 통일)
   var ZEMO={'교역자':'✝️','초록우산':'☂️','오픈도어스':'🚪','밀알':'🌾','에벤에셀':'🪨','쇼니':'⛺','구역 미정':'📍'};
   function zoneSymbol(name, dept){
+    if(name==='프랑크푸르트') return FFM_SKYLINE;
     if((dept||'장년부')==='장년부' && FLAG[name]) return '<img class="zflag" src="https://flagcdn.com/w40/'+FLAG[name]+'.png" srcset="https://flagcdn.com/w80/'+FLAG[name]+'.png 2x" alt="">';
     var emo = dept==='청년부' ? '🏘️' : (dept==='청소년부' ? '🎒' : (ZEMO[name] || '🌍'));
     return '<span class="zemo">'+emo+'</span>';
   }
+  function zicClass(name, dept){ if(name==='프랑크푸르트') return 'zic-ffm'; if((dept||'장년부')==='장년부' && FLAG[name]) return 'flag'; return 'zic-tone'; }
   // 구역 레벨 (개인 성장과 동일한 PLEVELS·flowerSVG 재사용, 누적시간 기준)
   function zoneLvIdx(hours){ var i=0; for(var k=0;k<PLEVELS.length;k++){ if(hours>=PLEVELS[k][0]) i=k; } return i; }
   function zoneLvPct(hours){ var i=zoneLvIdx(hours); var nx=PLEVELS[i+1]; if(!nx) return 100; var span=nx[0]-PLEVELS[i][0]; return Math.round(Math.min((hours-PLEVELS[i][0])/span,1)*100); }
@@ -1323,7 +1328,7 @@
         ? '<div class="zrank '+medal[i]+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10v3a5 5 0 01-10 0z"/><path d="M12 12v3M9 19h6M10 17h4"/></svg><b>'+(i+1)+'</b></div>'
         : '<div class="zrank num">'+(i+1)+'</div>';
       return '<div class="zcard'+(i===0?' top':'')+(me?' me':'')+'">'+rank+
-        '<div class="zic '+(isFlag?'flag':'zic-tone')+'">'+zoneSymbol(z[0],z[4])+'</div>'+
+        '<div class="zic '+zicClass(z[0],z[4])+'">'+zoneSymbol(z[0],z[4])+'</div>'+
         '<div class="zmid"><div class="zrow1"><span class="znm">'+zonePrefix(z[4])+z[0]+(me?'<span class="metag">우리 구역</span>':'')+(pray>0?'<span class="lvtag">지금 기도 중</span>':'')+'</span><span class="zh num">'+fmtHM(hours*60)+'</span></div>'+
         '<div class="zbarrow"><div class="ztrack"><i style="width:'+lvPct+'%"></i></div><span class="zlvsym" title="레벨 '+lvNum+'">'+flowerSVG(lvNum)+'</span></div>'+
         livePart+'</div><div class="ar">›</div></div>';
