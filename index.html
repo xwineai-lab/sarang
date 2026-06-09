@@ -147,6 +147,29 @@
   .presence i{display:block;width:20px;height:20px;border-radius:50%;border:2px solid var(--surface);margin-left:-7px;}
   .praylive{display:flex;align-items:center;gap:8px;margin-top:22px;font-family:"Gowun Dodum",sans-serif;font-size:13px;color:var(--ink);background:var(--amber-tint);padding:9px 15px;border-radius:999px;}
   .praylive b{color:var(--amber-deep);}
+  /* 중보기도 나눔 */
+  .ieentry{display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,#fdf4df,#f3f8ee);border-radius:16px;padding:13px 15px;margin-top:12px;cursor:pointer;box-shadow:0 6px 16px rgba(150,120,60,.07);}
+  .ieentry .ic{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.72);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .ieentry .ic svg{width:18px;height:18px;color:var(--amber-deep);}
+  .ieentry .tx{flex:1;}
+  .ieentry .tx .t{font-family:"Gowun Dodum",sans-serif;font-size:15px;color:var(--ink);}
+  .ieentry .tx .s{font-size:11.5px;color:var(--soft);margin-top:2px;}
+  .ieentry .go{color:var(--amber-deep);font-size:18px;}
+  .reqhint{font-size:11.5px;color:var(--soft);margin-top:10px;line-height:1.5;}
+  .reqcard{background:var(--surface);border-radius:16px;padding:15px 16px;margin-top:11px;box-shadow:0 6px 16px rgba(150,120,60,.07);}
+  .reqcard .rb{font-family:"Gowun Dodum",sans-serif;font-size:14.5px;color:var(--ink);line-height:1.6;white-space:pre-wrap;}
+  .reqcard .rf{display:flex;align-items:center;justify-content:space-between;margin-top:12px;}
+  .reqcard .rd{font-size:11px;color:var(--faint);}
+  .praybtn{display:inline-flex;align-items:center;gap:6px;border:1.5px solid var(--amber);background:#fff;color:var(--amber-deep);font-family:"Gowun Dodum",sans-serif;font-size:12.5px;padding:6px 13px;border-radius:999px;cursor:pointer;}
+  .praybtn.done{background:var(--amber-tint);border-color:var(--amber-tint);cursor:default;}
+  .praybtn svg{width:14px;height:14px;color:var(--amber-deep);}
+  .praybtn b{color:var(--amber-deep);}
+  .admincard{background:var(--surface);border-radius:14px;padding:14px 15px;margin-top:10px;box-shadow:0 5px 14px rgba(150,120,60,.06);}
+  .admincard .ab{font-family:"Gowun Dodum",sans-serif;font-size:14px;color:var(--ink);line-height:1.6;white-space:pre-wrap;}
+  .admincard .aa{display:flex;gap:8px;margin-top:12px;}
+  .admincard .aa button{flex:1;padding:9px;border-radius:10px;border:none;font-size:13px;font-family:"Gowun Dodum",sans-serif;cursor:pointer;}
+  .admincard .aa .ok{background:var(--amber);color:#fff;}
+  .admincard .aa .no{background:#fff;border:1.5px solid #e6b9b9;color:#c4503c;}
   /* 기도 기록 — 목업 */
   .todaycard{display:flex;align-items:center;gap:12px;background:var(--surface);border-radius:18px;padding:18px;margin-top:14px;box-shadow:0 8px 22px rgba(150,120,60,.08);}
   .todaycard .tcleft{flex:1;}
@@ -645,6 +668,11 @@
           <div class="h-title">나의 기록</div>
           <div class="h-desc" id="recSub" style="margin-top:7px;font-weight:600;color:var(--amber-deep);">고요한 등불 · 독일열방 구역</div>
         </div>
+        <div class="ieentry" onclick="go('intercede')">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21C5 16 3 12 3 8.5 3 6 5 4 7.5 4 9.5 4 11 5.2 12 6.7 13 5.2 14.5 4 16.5 4 19 4 21 6 21 8.5 21 12 19 16 12 21z"/></svg></div>
+          <div class="tx"><div class="t">중보기도 나눔</div><div class="s">서로의 기도제목을 익명으로 함께 나눠요</div></div>
+          <div class="go">›</div>
+        </div>
         <div class="rectabs">
           <button class="rectab on" id="rt-log" onclick="recTab('log')">기도 기록</button>
           <button class="rectab" id="rt-my" onclick="recTab('my')">나의 기도제목</button>
@@ -750,7 +778,7 @@
         <div class="mrow only" onclick="go('joinzone')" style="cursor:pointer;"><span>내 구역</span><span class="r" id="myZoneLabel">독일열방 ›</span></div>
         <div class="seclbl">캠페인</div>
         <div class="mrow"><span>현재 목표</span><span class="r">50,000 시간</span></div>
-        <div class="mrow"><span>관리자 대시보드</span><span class="r">준비 중</span></div>
+        <div class="mrow" onclick="go('admin')" style="cursor:pointer;"><span>중보기도 관리자 검수</span><span class="r">›</span></div>
         <div class="seclbl">계정</div>
         <div class="mrow" id="linkRow" onclick="go('connect')" style="cursor:pointer;"><span>기록 지키기 (이메일 연결)</span><span class="link" id="linkRowState">연결 ›</span></div>
         <div class="mrow"><span class="link" onclick="logout()">로그아웃</span><span></span></div>
@@ -760,6 +788,39 @@
     <div class="toast" id="toast"><div class="b" id="toastB">+12분</div><div class="s">내 기도가 모두의 시간에 더해졌어요</div></div>
 
     <!-- ===== TABBAR ===== -->
+    <!-- ===== 중보기도 나눔 ===== -->
+    <div class="screen" id="intercede">
+      <div class="pad">
+        <div class="subhead"><span class="bk" onclick="go('record')">‹</span><span class="ttl">중보기도 나눔</span></div>
+        <div class="h-desc" style="text-align:center;margin-top:6px;">서로의 기도제목을 익명으로 함께 나눠요</div>
+        <button class="primary" style="margin-top:14px;" id="reqOpenBtn" onclick="openReqCompose()">기도 요청하기</button>
+        <div id="reqCompose" style="display:none;margin-top:12px;">
+          <textarea class="minput" id="reqBody" maxlength="500" placeholder="함께 기도하고 싶은 제목을 익명으로 남겨주세요. 관리자 확인 후 공유돼요."></textarea>
+          <div class="mbtns"><button class="cancel" onclick="closeReqCompose()">취소</button><button class="save" onclick="submitRequest()">요청 보내기</button></div>
+          <div class="reqhint">※ 익명으로 등록되며, 관리자 승인 후 다른 분들과 공유됩니다.</div>
+        </div>
+        <div class="reclbl" style="margin-top:20px;">함께 기도하는 제목</div>
+        <div id="reqList"><div class="myempty">불러오는 중…</div></div>
+      </div>
+    </div>
+
+    <!-- ===== 관리자 검수 ===== -->
+    <div class="screen" id="admin">
+      <div class="pad">
+        <div class="subhead"><span class="bk" onclick="go('more')">‹</span><span class="ttl">관리자 검수</span></div>
+        <div id="adminGate" style="margin-top:16px;">
+          <div class="mseglbl">관리자 비밀번호</div>
+          <input class="minput" id="adminPass" type="password" placeholder="비밀번호" onkeydown="if(event.key==='Enter')adminLogin()">
+          <button class="primary" onclick="adminLogin()">확인</button>
+          <div class="reqhint" id="adminMsg"></div>
+        </div>
+        <div id="adminWrap" style="display:none;">
+          <div class="reclbl">검수 대기 중인 요청</div>
+          <div id="adminList"></div>
+        </div>
+      </div>
+    </div>
+
     <div class="tabbar">
       <div class="tab active" data-s="home" onclick="go('home')"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v9a1 1 0 001 1h12a1 1 0 001-1v-9"/></svg>홈</div>
       <div class="tab" data-s="pray" onclick="go('pray')"><svg viewBox="0 0 24 28" fill="none"><path d="M12 4 C9 9 6.5 15 6 19 C5.7 22 8 25 12 25 Z"/><path d="M12 4 C15 9 17.5 15 18 19 C18.3 22 16 25 12 25 Z"/></svg>기도하기</div>
@@ -837,7 +898,7 @@
     el.innerHTML='<span class="d"></span><span>방금 <b>'+zone+'</b> 구역이 함께 기도에 참여했어요</span>';
     el.classList.add('on'); clearTimeout(tickerTk); tickerTk=setTimeout(function(){ el.classList.remove('on'); }, 4500);
   }
-  const APP=['home','pray','zone','record','more','connect','topics'];
+  const APP=['home','pray','zone','record','more','connect','topics','intercede','admin'];
   function go(id){
     document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id));
     const tabbarEl=document.querySelector('.tabbar'); tabbarEl.classList.toggle('on',APP.includes(id));
@@ -850,6 +911,8 @@
     if(id==='joinzone') buildChips();
     if(id==='topics') buildTopics();
     if(id==='record'){ loadMyRecord(); recTab(window._recTab||'log'); }
+    if(id==='intercede') loadRequests();
+    if(id==='admin') resetAdminGate();
     if(id==='more' || id==='connect') syncAuthUI();
   }
   /* 프로필 기억하기 + 익명 가상 닉네임 */
@@ -1303,6 +1366,66 @@
     else { t.style.display='none'; t.innerHTML=''; }
   }
   function clearMyPrayLink(e){ if(e){e.stopPropagation();} MY_PRAYER_ID=null; MY_PRAYER_TITLE=''; updateMyPrayTag(); }
+  /* ===== 중보기도 나눔 ===== */
+  function showToast(big, sub){ var to=document.getElementById('toast'); if(!to) return; var b=document.getElementById('toastB'), s=to.querySelector('.s'); if(b)b.textContent=big; if(s)s.textContent=sub; to.classList.add('show'); setTimeout(function(){to.classList.remove('show');},2400); }
+  function openReqCompose(){ document.getElementById('reqCompose').style.display='block'; var ob=document.getElementById('reqOpenBtn'); if(ob)ob.style.display='none'; setTimeout(function(){try{document.getElementById('reqBody').focus();}catch(e){}},50); }
+  function closeReqCompose(){ document.getElementById('reqCompose').style.display='none'; var ob=document.getElementById('reqOpenBtn'); if(ob)ob.style.display='block'; document.getElementById('reqBody').value=''; }
+  async function submitRequest(){
+    var body=document.getElementById('reqBody').value.trim();
+    if(!body){ alert('기도 제목을 입력해주세요.'); return; }
+    if(!SB){ alert('연결이 필요합니다.'); return; }
+    try{ await SB.rpc('submit_prayer_request',{ p_body: body }); }
+    catch(e){ alert('전송에 실패했어요. 잠시 후 다시 시도해주세요.'); return; }
+    closeReqCompose();
+    showToast('기도 요청이 전달되었어요','관리자 확인 후 함께 나눠집니다');
+  }
+  function getPrayedSet(){ try{ return JSON.parse(localStorage.getItem('prayed_reqs')||'[]'); }catch(e){ return []; } }
+  function addPrayedSet(id){ try{ var a=getPrayedSet(); if(a.indexOf(String(id))<0){ a.push(String(id)); localStorage.setItem('prayed_reqs',JSON.stringify(a)); } }catch(e){} }
+  async function loadRequests(){
+    var list=document.getElementById('reqList'); if(!list) return;
+    if(!SB){ list.innerHTML='<div class="myempty">연결이 필요합니다.</div>'; return; }
+    var rows=[]; try{ var res=await SB.rpc('get_approved_requests'); rows=res.data||[]; }catch(e){ rows=[]; }
+    var prayed=getPrayedSet();
+    if(!rows.length){ list.innerHTML='<div class="myempty">아직 공유된 기도제목이 없어요.<br>첫 기도 요청을 남겨보세요.</div>'; return; }
+    var heart='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 21C5 16 3 12 3 8.5 3 6 5 4 7.5 4 9.5 4 11 5.2 12 6.7 13 5.2 14.5 4 16.5 4 19 4 21 6 21 8.5 21 12 19 16 12 21z"/></svg>';
+    list.innerHTML=rows.map(function(r){
+      var done=prayed.indexOf(String(r.id))>=0;
+      return '<div class="reqcard"><div class="rb">'+mpEsc(r.body)+'</div><div class="rf"><span class="rd">'+mpRelDay(r.created_at)+'</span><button class="praybtn'+(done?' done':'')+'" '+(done?'':('onclick="prayForReq('+r.id+',this)"'))+'>'+heart+'<span>기도했어요</span> <b data-c>'+(r.pray_count||0)+'</b></button></div></div>';
+    }).join('');
+  }
+  async function prayForReq(id, btn){
+    if(!SB) return;
+    addPrayedSet(id);
+    if(btn){ btn.classList.add('done'); btn.onclick=null; }
+    try{ var res=await SB.rpc('pray_for_request',{ p_id: id }); if(btn){ var c=btn.querySelector('[data-c]'); if(c && typeof res.data==='number') c.textContent=res.data; } }catch(e){}
+  }
+  /* 관리자 검수 */
+  var ADMIN_PASS='';
+  function resetAdminGate(){ ADMIN_PASS=''; var g=document.getElementById('adminGate'), w=document.getElementById('adminWrap'), p=document.getElementById('adminPass'), m=document.getElementById('adminMsg'); if(g)g.style.display='block'; if(w)w.style.display='none'; if(p)p.value=''; if(m)m.textContent=''; }
+  async function adminLogin(){
+    var pass=document.getElementById('adminPass').value; var msg=document.getElementById('adminMsg'); if(msg)msg.textContent='';
+    if(!pass){ if(msg)msg.textContent='비밀번호를 입력해주세요.'; return; }
+    if(!SB) return;
+    try{
+      var res=await SB.rpc('admin_pending',{ p_pass: pass });
+      ADMIN_PASS=pass;
+      document.getElementById('adminGate').style.display='none';
+      document.getElementById('adminWrap').style.display='block';
+      renderAdmin(res.data||[]);
+    }catch(e){ if(msg)msg.textContent='비밀번호가 올바르지 않습니다.'; }
+  }
+  function renderAdmin(rows){
+    var list=document.getElementById('adminList'); if(!list) return;
+    if(!rows.length){ list.innerHTML='<div class="myempty">검수할 요청이 없어요.</div>'; return; }
+    list.innerHTML=rows.map(function(r){
+      return '<div class="admincard"><div class="ab">'+mpEsc(r.body)+'</div><div class="aa"><button class="ok" onclick="adminAct('+r.id+',&quot;approved&quot;)">승인</button><button class="no" onclick="adminAct('+r.id+',&quot;rejected&quot;)">거절</button></div></div>';
+    }).join('');
+  }
+  async function adminAct(id, status){
+    if(!SB || !ADMIN_PASS) return;
+    try{ await SB.rpc('admin_set_status',{ p_id: id, p_status: status, p_pass: ADMIN_PASS }); }catch(e){ alert('처리에 실패했어요.'); return; }
+    try{ var res=await SB.rpc('admin_pending',{ p_pass: ADMIN_PASS }); renderAdmin(res.data||[]); }catch(e){}
+  }
   function korDur(m){ m=Math.round(m||0); if(m<=0) return '0분'; const h=Math.floor(m/60), r=m%60; return h?(h+'시간'+(r?' '+r+'분':'')):(r+'분'); }
   function setTxt(id,v){ var e=document.getElementById(id); if(e) e.textContent=v; }
   function fmtAmPm(d){ var h=d.getHours(),m=d.getMinutes(); var ap=h<12?'오전':'오후'; var hh=h%12; if(hh===0)hh=12; return ap+' '+hh+':'+String(m).padStart(2,'0'); }
