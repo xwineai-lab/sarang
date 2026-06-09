@@ -323,7 +323,7 @@
   .subhead .ttl{font-family:"Gowun Dodum",sans-serif;font-size:16px;}
 
   /* zone list */
-  .zcard{display:flex;align-items:center;gap:13px;background:var(--surface);border-radius:18px;padding:14px 16px;margin-bottom:11px;box-shadow:0 6px 16px rgba(150,120,60,.07);}
+  .zcard{display:flex;align-items:center;gap:12px;background:var(--surface);border-radius:16px;padding:11px 15px;margin-bottom:7px;box-shadow:0 5px 13px rgba(150,120,60,.06);}
   .zcard.top{box-shadow:0 8px 20px rgba(224,169,58,.18);outline:1.5px solid rgba(224,169,58,.5);}
   .zcard .zic{width:34px;height:34px;border-radius:50%;background:var(--amber-tint);display:flex;align-items:center;justify-content:center;color:var(--amber-deep);flex-shrink:0;}
   .zcard .zic.zic-jang{background:#fdeccd;color:#b5742a;}
@@ -337,7 +337,7 @@
   .zcard .ztrack{height:7px;border-radius:999px;background:var(--track);overflow:hidden;margin-top:8px;}
   .zcard .ztrack i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--amber),#eebb50);}
   .zcard .zp{font-size:11px;color:var(--soft);text-align:right;margin-top:5px;}
-  .zcard .zbarrow{display:flex;align-items:center;gap:9px;margin-top:8px;}
+  .zcard .zbarrow{display:flex;align-items:center;gap:9px;margin-top:6px;}
   .zcard .zbarrow .ztrack{flex:1;margin-top:0;}
   .zcard .zlvsym{flex-shrink:0;width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;}
   .zcard .zlvsym svg{width:26px;height:26px;}
@@ -1242,6 +1242,17 @@
     '쇼니':'<path d="M12 4L3.5 20h17z"/><path d="M12 4v16"/><path d="M9 20l3-6 3 6"/>',
     '구역 미정':'<circle cx="12" cy="12" r="9"/><path d="M9.6 9.6a2.5 2.5 0 0 1 4.6 1.4c0 1.7-2 2-2 3.5"/><path d="M12 17.5h.01"/>'
   };
+  // 비국가 구역 아이콘 색상 (배경 틴트 + 아이콘 색)
+  var ZSYMCOL={
+    '교역자':{bg:'#fbe6cf',fg:'#b5742a'},
+    '초록우산':{bg:'#dff2db',fg:'#3f9a45'},
+    '오픈도어스':{bg:'#dcebfb',fg:'#3a72c4'},
+    '밀알':{bg:'#f7ecc9',fg:'#bd8b1e'},
+    '에벤에셀':{bg:'#e8e6e1',fg:'#7a766d'},
+    '쇼니':{bg:'#fbe2d4',fg:'#c96b3e'},
+    '구역 미정':{bg:'#ece9f1',fg:'#8a83a0'}
+  };
+  function zicStyle(name, dept){ if((dept||'장년부')==='장년부' && !FLAG[name] && ZSYMCOL[name]){ var c=ZSYMCOL[name]; return ' style="background:'+c.bg+';color:'+c.fg+';"'; } return ''; }
   function zoneSymbol(name, dept){
     if((dept||'장년부')==='장년부'){
       if(FLAG[name]) return '<img class="zflag" src="https://flagcdn.com/w40/'+FLAG[name]+'.png" srcset="https://flagcdn.com/w80/'+FLAG[name]+'.png 2x" alt="">';
@@ -1286,7 +1297,7 @@
         ? '<div class="zrank '+medal[i]+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10v3a5 5 0 01-10 0z"/><path d="M12 12v3M9 19h6M10 17h4"/></svg><b>'+(i+1)+'</b></div>'
         : '<div class="zrank num">'+(i+1)+'</div>';
       return '<div class="zcard'+(i===0?' top':'')+(me?' me':'')+'">'+rank+
-        '<div class="zic '+deptColor(z[4])+(isFlag?' flag':'')+'">'+zoneSymbol(z[0],z[4])+'</div>'+
+        '<div class="zic '+deptColor(z[4])+(isFlag?' flag':'')+'"'+zicStyle(z[0],z[4])+'>'+zoneSymbol(z[0],z[4])+'</div>'+
         '<div class="zmid"><div class="zrow1"><span class="znm">'+zonePrefix(z[4])+z[0]+(me?'<span class="metag">우리 구역</span>':'')+(live>0?'<span class="lvtag">지금 기도 중</span>':'')+'</span><span class="zh num">'+fmtHM(hours*60)+'</span></div>'+
         '<div class="zbarrow"><div class="ztrack"><i style="width:'+lvPct+'%"></i></div><span class="zlvsym" title="레벨 '+lvNum+'">'+flowerSVG(lvNum)+'</span></div>'+
         livePart+'</div><div class="ar">›</div></div>';
