@@ -592,7 +592,7 @@
         </div>
         <div class="livecard">
           <span class="live-ava"><svg viewBox="0 0 24 24"><path d="M12 21 V8"/><path d="M12 13 C8.5 13 6.5 10.3 6.5 7 C9.8 7 12 9.2 12 12.2"/><path d="M12 11 C15.5 11 17.5 8.3 17.5 5 C14.2 5 12 7.2 12 10.2"/></svg></span>
-          <span class="livetx">지금 <b id="liveN">2</b>명이 함께 기도하고 있어요</span>
+          <span class="livetx" id="liveText">지금 함께 기도해요</span>
           <span class="presence" id="presence"></span>
         </div>
 
@@ -696,7 +696,7 @@
           <div id="mineGate" style="display:none;"></div>
         </div>
 
-        <div class="praylive" style="justify-content:center;"><span class="livedot"></span><span>지금 당신을 포함해 <b id="liveN2">19</b>명이 함께 기도하고 있어요</span></div>
+        <div class="praylive" style="justify-content:center;"><span class="livedot"></span><span id="liveText2">지금 함께 기도해요</span></div>
         <button class="finish start" id="finishBtn" onclick="togglePray()" style="margin-top:16px;">기도 시작</button>
       </div>
     </div>
@@ -907,7 +907,7 @@
   </div>
 
 <script>
-  const TOTAL=50000;let current=0,liveN=0;
+  const TOTAL=50000;let current=0,liveN=0,connN=0,_livePhase=0;
   let SB=null, MY_GROUP_ID=null, GROUPS_BY_NAME={}, SERVER_ZONES=null, SERVER_DEPT_ITEMS=null, PRESENCE=null, ZONE_LIVE={}, myEmail=null, isAnon=true, authProvider=null, amPraying=false, _prevPray={};
   function trackPresence(){ if(PRESENCE){ try{ PRESENCE.track({ zone:selZone, praying:amPraying, at:Date.now() }); }catch(e){} } }
   let MY_PRAYER_ID=null, MY_PRAYER_TITLE='', MY_PRAYERS=[], myEditId=null, modalStatus='praying';
@@ -1089,10 +1089,21 @@
     }catch(e){ if(msg) msg.textContent='문제가 발생했어요. 잠시 후 다시 시도해주세요.'; }
   }
   const fmt=n=>n.toLocaleString('en-US');
-  function updateLive(){
-    document.getElementById('liveN').textContent=liveN;
-    const l2=document.getElementById('liveN2'); if(l2) l2.textContent=liveN;
+  function liveLineText(){
+    var prep=Math.max(0,(connN||0)-(liveN||0));
+    if(_livePhase===0) return '지금 <b>'+(liveN||0)+'</b>명이 함께 기도하고 있어요';
+    return '지금 <b>'+prep+'</b>명이 기도를 준비하고 있어요';
   }
+  function renderLive(fade){
+    var t=liveLineText();
+    ['liveText','liveText2'].forEach(function(id){
+      var e=document.getElementById(id); if(!e) return;
+      if(fade){ e.style.transition='opacity .3s'; e.style.opacity='0'; setTimeout(function(){ e.innerHTML=t; e.style.opacity='1'; },280); }
+      else { e.innerHTML=t; }
+    });
+  }
+  function updateLive(){ renderLive(false); }
+  setInterval(function(){ _livePhase=_livePhase?0:1; renderLive(true); }, 4500);
   const PC=['#e0a93a','#6fa45c','#7aa7d8','#d98b5e','#b59ad8'];
   function buildPresence(){
     const p=document.getElementById('presence'); if(!p) return;
@@ -1152,7 +1163,7 @@
   }
   renderGauge();
   startVerseRotation();
-  setInterval(()=>{if(!SB && !running){liveN+=(Math.random()>.5?1:-1);liveN=Math.max(12,Math.min(26,liveN));updateLive();}},4000);
+  setInterval(()=>{if(!SB && !running){liveN+=(Math.random()>.5?1:-1);liveN=Math.max(12,Math.min(26,liveN));connN=liveN+Math.floor(Math.random()*7)+3;updateLive();}},4000);
 
   // ===== active prayer timer — 벽시계(실제 경과 시각) 기준. 화면이 꺼져도 시간 손실 없음 =====
   const CIRC=540, goalSec=1800;
@@ -1713,15 +1724,15 @@
     const key = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Math.random());
     PRESENCE = SB.channel('prayer-room', { config:{ presence:{ key: key } } });
     PRESENCE.on('presence', { event:'sync' }, function(){
-      const st = PRESENCE.presenceState(); let total=0; const zc={}; var nowPray={};
+      const st = PRESENCE.presenceState(); let prayCount=0, connCount=0; const zc={}; var nowPray={};
       Object.keys(st).forEach(function(k){
-        var arr=st[k]||[]; var m=arr[0]||{};
+        var arr=st[k]||[]; var m=arr[0]||{}; connCount++;            // 접속(준비) 포함 전체
         var praying=arr.some(function(x){ return x && x.praying; });   // 타이머가 도는 사람만
         nowPray[k]=praying;
-        if(praying){ total++; var z=m.zone; if(z){ zc[z]=(zc[z]||0)+1; if(!_prevPray[k]) pushTicker(z); } }   // 기도 시작 순간 티커
+        if(praying){ prayCount++; var z=m.zone; if(z){ zc[z]=(zc[z]||0)+1; if(!_prevPray[k]) pushTicker(z); } }   // 기도 시작 순간 티커
       });
       _prevPray=nowPray;
-      liveN = total; ZONE_LIVE = zc; updateLive();
+      liveN = prayCount; connN = connCount; ZONE_LIVE = zc; updateLive();
       if(document.getElementById('zone').classList.contains('on')) buildZones();
     });
     PRESENCE.subscribe(function(status){ if(status==='SUBSCRIBED'){ trackPresence(); } });
