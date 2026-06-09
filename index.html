@@ -266,7 +266,7 @@
   .ringcard .rc-lbl{font-family:"Gowun Dodum",sans-serif;font-size:16px;color:#4f6a3a;}
   .ringcard .rc-btn{margin-top:5px;border:none;cursor:pointer;background:linear-gradient(135deg,#9cb070,#7e9a54);color:#fff;font-family:"Gowun Dodum",sans-serif;font-size:15px;padding:9px 20px;border-radius:999px;box-shadow:0 6px 14px rgba(120,150,80,.3);display:inline-flex;align-items:center;gap:6px;}
   .ringcard .rc-tri{font-size:10px;}
-  .ringcard .rc-spin{transform-origin:100px 100px;animation:rcspin 9s linear infinite;}
+  .ringcard .rc-spin{transform-origin:100px 100px;animation:rcspin 12s linear infinite;}
   @keyframes rcspin{to{transform:rotate(360deg);}}
   @media (prefers-reduced-motion: reduce){ .ringcard .rc-spin{animation:none;} }
   /* ===== 업로드 배경 이미지 적용 ===== */
@@ -728,9 +728,9 @@
             <svg viewBox="0 0 200 200" class="rc-svg">
               <circle cx="100" cy="100" r="92" fill="none" stroke="#cdbfa0" stroke-width="2" stroke-dasharray="1.5 7" opacity=".65"/>
               <circle cx="100" cy="100" r="84" fill="rgba(255,255,255,.5)"/>
+              <circle cx="100" cy="100" r="92" fill="none" stroke="#8aa363" stroke-width="5" stroke-linecap="round" stroke-dasharray="372 578" transform="rotate(-90 100 100)"/>
               <g class="rc-spin">
-                <circle cx="100" cy="100" r="92" fill="none" stroke="#8aa363" stroke-width="5" stroke-linecap="round" stroke-dasharray="372 578" transform="rotate(-90 100 100)"/>
-                <circle cx="100" cy="8" r="5.5" fill="#fff" stroke="#8aa363" stroke-width="2"/>
+                <circle cx="100" cy="8" r="5" fill="#fff" stroke="#8aa363" stroke-width="2"/>
               </g>
             </svg>
             <div class="rc-center">
