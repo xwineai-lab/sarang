@@ -1201,7 +1201,7 @@
   }
   // join: 부서 → 하위그룹(구역/마을/반)
   let selDept='장년부', selZone='독일열방';
-  const SUBG={'청년부':['1마을','2마을','3마을','4마을','5마을','6마을'],'청소년부':['중등 1반','중등 2반','고등 1반','고등 2반']};
+  const SUBG={'청년부':['사랑마을','동우마을','은별마을','수미마을','하영마을'],'청소년부':['상곤쌤반','영웅쌤반','새롬쌤반','상준쌤반','수미샘반','유나쌤반','하얀쌤반','본형쌤반']};
   const SUBLABEL={'장년부':'선교지 구역','청년부':'마을','청소년부':'반'};
   // 구역 목록: DB(groups)에서 불러온 SERVER_DEPT_ITEMS 우선, 없으면(로딩 전·데모) 하드코딩 폴백
   function deptItems(d){ if(SERVER_DEPT_ITEMS && SERVER_DEPT_ITEMS[d] && SERVER_DEPT_ITEMS[d].length) return SERVER_DEPT_ITEMS[d]; return d==='장년부'?ZONES.map(z=>z[0]):SUBG[d]; }
