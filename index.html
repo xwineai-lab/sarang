@@ -693,11 +693,12 @@
           <div class="zst"><div class="zst-ic icl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21 V11"/><path d="M12 14 C8.5 14 6.5 11.3 6.5 8 9.8 8 12 10.2 12 13.2"/><path d="M12 13 C15.5 13 17.5 10.3 17.5 7 14.2 7 12 9.2 12 12.2"/></svg></div><div class="zst-l">지금 기도 중</div><div class="zst-v" id="zstat-live">0</div></div>
         </div>
         <div class="zdepttabs">
-          <button class="zdtab on" id="zdt-jang" onclick="zoneTab('장년부')">장년부<small id="dept-jang">0분</small></button>
+          <button class="zdtab on" id="zdt-all" onclick="zoneTab('전체')">전체<small id="dept-all">0분</small></button>
+          <button class="zdtab" id="zdt-jang" onclick="zoneTab('장년부')">장년부<small id="dept-jang">0분</small></button>
           <button class="zdtab" id="zdt-young" onclick="zoneTab('청년부')">청년부<small id="dept-young">0분</small></button>
           <button class="zdtab" id="zdt-youth" onclick="zoneTab('청소년부')">청소년부<small id="dept-youth">0분</small></button>
         </div>
-        <div class="subglabel" id="zoneSubLabel" style="margin:16px 2px 6px;">장년부 · 선교지 구역</div>
+        <div class="subglabel" id="zoneSubLabel" style="margin:16px 2px 6px;">전체 · 모든 구역 순위</div>
         <div id="zoneList"></div>
       </div>
     </div>
@@ -1192,13 +1193,14 @@
   const IC={church:'<path d="M12 3l5 4v3M12 3L7 7v3M5 21V10h14v11M9 21v-4h6v4"/><path d="M12 5v3M10.5 6.5h3"/>',
     people:'<circle cx="9" cy="8" r="2.6"/><circle cx="16" cy="9" r="2.1"/><path d="M4 18c0-2.6 2.2-4.5 5-4.5s5 1.9 5 4.5M14.5 18c0-1.8 1-3.2 3-3.2"/>',
     person:'<circle cx="12" cy="8" r="3"/><path d="M6 19c0-3 2.7-5 6-5s6 2 6 5"/>'};
-  var zoneDept='장년부';
+  var zoneDept='전체';
   function zonePrefix(dept){ return dept==='청년부'?'청년부 ':(dept==='청소년부'?'청소년부 ':''); }
   function zoneTab(d){
     zoneDept=d;
-    var map={'장년부':'zdt-jang','청년부':'zdt-young','청소년부':'zdt-youth'};
-    ['장년부','청년부','청소년부'].forEach(function(x){ var b=document.getElementById(map[x]); if(b) b.classList.toggle('on', x===d); });
-    var sl=document.getElementById('zoneSubLabel'); if(sl) sl.textContent = d==='장년부'?'장년부 · 선교지 구역':(d==='청년부'?'청년부 · 마을':'청소년부 · 반');
+    var map={'전체':'zdt-all','장년부':'zdt-jang','청년부':'zdt-young','청소년부':'zdt-youth'};
+    ['전체','장년부','청년부','청소년부'].forEach(function(x){ var b=document.getElementById(map[x]); if(b) b.classList.toggle('on', x===d); });
+    var lbl={'전체':'전체 · 모든 구역 순위','장년부':'장년부 · 선교지 구역','청년부':'청년부 · 마을','청소년부':'청소년부 · 반'};
+    var sl=document.getElementById('zoneSubLabel'); if(sl) sl.textContent = lbl[d]||'전체 · 모든 구역 순위';
     buildZones();
   }
   function buildZones(){
@@ -1209,7 +1211,7 @@
     e=document.getElementById('zstat-total'); if(e) e.textContent=fmtHM(tot*60);
     e=document.getElementById('zstat-zones'); if(e) e.textContent=zc+' 구역';
     e=document.getElementById('zstat-live'); if(e) e.textContent=lv+' 구역';
-    var Z = all.filter(function(z){ return (z[4]||'장년부')===zoneDept; });
+    var Z = (zoneDept==='전체') ? all.slice() : all.filter(function(z){ return (z[4]||'장년부')===zoneDept; });
     Z.sort(function(a,b){ return b[1]-a[1]; });
     const max=Math.max.apply(null, Z.map(function(z){ return z[1]; }))||1;
     const medal=['gold','silver','bronze'];
@@ -1556,6 +1558,7 @@
     const { data } = await SB.rpc('dept_totals'); if(!data) return;
     const m={}; data.forEach(r=>{ m[r.dept_name]=Number(r.hours)||0; });
     const set=(id,v)=>{ const e=document.getElementById(id); if(e) e.textContent=fmtHM((v||0)*60); };
+    set('dept-all', (m['장년부']||0)+(m['청년부']||0)+(m['청소년부']||0));
     set('dept-jang', m['장년부']); set('dept-young', m['청년부']); set('dept-youth', m['청소년부']);
   }
   async function loadRankings(){
