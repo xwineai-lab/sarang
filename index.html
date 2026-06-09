@@ -350,6 +350,7 @@
   .admincard .aa .ok{background:var(--amber);color:#fff;}
   .admincard .aa .no{background:#fff;border:1.5px solid #e6b9b9;color:#c4503c;}
   /* 기도 기록 — 목업 */
+  #record{background:url('bg-record.png') top center/cover no-repeat, #f4ecdb;}
   .todaycard{display:flex;align-items:center;gap:12px;background:var(--surface);border-radius:18px;padding:18px;margin-top:14px;box-shadow:0 8px 22px rgba(150,120,60,.08);}
   .todaycard .tcleft{flex:1;}
   .todaycard .tct{font-family:"Gowun Dodum",sans-serif;font-size:16px;color:var(--ink);}
@@ -835,7 +836,7 @@
           </svg>
           <div class="clock" id="clock">00:00:00</div>
         </div>
-        <div class="praylivebar"><span class="plb-ava"><span class="wava" style="background:#cdb89a"><svg viewBox="0 0 36 36"><circle cx="18" cy="14" r="6.3" fill="#fff" opacity=".92"/><path d="M6 33c0-6.6 5.4-10 12-10s12 3.4 12 10" fill="#fff" opacity=".92"/></svg></span><span class="wava" style="background:#9aa6a0"><svg viewBox="0 0 36 36"><circle cx="18" cy="14" r="6.3" fill="#fff" opacity=".92"/><path d="M6 33c0-6.6 5.4-10 12-10s12 3.4 12 10" fill="#fff" opacity=".92"/></svg></span><span class="wava" style="background:#e3b86a"><svg viewBox="0 0 36 36"><circle cx="18" cy="14" r="6.3" fill="#fff" opacity=".92"/><path d="M6 33c0-6.6 5.4-10 12-10s12 3.4 12 10" fill="#fff" opacity=".92"/></svg></span></span><span class="plb-tx">지금 <b id="prayLiveN">0</b>명이 함께 기도 중</span></div>
+        <div class="praylivebar"><span class="plb-ava"><span class="wava" style="background:#cdb89a"><svg viewBox="0 0 36 36"><circle cx="18" cy="14" r="6.3" fill="#fff" opacity=".92"/><path d="M6 33c0-6.6 5.4-10 12-10s12 3.4 12 10" fill="#fff" opacity=".92"/></svg></span><span class="wava" style="background:#9aa6a0"><svg viewBox="0 0 36 36"><circle cx="18" cy="14" r="6.3" fill="#fff" opacity=".92"/><path d="M6 33c0-6.6 5.4-10 12-10s12 3.4 12 10" fill="#fff" opacity=".92"/></svg></span><span class="wava" style="background:#e3b86a"><svg viewBox="0 0 36 36"><circle cx="18" cy="14" r="6.3" fill="#fff" opacity=".92"/><path d="M6 33c0-6.6 5.4-10 12-10s12 3.4 12 10" fill="#fff" opacity=".92"/></svg></span></span><span class="plb-tx">🙏 <b id="prayLiveN">0</b>명 기도 중 · 📖 <b id="prayPrepN">0</b>명 준비 중</span></div>
 
         <div class="topiccard" id="topicCard">
           <div class="praymode">
@@ -901,7 +902,8 @@
         <div class="statusbar"><span>9:41</span><span class="r">5G &nbsp; 87%</span></div>
         <div style="text-align:center;margin:6px 0 4px;">
           <div class="h-title">나의 기록</div>
-          <div class="h-desc" id="recSub" style="margin-top:7px;font-weight:600;color:var(--amber-deep);">고요한 등불 · 독일열방 구역</div>
+          <div class="h-desc" style="margin-top:6px;">하나님께 드린 시간을 돌아보세요</div>
+          <div class="h-desc" id="recSub" style="margin-top:5px;font-weight:600;color:var(--amber-deep);">고요한 등불 · 독일열방 구역</div>
         </div>
         <div class="ieentry" onclick="go('intercede')">
           <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21C5 16 3 12 3 8.5 3 6 5 4 7.5 4 9.5 4 11 5.2 12 6.7 13 5.2 14.5 4 16.5 4 19 4 21 6 21 8.5 21 12 19 16 12 21z"/></svg></div>
@@ -1267,8 +1269,10 @@
     if(zs){ var prep=Math.max(0,(connN||0)-(liveN||0)); zs.innerHTML='<span class="zls-pray">🙏 기도 중 <b>'+(liveN||0)+'</b></span><span class="zls-prep">📖 기도 준비 중 <b>'+prep+'</b></span>'; }
     var nc=document.getElementById('liveCount'); if(nc) nc.textContent=(connN||0);
     var am=document.getElementById('avaMore'); if(am) am.textContent='+'+Math.max(0,(connN||0)-5);
-    var pn=document.getElementById('prayLiveN'); if(pn) pn.textContent=(connN||0);
-    var lt2=document.getElementById('liveText2'); if(lt2) lt2.textContent=(connN||0);
+    var prepP=Math.max(0,(connN||0)-(liveN||0));
+    var pn=document.getElementById('prayLiveN'); if(pn) pn.textContent=(liveN||0);
+    var pp=document.getElementById('prayPrepN'); if(pp) pp.textContent=prepP;
+    var lt2=document.getElementById('liveText2'); if(lt2) lt2.textContent=(liveN||0);
   }
   setInterval(function(){ _livePhase=_livePhase?0:1; renderLive(true); }, 4500);
   const PC=['#e0a93a','#6fa45c','#7aa7d8','#d98b5e','#b59ad8'];
@@ -1448,6 +1452,8 @@
   function zoneLvPct(hours){ var i=zoneLvIdx(hours); var nx=PLEVELS[i+1]; if(!nx) return 100; var span=nx[0]-PLEVELS[i][0]; return Math.round(Math.min((hours-PLEVELS[i][0])/span,1)*100); }
   var zoneDept='전체';
   function zonePrefix(dept){ return dept==='청년부'?'청년부 ':(dept==='청소년부'?'청소년부 ':''); }
+  // 교역자·청년부·청소년부는 그대로, 나머지 구역은 '구역' 접미사 (이미 포함된 경우 제외)
+  function zoneDisplayName(nm){ if(nm==='교역자'||nm==='청년부'||nm==='청소년부') return nm; if(/구역/.test(nm)) return nm; return nm+' 구역'; }
   function zoneTab(d){
     zoneDept=d;
     var map={'전체':'zdt-all','장년부':'zdt-jang','청년부':'zdt-young','청소년부':'zdt-youth'};
@@ -1495,7 +1501,7 @@
         : '<div class="zrank num">'+(i+1)+'</div>';
       return '<div class="zcard'+(i===0?' top':'')+(me?' me':'')+'">'+rank+
         '<div class="zic '+zicClass(nm,z[4])+'">'+zoneSymbol(nm,z[4])+'</div>'+
-        '<div class="zmid"><div class="zrow1"><span class="znm">'+pfx+nm+(me?'<span class="metag">우리 구역</span>':'')+(pray>0?'<span class="lvtag">지금 기도 중</span>':'')+'</span><span class="zh num">'+fmtHM(hours*60)+'</span></div>'+
+        '<div class="zmid"><div class="zrow1"><span class="znm">'+pfx+zoneDisplayName(nm)+(me?'<span class="metag">우리 구역</span>':'')+(pray>0?'<span class="lvtag">지금 기도 중</span>':'')+'</span><span class="zh num">'+fmtHM(hours*60)+'</span></div>'+
         '<div class="zbarrow"><div class="ztrack"><i style="width:'+lvPct+'%"></i></div><span class="zlvsym" title="레벨 '+lvNum+'">'+flowerSVG(lvNum)+'</span></div>'+
         livePart+'</div><div class="ar">›</div></div>';
     }).join('');
