@@ -41,11 +41,24 @@
 
   .h-title{font-family:"Gowun Dodum",sans-serif;font-size:22px;color:var(--ink);letter-spacing:-.3px;}
   .h-desc{font-size:13px;color:var(--soft);margin-top:6px;line-height:1.5;}
-  .sloganstrip{text-align:center;font-family:"Gowun Dodum",sans-serif;font-size:12.5px;color:var(--amber-deep);background:linear-gradient(90deg,var(--amber-tint),#fbe6b8,var(--amber-tint));background-size:200% 100%;border-radius:14px;padding:9px 12px;line-height:1.6;margin-bottom:16px;animation:sloganShimmer 6s ease-in-out infinite, sloganBreathe 4.5s ease-in-out infinite;}
+  .sloganstrip{display:flex;align-items:center;gap:13px;text-align:left;font-family:"Gowun Dodum",sans-serif;font-size:13px;color:var(--amber-deep);
+    background:linear-gradient(110deg,#fdf4df,#fbe7bd 55%,#fdf4df);background-size:200% 100%;border-radius:18px;padding:13px 16px;line-height:1.55;margin-bottom:16px;
+    position:relative;overflow:hidden;box-shadow:0 6px 16px rgba(200,160,70,.12);animation:sloganShimmer 7s ease-in-out infinite;}
   @keyframes sloganShimmer{0%{background-position:0% 0%}50%{background-position:100% 0%}100%{background-position:0% 0%}}
-  @keyframes sloganBreathe{0%,100%{transform:scale(1);opacity:.92}50%{transform:scale(1.015);opacity:1}}
-  .verseline{text-align:center;font-family:"Gowun Dodum",sans-serif;font-size:12.5px;color:var(--soft);margin-top:10px;line-height:1.55;min-height:18px;transition:opacity .5s;}
-  .verseline b{color:var(--amber-deep);}
+  .sloganstrip .ss-ico{flex-shrink:0;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.72);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(200,160,70,.16);}
+  .sloganstrip .ss-ico svg{width:22px;height:22px;stroke:var(--amber-deep);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
+  .sloganstrip .ss-tx{flex:1;}
+  .sloganstrip .ss-deco{flex-shrink:0;width:44px;height:54px;opacity:.9;}
+  /* 말씀 카드 */
+  .versecard2{position:relative;background:var(--surface);border-radius:18px;padding:20px 20px 15px;margin-top:16px;text-align:center;box-shadow:0 8px 22px rgba(150,120,60,.08);}
+  .versecard2 .vc-quote{position:absolute;top:4px;left:16px;font-family:"Outfit";font-size:40px;line-height:1;color:rgba(224,169,58,.38);}
+  .vc-text{font-family:"Gowun Dodum",sans-serif;font-size:14.5px;color:var(--ink);line-height:1.65;transition:opacity .5s;min-height:22px;padding:0 4px;}
+  .vc-ref{font-family:"Gowun Dodum",sans-serif;font-size:12px;color:var(--soft);margin-top:8px;transition:opacity .5s;min-height:14px;}
+  .vc-div{display:flex;align-items:center;justify-content:center;gap:9px;margin-top:13px;}
+  .vc-div span{height:1px;width:38px;}
+  .vc-div span:first-child{background:linear-gradient(90deg,transparent,rgba(224,169,58,.5));}
+  .vc-div span:last-child{background:linear-gradient(90deg,rgba(224,169,58,.5),transparent);}
+  .vc-div .sp{font-size:11px;color:var(--amber);}
   /* entry / auth */
   .entry-pad{padding:56px 26px 30px;display:flex;flex-direction:column;height:100%;}
   .bigemblem{width:90px;height:90px;border-radius:28px;background:var(--surface);display:flex;align-items:center;justify-content:center;margin:0 auto;box-shadow:0 12px 28px rgba(150,120,60,.13);}
@@ -114,6 +127,9 @@
   .glive .dot{width:7px;height:7px;border-radius:50%;background:var(--green);}
   /* live presence */
   .livecard{display:flex;align-items:center;gap:11px;background:var(--surface);border-radius:16px;padding:12px 14px;margin-top:14px;box-shadow:0 6px 16px rgba(150,120,60,.07);}
+  .live-ava{flex-shrink:0;width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#eef6e9,#e1eed7);display:flex;align-items:center;justify-content:center;position:relative;}
+  .live-ava svg{width:19px;height:19px;stroke:var(--green);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;}
+  .live-ava::after{content:"";position:absolute;inset:-3px;border-radius:50%;border:1.5px solid var(--green);opacity:.35;animation:livepulse 2s ease-out infinite;}
   .livedot{position:relative;width:9px;height:9px;border-radius:50%;background:var(--green);flex-shrink:0;}
   .livedot::after{content:"";position:absolute;inset:-6px;border-radius:50%;border:2px solid var(--green);opacity:.55;animation:livepulse 1.9s ease-out infinite;}
   @keyframes livepulse{0%{transform:scale(.5);opacity:.6}100%{transform:scale(1.7);opacity:0}}
@@ -381,17 +397,36 @@
           <div class="bell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 01-3.4 0"/></svg></div>
         </div>
 
-        <div class="sloganstrip">우리의 기도는 교회의 기둥이다<br>우리가 기도하면, 하나님이 일하신다</div>
+        <div class="sloganstrip">
+          <div class="ss-ico"><svg viewBox="0 0 24 24"><path d="M12 2 V6 M10 4 H14"/><path d="M5 21 V11 L12 7 L19 11 V21 Z"/><path d="M10 21 V16 H14 V21"/></svg></div>
+          <div class="ss-tx">우리의 기도는 교회의 기둥이다<br>우리가 기도하면, 하나님이 일하신다</div>
+          <svg class="ss-deco" viewBox="0 0 44 54" fill="none">
+            <path d="M33 5 V25 M27 11 H39" stroke="#d9a94e" stroke-width="1.6" stroke-linecap="round" opacity=".7"/>
+            <path d="M9 50 C11 37 15 28 23 21" stroke="#c9b487" stroke-width="1.5" stroke-linecap="round"/>
+            <g fill="#b9d097" opacity=".9">
+              <ellipse cx="12" cy="41" rx="4" ry="2.2" transform="rotate(-35 12 41)"/>
+              <ellipse cx="17" cy="33" rx="4" ry="2.2" transform="rotate(-30 17 33)"/>
+              <ellipse cx="22" cy="25" rx="3.8" ry="2.1" transform="rotate(-25 22 25)"/>
+              <ellipse cx="8" cy="37" rx="3.5" ry="2" transform="rotate(22 8 37)"/>
+              <ellipse cx="13" cy="29" rx="3.5" ry="2" transform="rotate(26 13 29)"/>
+            </g>
+          </svg>
+        </div>
 
         <div class="h-title">함께 채워가는 기도</div>
         <div class="h-desc">작은 기도가 모여 큰 변화를 만듭니다.</div>
 
         <div class="gnum"><span class="big num" id="cur">0분</span><span class="tot">/ 50,000시간</span></div>
         <div class="gbarwrap"><div class="gbar"><i id="bar"></i></div><span class="gpct" id="pct">64%</span></div>
-        <div class="verseline" id="verseLine"></div>
+        <div class="versecard2">
+          <span class="vc-quote">“</span>
+          <div class="vc-text" id="verseLine"></div>
+          <div class="vc-ref" id="verseRef"></div>
+          <div class="vc-div"><span></span><span class="sp">✦</span><span></span></div>
+        </div>
         <div class="livecard">
-          <span class="livedot"></span>
-          <span class="livetx">지금 <b id="liveN">18</b>명이 함께 기도하고 있어요</span>
+          <span class="live-ava"><svg viewBox="0 0 24 24"><path d="M12 21 V8"/><path d="M12 13 C8.5 13 6.5 10.3 6.5 7 C9.8 7 12 9.2 12 12.2"/><path d="M12 11 C15.5 11 17.5 8.3 17.5 5 C14.2 5 12 7.2 12 10.2"/></svg></span>
+          <span class="livetx">지금 <b id="liveN">2</b>명이 함께 기도하고 있어요</span>
           <span class="presence" id="presence"></span>
         </div>
 
@@ -797,9 +832,17 @@
   let verseIdx=Math.floor(Math.random()*VERSES.length), verseTk=null, campaignDone=false;
   function paintVerse(){
     const v=document.getElementById('verseLine'); if(!v) return;
-    const html = campaignDone ? '<b>"다 이루었다"</b> — 5만 시간을 가득 채웠습니다!' : VERSES[verseIdx % VERSES.length];
-    v.style.opacity='0';
-    setTimeout(function(){ v.innerHTML=html; v.style.opacity='1'; }, 260);
+    const ref=document.getElementById('verseRef');
+    var text, r;
+    if(campaignDone){ text='다 이루었다 — 5만 시간을 가득 채웠습니다!'; r='요 19:30'; }
+    else {
+      var raw = VERSES[verseIdx % VERSES.length];
+      var parts = raw.split(' · ');
+      text = (parts[0]||raw).replace(/<\/?b>/g,'').replace(/^["“”']+|["“”']+$/g,'');
+      r = parts[1] || '';
+    }
+    v.style.opacity='0'; if(ref) ref.style.opacity='0';
+    setTimeout(function(){ v.textContent=text; if(ref) ref.textContent=r; v.style.opacity='1'; if(ref) ref.style.opacity='1'; }, 260);
   }
   function startVerseRotation(){
     clearInterval(verseTk); paintVerse();
