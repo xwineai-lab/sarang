@@ -311,6 +311,9 @@
   .zcard{display:flex;align-items:center;gap:13px;background:var(--surface);border-radius:18px;padding:14px 16px;margin-bottom:11px;box-shadow:0 6px 16px rgba(150,120,60,.07);}
   .zcard.top{box-shadow:0 8px 20px rgba(224,169,58,.18);outline:1.5px solid rgba(224,169,58,.5);}
   .zcard .zic{width:34px;height:34px;border-radius:50%;background:var(--amber-tint);display:flex;align-items:center;justify-content:center;color:var(--amber-deep);flex-shrink:0;}
+  .zcard .zic.zic-jang{background:#fdeccd;color:#b5742a;}
+  .zcard .zic.zic-young{background:#dcf3e2;color:#2f8a52;}
+  .zcard .zic.zic-youth{background:#dceafb;color:#2f6cb0;}
   .zcard .zic svg{width:19px;height:19px;}
   .zcard .zmid{flex:1;min-width:0;}
   .zcard .zrow1{display:flex;justify-content:space-between;align-items:baseline;}
@@ -1192,7 +1195,12 @@
   const ZONES=[['코소보',412,'person'],['그리스',388,'people'],['세네갈',351,'people'],['독일열방',326,'person',true],['우크라이나',304,'people'],['영국',288,'person'],['이스라엘',263,'people'],['요르단',241,'person'],['알바니아',224,'people'],['오픈도어스',206,'person'],['카메룬',192,'people'],['청년부',178,'people'],['케냐',164,'person'],['태국',150,'people'],['이집트',138,'person'],['초록우산',124,'people'],['루마니아',110,'person'],['툴루즈',96,'people'],['프랑크푸르트',88,'church']];
   const IC={church:'<path d="M12 3l5 4v3M12 3L7 7v3M5 21V10h14v11M9 21v-4h6v4"/><path d="M12 5v3M10.5 6.5h3"/>',
     people:'<circle cx="9" cy="8" r="2.6"/><circle cx="16" cy="9" r="2.1"/><path d="M4 18c0-2.6 2.2-4.5 5-4.5s5 1.9 5 4.5M14.5 18c0-1.8 1-3.2 3-3.2"/>',
-    person:'<circle cx="12" cy="8" r="3"/><path d="M6 19c0-3 2.7-5 6-5s6 2 6 5"/>'};
+    person:'<circle cx="12" cy="8" r="3"/><path d="M6 19c0-3 2.7-5 6-5s6 2 6 5"/>',
+    globe:'<circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.5 2.3 3.9 5.4 3.9 8.5S14.5 18.2 12 20.5C9.5 18.2 8.1 15.1 8.1 12S9.5 5.8 12 3.5z"/>',
+    house:'<path d="M4 11l8-6.5 8 6.5"/><path d="M6 10v9h12v-9M10 19v-5h4v5"/>',
+    book:'<path d="M12 6.5C10.5 5.3 8.5 4.8 5.5 4.8v12.6c3 0 5 .5 6.5 1.7 1.5-1.2 3.5-1.7 6.5-1.7V4.8c-3 0-5 .5-6.5 1.7z"/><path d="M12 6.5v12.3"/>'};
+  function deptIcon(dept){ return dept==='청년부'?'house':(dept==='청소년부'?'book':'globe'); }
+  function deptColor(dept){ return dept==='청년부'?'zic-young':(dept==='청소년부'?'zic-youth':'zic-jang'); }
   var zoneDept='전체';
   function zonePrefix(dept){ return dept==='청년부'?'청년부 ':(dept==='청소년부'?'청소년부 ':''); }
   function zoneTab(d){
@@ -1224,7 +1232,7 @@
         ? '<div class="zrank '+medal[i]+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10v3a5 5 0 01-10 0z"/><path d="M12 12v3M9 19h6M10 17h4"/></svg><b>'+(i+1)+'</b></div>'
         : '<div class="zrank num">'+(i+1)+'</div>';
       return '<div class="zcard'+(i===0?' top':'')+(me?' me':'')+'">'+rank+
-        '<div class="zic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">'+IC[z[2]]+'</svg></div>'+
+        '<div class="zic '+deptColor(z[4])+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">'+IC[deptIcon(z[4])]+'</svg></div>'+
         '<div class="zmid"><div class="zrow1"><span class="znm">'+zonePrefix(z[4])+z[0]+(me?'<span class="metag">우리 구역</span>':'')+(live>0?'<span class="lvtag">지금 기도 중</span>':'')+'</span><span class="zh num">'+fmtHM(hours*60)+'</span></div>'+
         '<div class="ztrack"><i style="width:'+pct+'%"></i></div><div class="zp">'+livePart+pct+'%</div></div><div class="ar">›</div></div>';
     }).join('');
