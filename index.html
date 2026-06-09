@@ -322,6 +322,26 @@
   .zcard .ar{color:var(--faint);font-size:17px;}
   .zcard.me{outline:1.5px solid rgba(224,169,58,.55);background:var(--amber-tint);}
   .metag{font-size:10px;color:var(--amber-deep);background:#fff;border:1px solid rgba(224,169,58,.5);padding:1px 7px;border-radius:7px;margin-left:7px;vertical-align:2px;}
+  /* 구역별 — 통계카드/부서탭/메달 */
+  .zstats{display:flex;gap:9px;margin-top:8px;}
+  .zst{flex:1;background:var(--surface);border-radius:16px;padding:13px 8px;text-align:center;box-shadow:0 6px 16px rgba(150,120,60,.06);}
+  .zst .zst-ic{width:30px;height:30px;border-radius:50%;margin:0 auto 7px;display:flex;align-items:center;justify-content:center;}
+  .zst .zst-ic svg{width:17px;height:17px;}
+  .zst .ich{background:#fbe7ec;color:#d27a93;}
+  .zst .icp{background:var(--amber-tint);color:var(--amber-deep);}
+  .zst .icl{background:#eaf3e1;color:#6fa45c;}
+  .zst .zst-l{font-size:10.5px;color:var(--soft);}
+  .zst .zst-v{font-family:"Outfit",sans-serif;font-size:14px;font-weight:600;color:var(--ink);margin-top:3px;}
+  .zdepttabs{display:flex;background:var(--amber-tint);border-radius:14px;padding:4px;margin-top:14px;gap:2px;}
+  .zdtab{flex:1;border:none;background:none;padding:8px 2px;border-radius:11px;font-family:"Gowun Dodum",sans-serif;font-size:13px;color:var(--soft);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;}
+  .zdtab small{font-family:"Outfit",sans-serif;font-size:11px;color:var(--faint);}
+  .zdtab.on{background:var(--surface);color:var(--amber-deep);box-shadow:0 2px 8px rgba(150,120,60,.1);}
+  .zdtab.on small{color:var(--amber-deep);}
+  .zrank{width:30px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+  .zrank svg{width:24px;height:24px;}
+  .zrank b{font-family:"Outfit",sans-serif;font-size:11px;margin-top:-15px;color:#fff;z-index:1;}
+  .zrank.gold{color:#e0a93a;} .zrank.silver{color:#b9bcc4;} .zrank.bronze{color:#cd9b6a;}
+  .zrank.num{font-family:"Outfit",sans-serif;font-size:14px;color:var(--faint);font-weight:600;}
 
   /* record */
   .statcard{display:flex;background:var(--surface);border-radius:20px;box-shadow:0 8px 22px rgba(150,120,60,.08);margin-top:16px;overflow:hidden;}
@@ -663,16 +683,21 @@
     <div class="screen" id="zone">
       <div class="pad">
         <div class="statusbar"><span>9:41</span><span class="r">5G &nbsp; 87%</span></div>
-        <div style="text-align:center;margin:6px 0 18px;">
+        <div style="text-align:center;margin:6px 0 14px;">
           <div class="h-title">구역별 기도</div>
-          <div class="h-desc">각 구역의 기도 시간이 모여<br>교회의 큰 기도가 됩니다.</div>
+          <div class="h-desc">각 구역의 기도가 모여<br>교회의 큰 기도가 됩니다.</div>
         </div>
-        <div class="deptsum">
-          <div class="ds"><div class="dl">장년부</div><div class="dv" id="dept-jang">0 h</div></div>
-          <div class="ds"><div class="dl">청년부</div><div class="dv" id="dept-young">0 h</div></div>
-          <div class="ds"><div class="dl">청소년부</div><div class="dv" id="dept-youth">0 h</div></div>
+        <div class="zstats">
+          <div class="zst"><div class="zst-ic ich"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 20C6.5 16 4 12.5 4 9.3 4 7 5.8 5.4 8 5.4 9.6 5.4 11 6.3 12 7.6 13 6.3 14.4 5.4 16 5.4 18.2 5.4 20 7 20 9.3 20 12.5 17.5 16 12 20z"/></svg></div><div class="zst-l">함께 쌓는 시간</div><div class="zst-v" id="zstat-total">0분</div></div>
+          <div class="zst"><div class="zst-ic icp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.3"/><path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5M15 19c0-2 1-3.4 3-3.4s3 1.4 3 3.4"/></svg></div><div class="zst-l">참여 구역</div><div class="zst-v" id="zstat-zones">0</div></div>
+          <div class="zst"><div class="zst-ic icl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21 V11"/><path d="M12 14 C8.5 14 6.5 11.3 6.5 8 9.8 8 12 10.2 12 13.2"/><path d="M12 13 C15.5 13 17.5 10.3 17.5 7 14.2 7 12 9.2 12 12.2"/></svg></div><div class="zst-l">지금 기도 중</div><div class="zst-v" id="zstat-live">0</div></div>
         </div>
-        <div class="subglabel" style="margin-bottom:6px;">장년부 · 선교지 구역</div>
+        <div class="zdepttabs">
+          <button class="zdtab on" id="zdt-jang" onclick="zoneTab('장년부')">장년부<small id="dept-jang">0분</small></button>
+          <button class="zdtab" id="zdt-young" onclick="zoneTab('청년부')">청년부<small id="dept-young">0분</small></button>
+          <button class="zdtab" id="zdt-youth" onclick="zoneTab('청소년부')">청소년부<small id="dept-youth">0분</small></button>
+        </div>
+        <div class="subglabel" id="zoneSubLabel" style="margin:16px 2px 6px;">장년부 · 선교지 구역</div>
         <div id="zoneList"></div>
       </div>
     </div>
@@ -1167,16 +1192,39 @@
   const IC={church:'<path d="M12 3l5 4v3M12 3L7 7v3M5 21V10h14v11M9 21v-4h6v4"/><path d="M12 5v3M10.5 6.5h3"/>',
     people:'<circle cx="9" cy="8" r="2.6"/><circle cx="16" cy="9" r="2.1"/><path d="M4 18c0-2.6 2.2-4.5 5-4.5s5 1.9 5 4.5M14.5 18c0-1.8 1-3.2 3-3.2"/>',
     person:'<circle cx="12" cy="8" r="3"/><path d="M6 19c0-3 2.7-5 6-5s6 2 6 5"/>'};
+  var zoneDept='장년부';
+  function zonePrefix(dept){ return dept==='청년부'?'청년부 ':(dept==='청소년부'?'청소년부 ':''); }
+  function zoneTab(d){
+    zoneDept=d;
+    var map={'장년부':'zdt-jang','청년부':'zdt-young','청소년부':'zdt-youth'};
+    ['장년부','청년부','청소년부'].forEach(function(x){ var b=document.getElementById(map[x]); if(b) b.classList.toggle('on', x===d); });
+    var sl=document.getElementById('zoneSubLabel'); if(sl) sl.textContent = d==='장년부'?'장년부 · 선교지 구역':(d==='청년부'?'청년부 · 마을':'청소년부 · 반');
+    buildZones();
+  }
   function buildZones(){
-    const Z = SERVER_ZONES || ZONES;
-    const max=Math.max.apply(null,Z.map(z=>z[1]))||1;
-    document.getElementById('zoneList').innerHTML=Z.map((z,i)=>{
-      const hours=z[1], pct=Math.round(hours/max*100), me=z[3]===true;
-      const lv=levelOf(hours), live=ZONE_LIVE[z[0]]||0;
+    const all = SERVER_ZONES || ZONES.map(function(z){ return [z[0],z[1],z[2],z[3],'장년부']; });
+    var tot=0, zc=0, lv=0;
+    all.forEach(function(z){ tot+=z[1]; if(z[1]>0) zc++; if((ZONE_LIVE[z[0]]||0)>0) lv++; });
+    var e;
+    e=document.getElementById('zstat-total'); if(e) e.textContent=fmtHM(tot*60);
+    e=document.getElementById('zstat-zones'); if(e) e.textContent=zc+' 구역';
+    e=document.getElementById('zstat-live'); if(e) e.textContent=lv+' 구역';
+    var Z = all.filter(function(z){ return (z[4]||'장년부')===zoneDept; });
+    Z.sort(function(a,b){ return b[1]-a[1]; });
+    const max=Math.max.apply(null, Z.map(function(z){ return z[1]; }))||1;
+    const medal=['gold','silver','bronze'];
+    const list=document.getElementById('zoneList');
+    if(!Z.length){ list.innerHTML='<div class="myempty">아직 구역 정보가 없어요.</div>'; return; }
+    list.innerHTML=Z.map(function(z,i){
+      const hours=z[1], pct=Math.round(hours/max*100), me=z[3]===true, live=ZONE_LIVE[z[0]]||0;
       const livePart = live>0 ? ('<span class="zlive">지금 '+live+'명</span> · ') : '';
-      return '<div class="zcard'+(i===0?' top':'')+(me?' me':'')+'"><div class="zic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">'+IC[z[2]]+'</svg></div>'+
-      '<div class="zmid"><div class="zrow1"><span class="znm">'+z[0]+'<span class="lvtag">'+GRAPE+' '+lv.name+'</span>'+(me?'<span class="metag">우리 구역</span>':'')+'</span><span class="zh num">'+fmtHM(hours*60)+'</span></div>'+
-      '<div class="ztrack"><i style="width:'+pct+'%"></i></div><div class="zp">'+livePart+pct+'%</div></div><div class="ar">›</div></div>';
+      const rank = i<3
+        ? '<div class="zrank '+medal[i]+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10v3a5 5 0 01-10 0z"/><path d="M12 12v3M9 19h6M10 17h4"/></svg><b>'+(i+1)+'</b></div>'
+        : '<div class="zrank num">'+(i+1)+'</div>';
+      return '<div class="zcard'+(i===0?' top':'')+(me?' me':'')+'">'+rank+
+        '<div class="zic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">'+IC[z[2]]+'</svg></div>'+
+        '<div class="zmid"><div class="zrow1"><span class="znm">'+zonePrefix(z[4])+z[0]+(me?'<span class="metag">우리 구역</span>':'')+(live>0?'<span class="lvtag">지금 기도 중</span>':'')+'</span><span class="zh num">'+fmtHM(hours*60)+'</span></div>'+
+        '<div class="ztrack"><i style="width:'+pct+'%"></i></div><div class="zp">'+livePart+pct+'%</div></div><div class="ar">›</div></div>';
     }).join('');
   }
   // 기도 제목 (교회를 위한 합심 기도제목 — 교회 이전 + 성도들의 모든 삶의 자리)
@@ -1514,7 +1562,7 @@
     if(!SB) return;
     const { data } = await SB.rpc('group_rankings');
     if(!data) return;
-    SERVER_ZONES = data.map(function(r){ return [ r.group_name, Number(r.hours)||0, 'people', r.group_name===selZone ]; });
+    SERVER_ZONES = data.map(function(r){ return [ r.group_name, Number(r.hours)||0, 'people', r.group_name===selZone, r.dept_name||'장년부' ]; });
     if(document.getElementById('zone').classList.contains('on')) buildZones();
   }
   function setupPresence(){
