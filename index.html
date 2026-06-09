@@ -260,9 +260,9 @@
   .todaycard.ringcard{position:relative;overflow:hidden;background:#eef1e8 url('bg-today.png') center/cover no-repeat !important;border-radius:22px;padding:24px 18px 28px;margin-top:16px;box-shadow:0 8px 22px rgba(150,130,80,.08);}
   .ringcard .rc-ring{position:relative;width:196px;height:196px;margin:4px auto 0;}
   .ringcard .rc-svg{width:100%;height:100%;display:block;}
-  .ringcard .rc-rot{transform-origin:100px 100px;animation:rcrot 20s linear infinite;}
-  @keyframes rcrot{to{transform:rotate(360deg);}}
-  @media (prefers-reduced-motion: reduce){ .ringcard .rc-rot{animation:none;} }
+  .ringcard .rc-dot{transform-origin:100px 8px;animation:rcdotpulse 2.8s ease-in-out infinite;}
+  @keyframes rcdotpulse{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.38);opacity:.75;}}
+  @media (prefers-reduced-motion: reduce){ .ringcard .rc-dot{animation:none;} }
   .ringcard .rc-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;}
   .ringcard .rc-sprig{width:22px;height:22px;}
   .ringcard .rc-sprig svg{width:100%;height:100%;}
@@ -289,9 +289,11 @@
   /* ===== 기도하기 화면 (교회 배경 + 수채화 링) ===== */
   #pray{background:url('pray-bg.png') top center/cover no-repeat, #f6efe2;}
   #pray .subhead .ttl,#pray .h-title,#pray .h-desc{position:relative;z-index:1;}
-  .prayring2{position:relative;width:300px;height:300px;max-width:90%;margin:2px auto 0;}
-  .prayring2::before{content:"";position:absolute;inset:0;background:url('pray-ring.png') center/contain no-repeat;-webkit-mask-image:radial-gradient(circle at 50% 50%, #000 87%, transparent 96%);mask-image:radial-gradient(circle at 50% 50%, #000 87%, transparent 96%);}
-  .prayring2 .clock{position:absolute;inset:0;z-index:1;display:flex;align-items:center;justify-content:center;padding-top:30px;font-family:"Outfit";font-weight:600;font-size:34px;letter-spacing:1px;color:#5d6f49;}
+  .prayring2{position:relative;width:286px;height:286px;max-width:84%;margin:6px auto 2px;}
+  .prayring2 .pr-ring{position:absolute;inset:0;width:100%;height:100%;}
+  .prayring2 .pr-dot{transform-origin:100px 10px;animation:rcdotpulse 2.8s ease-in-out infinite;}
+  .prayring2 .clock{position:absolute;inset:0;z-index:1;display:flex;align-items:center;justify-content:center;padding-top:36px;font-family:"Outfit";font-weight:600;font-size:38px;letter-spacing:1px;color:#5d6f49;}
+  @media (prefers-reduced-motion: reduce){ .prayring2 .pr-dot{animation:none;} }
   .praylivebar{display:flex;align-items:center;justify-content:center;gap:9px;margin:0 auto 14px;font-size:13px;color:var(--ink);}
   .praylivebar .plb-ava{display:inline-flex;}
   .praylivebar .plb-ava i{width:22px;height:22px;border-radius:50%;margin-left:-7px;border:2px solid #fff;display:inline-block;}
@@ -815,6 +817,13 @@
         </div>
         <div style="text-align:center;margin-top:8px;"><span class="mypraytag" id="myPrayTag" style="display:none;"></span></div>
         <div class="prayring2">
+          <svg class="pr-ring" viewBox="0 0 200 200">
+            <circle cx="100" cy="100" r="90" fill="none" stroke="#cabd99" stroke-width="2.2" stroke-dasharray="1 6.5" opacity=".5"/>
+            <circle cx="100" cy="100" r="90" fill="none" stroke="#8aa363" stroke-width="3.4" stroke-linecap="round" stroke-dasharray="300 566" transform="rotate(-90 100 100)"/>
+            <circle class="pr-dot" cx="100" cy="10" r="6" fill="#efa838"/>
+            <circle cx="100" cy="10" r="2.3" fill="#fff"/>
+            <g transform="translate(100 64)"><path d="M0 11 V-1" stroke="#8aa363" stroke-width="1.3" fill="none" stroke-linecap="round"/><g fill="#9cb878"><ellipse cx="-4.5" cy="5" rx="3.2" ry="1.7" transform="rotate(-32 -4.5 5)"/><ellipse cx="4.5" cy="2.5" rx="3.2" ry="1.7" transform="rotate(32 4.5 2.5)"/><ellipse cx="-3.6" cy="-.5" rx="2.8" ry="1.5" transform="rotate(-28 -3.6 -.5)"/><ellipse cx="3.6" cy="-2.5" rx="2.8" ry="1.5" transform="rotate(28 3.6 -2.5)"/></g></g>
+          </svg>
           <div class="clock" id="clock">00:00:00</div>
         </div>
         <div class="praylivebar"><span class="plb-ava"><i style="background:#cdb89a"></i><i style="background:#8ba36a"></i><i style="background:#e7c98c"></i></span><span class="plb-tx">지금 <b id="prayLiveN">0</b>명이 함께 기도 중</span></div>
