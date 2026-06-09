@@ -97,7 +97,15 @@
   .topiclabel{display:flex;justify-content:space-between;align-items:center;font-size:11.5px;color:var(--soft);}
   .topiclabel .autobtn{color:var(--amber-deep);cursor:pointer;font-family:"Gowun Dodum",sans-serif;}
   .topiclabel .autobtn.on{background:var(--amber-tint);padding:2px 10px;border-radius:999px;}
-  .topictitle{font-family:"Gowun Dodum",sans-serif;font-size:19px;color:var(--ink);margin-top:10px;text-align:center;}
+  .topiccat{display:inline-block;font-family:"Gowun Dodum",sans-serif;font-size:11px;padding:3px 12px;border-radius:999px;margin-top:10px;}
+  .topiccat.tcm{background:var(--amber-tint);color:var(--amber-deep);}
+  .topiccat.tcl{background:#eaf3e1;color:#5e8c49;}
+  .topiccard.cardlife{box-shadow:0 8px 22px rgba(110,150,80,.13);}
+  .topsec{font-family:"Gowun Dodum",sans-serif;font-size:14px;color:var(--ink);margin:20px 2px 2px;display:flex;align-items:baseline;gap:8px;}
+  .topsec .dt{font-size:11px;color:var(--soft);}
+  .topsec.life{color:#5e8c49;}
+  .tcard-life{border-left:3px solid #8cb573;}
+  .topictitle{font-family:"Gowun Dodum",sans-serif;font-size:19px;color:var(--ink);margin-top:8px;text-align:center;}
   .topicdesc{font-size:13px;color:var(--soft);margin-top:8px;line-height:1.6;text-align:center;}
   .topicdots{display:flex;gap:6px;justify-content:center;margin-top:14px;}
   .topicdots span{width:6px;height:6px;border-radius:50%;background:var(--track);transition:all .2s;}
@@ -514,6 +522,7 @@
 
         <div class="topiccard" id="topicCard">
           <div class="topiclabel"><span id="topicIdx">1 / 6</span><span class="autobtn" id="autoBtn" onclick="toggleAuto()">자동 넘김</span></div>
+          <div style="text-align:center;"><span class="topiccat" id="topicCat"></span></div>
           <div class="topictitle" id="topicTitle">교회와 목회자를 위해</div>
           <div class="topicdesc" id="topicDesc">담임목사님과 교회 공동체의 부흥을 위해</div>
           <div class="topicdots" id="topicDots"></div>
@@ -945,17 +954,33 @@
       '<div class="ztrack"><i style="width:'+pct+'%"></i></div><div class="zp">'+livePart+pct+'%</div></div><div class="ar">›</div></div>';
     }).join('');
   }
-  // 기도 제목 (교회 이전을 위한 합심 기도제목)
+  // 기도 제목 (교회를 위한 합심 기도제목 — 교회 이전 + 성도들의 모든 삶의 자리)
   const TOPICS=[
     ['담임목사님과 말씀 선포를 위하여','교회 이전의 길을 이끄시는 목사님 위에 성령의 기름을 부어주시고, 선포되는 말씀이 살아있는 음성이 되게 하소서.'],
     ['재정과 행정 절차의 순조로운 진행을 위하여','Evangelische Bank와의 협의와 집주인과의 협상이 지혜롭고 공정하게 이루어지도록.'],
     ['교회이전 준비팀을 위하여','준비팀에게 지혜와 명철, 하나됨과 지치지 않는 건강을 허락하소서.'],
     ["'50,000 시간 기도운동'을 위하여",'한 사람도 빠짐없이 모든 성도가 기쁨으로 동참하게 하소서.'],
     ['교회의 하나됨을 위하여','이전의 과정이 연합의 여정이 되어 더 깊은 공동체를 이루게 하소서.'],
-    ['새 교회의 비전을 위하여','다음세대가 마음껏 예배하고, 이웃이 문을 두드리는 파송하는 교회가 되게 하소서.']
+    ['새 교회의 비전을 위하여','다음세대가 마음껏 예배하고, 이웃이 문을 두드리는 파송하는 교회가 되게 하소서.'],
+    ['구역 식구들을 위하여','매주 모여 삶을 나누는 구역 식구들 위에 사랑과 위로가 넘치고, 서로의 짐을 함께 지는 공동체가 되게 하소서.'],
+    ['다음 세대를 위하여','우리의 미래요 소망인 다음 세대가 믿음 안에서 자라며, 하나님을 마음껏 예배하는 세대가 되게 하소서.'],
+    ['전도회를 위하여','각 전도회가 사명을 따라 섬기며, 잃어버린 영혼을 향한 사랑으로 뜨겁게 타오르게 하소서.'],
+    ['환우들을 위하여','육신의 연약함으로 아파하는 환우들을 주님이 친히 어루만지시고, 치유와 회복의 은혜를 부어주소서.'],
+    ['전교인 수양회를 위하여','다가오는 전교인 수양회를 통해 성도들이 새 힘을 얻고, 공동체가 더욱 깊이 연합하게 하소서.'],
+    ['양육 프로그램을 위하여','다양한 양육 프로그램을 통해 성도들이 말씀 안에서 자라고, 제자의 삶으로 빚어지게 하소서.'],
+    ['성도들의 삶의 자리를 위하여','각 성도가 살아가는 모든 삶의 자리가 기도의 영역이 되어, 묶였던 매임이 풀리고 영적 지경이 넓어지게 하소서.']
   ];
   let ti=0,autoOn=false,autoTk=null;
+  const LIFE_START=6;                       // 0~5: 교회 이전 기도 / 6~: 삶의 자리 기도(담임목사 기도편지)
+  const LIFE_DATE='6월 8일';                 // 목사님 기도편지 날짜
+  function isLife(i){ return i>=LIFE_START; }
   function renderTopic(){
+    const card=document.getElementById('topicCard'); if(card) card.classList.toggle('cardlife', isLife(ti));
+    const cat=document.getElementById('topicCat');
+    if(cat){
+      if(isLife(ti)){ cat.className='topiccat tcl'; cat.textContent='삶의 자리를 위한 기도 · '+LIFE_DATE; }
+      else { cat.className='topiccat tcm'; cat.textContent='교회 이전을 위한 기도'; }
+    }
     document.getElementById('topicTitle').textContent=TOPICS[ti][0];
     document.getElementById('topicDesc').textContent=TOPICS[ti][1];
     document.getElementById('topicIdx').textContent=(ti+1)+' / '+TOPICS.length;
@@ -965,8 +990,17 @@
   function prevTopic(){ti=(ti-1+TOPICS.length)%TOPICS.length;renderTopic();}
   function toggleAuto(){autoOn=!autoOn;const b=document.getElementById('autoBtn');if(b){b.classList.toggle('on',autoOn);b.textContent=autoOn?'자동 넘김 켜짐':'자동 넘김 꺼짐';}clearInterval(autoTk);if(autoOn){autoTk=setInterval(nextTopic,15000);}}
   function buildTopics(){
-    document.getElementById('topicsList').innerHTML='<div class="versecard">"나의 눈물을 주의 병에 담으소서" — 시편 56:8</div>'+
-      TOPICS.map(function(t,i){return '<div class="card" style="margin-top:10px;text-align:left;"><div style="font-family:\'Gowun Dodum\',sans-serif;font-size:16px;color:var(--ink);">'+(i+1)+'. '+t[0]+'</div><div style="font-size:12.5px;color:var(--soft);margin-top:6px;line-height:1.6;">'+t[1]+'</div></div>';}).join('');
+    function cardHTML(t,i,life){
+      return '<div class="card'+(life?' tcard-life':'')+'" style="margin-top:10px;text-align:left;">'
+        +'<div style="font-family:\'Gowun Dodum\',sans-serif;font-size:16px;color:var(--ink);">'+(i+1)+'. '+t[0]+'</div>'
+        +'<div style="font-size:12.5px;color:var(--soft);margin-top:6px;line-height:1.6;">'+t[1]+'</div></div>';
+    }
+    var html='<div class="versecard">"나의 눈물을 주의 병에 담으소서" — 시편 56:8</div>';
+    html+='<div class="topsec">교회 이전을 위한 기도</div>';
+    TOPICS.forEach(function(t,i){ if(!isLife(i)) html+=cardHTML(t,i,false); });
+    html+='<div class="topsec life">성도들의 삶을 위한 기도<span class="dt">담임목사 기도편지 · '+LIFE_DATE+'</span></div>';
+    TOPICS.forEach(function(t,i){ if(isLife(i)) html+=cardHTML(t,i,true); });
+    document.getElementById('topicsList').innerHTML=html;
   }
   renderTopic();
   (function(){var c=document.getElementById('topicCard');if(!c)return;var x0=null;
