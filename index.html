@@ -286,8 +286,8 @@
   /* ===== 기도하기 화면 (교회 배경 + 수채화 링) ===== */
   #pray{background:url('pray-bg.png') top center/cover no-repeat, #f6efe2;}
   #pray .subhead .ttl,#pray .h-title,#pray .h-desc{position:relative;z-index:1;}
-  .prayring2{position:relative;width:240px;height:240px;margin:12px auto 6px;}
-  .prayring2::before{content:"";position:absolute;inset:0;background:url('pray-ring.png') center/contain no-repeat;mix-blend-mode:multiply;}
+  .prayring2{position:relative;width:262px;height:262px;margin:10px auto 4px;}
+  .prayring2::before{content:"";position:absolute;inset:0;background:url('pray-ring.png') center/contain no-repeat;mix-blend-mode:multiply;-webkit-mask-image:radial-gradient(circle at 50% 50%, #000 80%, transparent 95%);mask-image:radial-gradient(circle at 50% 50%, #000 80%, transparent 95%);}
   .prayring2 .clock{position:absolute;inset:0;z-index:1;display:flex;align-items:center;justify-content:center;padding-top:30px;font-family:"Outfit";font-weight:600;font-size:34px;letter-spacing:1px;color:#5d6f49;}
   .praylivebar{display:flex;align-items:center;justify-content:center;gap:9px;margin:0 auto 14px;font-size:13px;color:var(--ink);}
   .praylivebar .plb-ava{display:inline-flex;}
