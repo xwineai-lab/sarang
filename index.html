@@ -368,6 +368,13 @@
   #record{background:url('bg-record.png') top center/cover no-repeat, #f4ecdb;}
   #zone{background:url('bg-zone.png') top center/cover no-repeat, #f6efe2;}
   #admin{background:url('bg-admin.png') top center/cover no-repeat, #f6efe2;}
+  .adminhead{position:relative;aspect-ratio:1960/780;background:url('bg-admin-head.png') center/cover no-repeat,#f3e9cf;border-radius:20px;margin:12px 0 4px;overflow:hidden;}
+  .adminhead .ah-ic{position:absolute;left:16.5%;top:43%;transform:translate(-50%,-50%);width:13%;display:flex;align-items:center;justify-content:center;}
+  .adminhead .ah-ic svg{width:78%;height:auto;}
+  .adminhead .ah-tx{position:absolute;left:31%;top:43%;transform:translateY(-50%);}
+  .adminhead .ah-t{font-family:"Gowun Dodum",sans-serif;font-size:16px;color:#7a5a1e;}
+  .adminhead .ah-s{font-size:11px;color:#a07f3e;margin-top:3px;}
+  .adminhead .ah-pill{position:absolute;right:18%;top:43%;transform:translate(50%,-50%);font-size:11.5px;color:#b58a3a;font-family:"Gowun Dodum",sans-serif;white-space:nowrap;}
   .todaycard{display:flex;align-items:center;gap:12px;background:var(--surface);border-radius:18px;padding:18px;margin-top:14px;box-shadow:0 8px 22px rgba(150,120,60,.08);}
   .todaycard .tcleft{flex:1;}
   .todaycard .tct{font-family:"Gowun Dodum",sans-serif;font-size:16px;color:var(--ink);}
@@ -1132,7 +1139,12 @@
     <!-- ===== 관리자 검수 ===== -->
     <div class="screen" id="admin">
       <div class="pad">
-        <div class="subhead"><span class="bk" onclick="go('more')">‹</span><span class="ttl">관리자 검수</span></div>
+        <div class="subhead"><span class="bk" onclick="go('more')">‹</span><span class="ttl">중보기도 검수</span></div>
+        <div class="adminhead">
+          <span class="ah-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg></span>
+          <div class="ah-tx"><div class="ah-t">중보기도 검수</div><div class="ah-s">교역자만 보고 승인할 수 있어요</div></div>
+          <span class="ah-pill">교역자 전용</span>
+        </div>
         <div id="adminGate" style="margin-top:16px;">
           <div class="mseglbl">관리자 비밀번호</div>
           <input class="minput" id="adminPass" type="password" placeholder="비밀번호" onkeydown="if(event.key==='Enter')adminLogin()">
