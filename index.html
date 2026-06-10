@@ -621,16 +621,15 @@
   .growth .gbar2 i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--amber),#eebb50);transition:width .8s cubic-bezier(.2,.8,.2,1);}
 
   /* 내 정보 카드 (더보기) */
-  .mecard{position:relative;overflow:hidden;display:block;aspect-ratio:1960/680;background:url('bg-admin-head.png') center/cover no-repeat,#f7e9c8;border-radius:20px;margin-top:8px;box-shadow:0 12px 30px rgba(200,150,50,.16);}
-  .mecard::before{display:none;}
-  .mecard .meavatar{position:absolute;left:16.5%;top:43%;transform:translate(-50%,-50%);width:auto;height:auto;border-radius:0;background:transparent;box-shadow:none;color:#fff;display:flex;align-items:center;justify-content:center;font-family:"Gowun Dodum",sans-serif;font-size:24px;}
-  .mecard .meinfo{position:absolute;left:31%;right:25%;top:43%;transform:translateY(-50%);min-width:0;}
+  .mecard{position:relative;display:flex;align-items:center;gap:14px;background:#fffdf7;border:1px solid var(--line);border-radius:20px;margin-top:8px;padding:16px 18px;box-shadow:0 8px 22px rgba(200,150,50,.10);}
+  .mecard .meavatar{flex-shrink:0;width:48px;height:48px;border-radius:50%;background:var(--amber-tint);color:var(--amber-deep);display:flex;align-items:center;justify-content:center;font-family:"Gowun Dodum",sans-serif;font-size:20px;}
+  .mecard .meinfo{flex:1;min-width:0;}
   .mecard .mename{font-family:"Gowun Dodum",sans-serif;font-size:17px;color:#5e4720;}
   .mecard .mestatus{margin-top:6px;}
   .mebadge{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;padding:3px 10px;border-radius:999px;font-weight:600;}
   .mebadge.ok{background:#e9f3e1;color:#4f7d3f;}
   .mebadge.anon{background:var(--amber-tint);color:var(--amber-deep);cursor:pointer;}
-  .mecard .meedit{position:absolute;right:17%;top:43%;transform:translate(50%,-50%);font-size:12px;color:#7a5a1e;background:transparent;border:none;padding:6px 10px;font-family:"Gowun Dodum",sans-serif;cursor:pointer;white-space:nowrap;}
+  .mecard .meedit{flex-shrink:0;font-size:12px;color:#7a5a1e;background:var(--amber-tint);border:none;border-radius:999px;padding:7px 13px;font-family:"Gowun Dodum",sans-serif;cursor:pointer;white-space:nowrap;}
   .meprivacy{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--soft);margin-top:11px;padding:0 4px;line-height:1.55;}
   .meprivacy svg{width:15px;height:15px;flex-shrink:0;color:var(--faint);margin-top:1px;}
   .mrow.only{border-radius:14px;margin-top:12px;}
