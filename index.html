@@ -1555,7 +1555,7 @@
     var ctrl=document.getElementById('bgmCtrl'), ico=document.getElementById('bgmIco'), tx=document.getElementById('bgmTx');
     if(ctrl){ ctrl.classList.toggle('on', on); ctrl.classList.toggle('off', !on); }
     if(ico) ico.textContent = on ? '🎵' : '🔇';
-    if(tx){ tx.textContent = !on ? '찬양 꺼짐 · 탭하여 켜기' : ((running && playing) ? '찬양이 흐르고 있어요 · 탭하여 음소거' : '기도와 함께 찬양이 흘러요'); }
+    if(tx){ tx.textContent = !on ? '찬양 꺼짐 · 탭하여 켜기' : ((running && playing) ? '찬양이 함께하고 있어요 · 탭하여 음소거' : '기도와 함께 찬양이 흘러요'); }
     var sw=document.getElementById('bgmSwitch'); if(sw) sw.classList.toggle('on', on);
   }
   function startPray(){
