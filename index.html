@@ -373,6 +373,7 @@
   #zone{background:url('bg-zone.png') top center/cover no-repeat, #f6efe2;}
   #admin{background:url('bg-admin.png') top center/cover no-repeat, #f6efe2;}
   #joinzone{background:url('bg-join.png') top center/cover no-repeat, #f6efe2;}
+  #more{background:url('bg-admin.png') top center/cover no-repeat, #f6efe2;}
   .adminhead{position:relative;aspect-ratio:1960/780;background:url('bg-admin-head.png') center/cover no-repeat,#f3e9cf;border-radius:20px;margin:12px 0 4px;overflow:hidden;}
   .adminhead .ah-ic{position:absolute;left:16.5%;top:43%;transform:translate(-50%,-50%);width:13%;display:flex;align-items:center;justify-content:center;}
   .adminhead .ah-ic svg{width:78%;height:auto;}
@@ -620,16 +621,16 @@
   .growth .gbar2 i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--amber),#eebb50);transition:width .8s cubic-bezier(.2,.8,.2,1);}
 
   /* 내 정보 카드 (더보기) */
-  .mecard{position:relative;overflow:hidden;display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,#fffdf8,#fbf1da 55%,#f7e4be);border-radius:20px;padding:18px 16px;margin-top:8px;box-shadow:0 12px 30px rgba(200,150,50,.18);border:1px solid rgba(224,169,58,.2);}
-  .mecard::before{content:"";position:absolute;top:-34px;right:-22px;width:130px;height:130px;border-radius:50%;background:radial-gradient(circle,rgba(255,206,110,.5),rgba(255,206,110,0) 70%);pointer-events:none;}
-  .mecard .meavatar{position:relative;z-index:1;width:54px;height:54px;border-radius:50%;background:linear-gradient(140deg,#ffd982,#e0a93a);color:#fff;display:flex;align-items:center;justify-content:center;font-family:"Gowun Dodum",sans-serif;font-size:22px;flex-shrink:0;box-shadow:0 6px 16px rgba(224,169,58,.45),0 0 0 4px rgba(255,255,255,.65);}
-  .mecard .meinfo{position:relative;z-index:1;flex:1;min-width:0;}
-  .mecard .mename{font-family:"Gowun Dodum",sans-serif;font-size:18px;color:var(--ink);}
+  .mecard{position:relative;overflow:hidden;display:block;aspect-ratio:1960/680;background:url('bg-admin-head.png') center/cover no-repeat,#f7e9c8;border-radius:20px;margin-top:8px;box-shadow:0 12px 30px rgba(200,150,50,.16);}
+  .mecard::before{display:none;}
+  .mecard .meavatar{position:absolute;left:16.5%;top:43%;transform:translate(-50%,-50%);width:auto;height:auto;border-radius:0;background:transparent;box-shadow:none;color:#fff;display:flex;align-items:center;justify-content:center;font-family:"Gowun Dodum",sans-serif;font-size:24px;}
+  .mecard .meinfo{position:absolute;left:31%;right:25%;top:43%;transform:translateY(-50%);min-width:0;}
+  .mecard .mename{font-family:"Gowun Dodum",sans-serif;font-size:17px;color:#5e4720;}
   .mecard .mestatus{margin-top:6px;}
   .mebadge{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;padding:3px 10px;border-radius:999px;font-weight:600;}
   .mebadge.ok{background:#e9f3e1;color:#4f7d3f;}
   .mebadge.anon{background:var(--amber-tint);color:var(--amber-deep);cursor:pointer;}
-  .mecard .meedit{position:relative;z-index:1;flex-shrink:0;font-size:12px;color:var(--amber-deep);background:rgba(255,255,255,.85);border:1px solid rgba(224,169,58,.35);border-radius:999px;padding:7px 13px;font-family:"Gowun Dodum",sans-serif;cursor:pointer;}
+  .mecard .meedit{position:absolute;right:17%;top:43%;transform:translate(50%,-50%);font-size:12px;color:#7a5a1e;background:transparent;border:none;padding:6px 10px;font-family:"Gowun Dodum",sans-serif;cursor:pointer;white-space:nowrap;}
   .meprivacy{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--soft);margin-top:11px;padding:0 4px;line-height:1.55;}
   .meprivacy svg{width:15px;height:15px;flex-shrink:0;color:var(--faint);margin-top:1px;}
   .mrow.only{border-radius:14px;margin-top:12px;}
@@ -1147,11 +1148,7 @@
     <div class="screen" id="admin">
       <div class="pad">
         <div class="subhead"><span class="bk" onclick="go('more')">‹</span><span class="ttl">중보기도 검수</span></div>
-        <div class="adminhead">
-          <span class="ah-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg></span>
-          <div class="ah-tx"><div class="ah-t">중보기도 검수</div><div class="ah-s">교역자만 보고 승인할 수 있어요</div></div>
-          <span class="ah-pill">교역자 전용</span>
-        </div>
+        <div class="reqhint" style="text-align:center;margin-top:2px;">교역자만 보고 승인할 수 있어요</div>
         <div id="adminDeny" style="display:none;margin-top:18px;"><div class="myempty">교역자 전용 화면입니다.<br>교역자 계정으로 로그인하면 검수할 수 있어요.</div></div>
         <div id="adminWrap" style="display:none;">
           <div class="reclbl">검수 대기 중인 요청</div>
