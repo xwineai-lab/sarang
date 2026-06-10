@@ -630,6 +630,19 @@
   .mebadge.ok{background:#e9f3e1;color:#4f7d3f;}
   .mebadge.anon{background:var(--amber-tint);color:var(--amber-deep);cursor:pointer;}
   .mecard .meedit{flex-shrink:0;font-size:12px;color:#7a5a1e;background:var(--amber-tint);border:none;border-radius:999px;padding:7px 13px;font-family:"Gowun Dodum",sans-serif;cursor:pointer;white-space:nowrap;}
+  /* 기도 배경 찬양 컨트롤 */
+  .bgmwrap{margin-top:10px;}
+  .bgmctrl{display:inline-flex;align-items:center;gap:7px;padding:7px 14px;border-radius:999px;background:var(--amber-tint);color:var(--amber-deep);font-size:12.5px;font-family:"Gowun Dodum",sans-serif;cursor:pointer;border:1px solid rgba(200,150,50,.28);user-select:none;transition:opacity .2s,background .2s;}
+  .bgmctrl.off{background:#ece7dd;color:#8a8472;border-color:#e0d8c8;}
+  .bgmctrl .bgm-ico{font-size:13px;line-height:1;}
+  .bgmctrl.on .bgm-ico{animation:bgmpulse 1.9s ease-in-out infinite;}
+  @keyframes bgmpulse{0%,100%{opacity:.5;}50%{opacity:1;}}
+  .bgm-credit{margin-top:5px;font-size:10px;color:var(--faint);letter-spacing:.2px;}
+  /* 더보기 소리 스위치 */
+  .swtoggle{position:relative;width:42px;height:24px;border-radius:999px;background:#d8d0c0;transition:background .2s;flex-shrink:0;cursor:pointer;display:inline-block;vertical-align:middle;}
+  .swtoggle.on{background:#e7a93c;}
+  .swtoggle::after{content:"";position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2);}
+  .swtoggle.on::after{transform:translateX(18px);}
   .meprivacy{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--soft);margin-top:11px;padding:0 4px;line-height:1.55;}
   .meprivacy svg{width:15px;height:15px;flex-shrink:0;color:var(--faint);margin-top:1px;}
   .mrow.only{border-radius:14px;margin-top:12px;}
@@ -878,6 +891,11 @@
           <div class="h-title" style="font-size:20px;" id="prayHTitle">함께 기도하는 시간</div>
           <div class="h-desc" id="prayHDesc">아래 제목을 따라 함께 기도해요</div>
         </div>
+        <div class="bgmwrap">
+          <span class="bgmctrl" id="bgmCtrl" onclick="bgmToggle()"><span class="bgm-ico" id="bgmIco">🎵</span><span class="bgm-tx" id="bgmTx">기도와 함께 찬양이 흘러요</span></span>
+          <div class="bgm-credit">잔잔한 묵상 찬양 · 출처: 주피선 (JPS)</div>
+        </div>
+        <audio id="bgm" preload="none" playsinline></audio>
         <div style="text-align:center;margin-top:8px;"><span class="mypraytag" id="myPrayTag" style="display:none;"></span></div>
         <div class="prayring2">
           <svg class="pr-ring" viewBox="0 0 200 200">
@@ -1073,6 +1091,9 @@
         <div class="seclbl">알림</div>
         <div class="mrow"><span>기도 리마인더</span><span class="r">준비 중</span></div>
         <div class="mrow"><span>새벽기도 알림 (06:00)</span><span class="r">준비 중</span></div>
+        <div class="seclbl">소리</div>
+        <div class="mrow" onclick="bgmToggle()" style="cursor:pointer;"><span>기도 중 배경 찬양</span><span class="swtoggle" id="bgmSwitch"></span></div>
+        <div class="meprivacy" style="margin-top:7px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg><span>기도 시작과 함께 잔잔한 묵상 찬양이 흘러요. 기도 화면에서 바로 끄고 켤 수 있어요. · 출처: 주피선 (JPS)</span></div>
         <div class="seclbl">내 정보</div>
         <div class="mecard">
           <div class="meavatar" id="meAvatar">?</div>
@@ -1253,6 +1274,7 @@
     if(id==='intercede') loadRequests();
     if(id==='admin') loadAdminReview();
     if(id==='more' || id==='connect') syncAuthUI();
+    if(id==='pray' || id==='more') syncBgmUI();
   }
   /* 프로필 기억하기 + 익명 가상 닉네임 */
   const PKEY='omansigan_profile';
@@ -1503,8 +1525,42 @@
     const pr=document.getElementById('prog'); if(pr){ const p=Math.min(s/goalSec,1); pr.style.strokeDashoffset=CIRC*(1-p); }
   }
   function tickLoop(){ clearInterval(tk); tk=setInterval(function(){ paintTimer(); if(Date.now()>=nextCheck) askStillPraying(); },1000); }
+  /* ===== 기도 배경 찬양 (주피선 JPS, 13곡 랜덤 시작·자동 이어듣기) ===== */
+  var BGM_BASE='https://vwcsyilkhfmdyqxavsqz.supabase.co/storage/v1/object/public/audio/';
+  var BGM_FILES=['s01.mp3','s02.mp3','s03.mp3','s04.mp3','s05.mp3','s06.mp3','s07.mp3','s08.mp3','s09.mp3','s10.mp3','s11.mp3','s12.mp3','s13.mp3'];
+  var _bgmIdx=-1, _bgmBound=false;
+  function bgmEl(){ return document.getElementById('bgm'); }
+  function bgmPref(){ try{ return localStorage.getItem('bgm_on')!=='0'; }catch(e){ return true; } }   // 기본값: 켜짐
+  function bgmSetPref(on){ try{ localStorage.setItem('bgm_on', on?'1':'0'); }catch(e){} }
+  function bgmLoadPlay(i){
+    var a=bgmEl(); if(!a) return;
+    _bgmIdx=((i%BGM_FILES.length)+BGM_FILES.length)%BGM_FILES.length;
+    a.src=BGM_BASE+BGM_FILES[_bgmIdx]; a.volume=0.4;
+    if(!_bgmBound){ _bgmBound=true;
+      a.addEventListener('ended', function(){ if(bgmPref() && running) bgmLoadPlay(_bgmIdx+1); });   // 곡 끝나면 다음 곡으로 자동 연결
+      a.addEventListener('play', syncBgmUI); a.addEventListener('pause', syncBgmUI);
+    }
+    var p=a.play(); if(p&&p.catch) p.catch(function(){});
+  }
+  function bgmOnPrayStart(){ if(bgmPref()){ bgmLoadPlay(Math.floor(Math.random()*BGM_FILES.length)); } syncBgmUI(); }
+  function bgmStop(){ var a=bgmEl(); if(a){ try{ a.pause(); a.removeAttribute('src'); a.load(); }catch(e){} } _bgmIdx=-1; syncBgmUI(); }
+  function bgmToggle(){
+    var on=!bgmPref(); bgmSetPref(on); var a=bgmEl();
+    if(on){ if(running) bgmLoadPlay(_bgmIdx>=0?_bgmIdx:Math.floor(Math.random()*BGM_FILES.length)); }
+    else { if(a){ try{ a.pause(); }catch(e){} } }
+    syncBgmUI();
+  }
+  function syncBgmUI(){
+    var on=bgmPref(); var a=bgmEl(); var playing=!!(a && !a.paused && a.currentSrc);
+    var ctrl=document.getElementById('bgmCtrl'), ico=document.getElementById('bgmIco'), tx=document.getElementById('bgmTx');
+    if(ctrl){ ctrl.classList.toggle('on', on); ctrl.classList.toggle('off', !on); }
+    if(ico) ico.textContent = on ? '🎵' : '🔇';
+    if(tx){ tx.textContent = !on ? '찬양 꺼짐 · 탭하여 켜기' : ((running && playing) ? '찬양이 흐르고 있어요 · 탭하여 음소거' : '기도와 함께 찬양이 흘러요'); }
+    var sw=document.getElementById('bgmSwitch'); if(sw) sw.classList.toggle('on', on);
+  }
   function startPray(){
     running=true; amPraying=true; trackPresence(); startAt=Date.now(); nextCheck=startAt+CHECK_MS;
+    bgmOnPrayStart();
     try{ localStorage.setItem(AKEY, JSON.stringify({ startAt:startAt })); }catch(e){}
     const b=document.getElementById('finishBtn'); if(b){ b.textContent='기도 마치기'; b.classList.remove('start'); }
     if(!autoOn) toggleAuto();
@@ -1514,6 +1570,7 @@
   function finishPray(capAt){
     if(!running) return;
     running=false; amPraying=false; trackPresence(); clearInterval(tk); clearTimeout(graceTk); hideStill();
+    bgmStop();
     try{ localStorage.removeItem(AKEY); }catch(e){}
     const endMs = capAt ? Math.min(Date.now(), capAt) : Date.now();
     const mins = Math.round((endMs - startAt)/60000);   // 벽시계: 시작~종료 실제 차이
