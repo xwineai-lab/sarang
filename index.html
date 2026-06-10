@@ -237,6 +237,8 @@
   .livecard2 .lc2-ic svg{width:19px;height:19px;}
   .livecard2 .lc2-tx{flex:1;font-size:14px;color:var(--ink);}
   .livecard2 .lc2-tx b{color:#6f9150;}
+  .livecard2 .lc2-sub{display:block;font-size:12px;color:var(--soft);margin-top:3px;}
+  .livecard2 .lc2-sub b{color:#b58a4a;}
   .livecard2 .lc2-ava{display:flex;align-items:center;}
   .livecard2 .lc2-ava i{width:26px;height:26px;border-radius:50%;margin-left:-8px;border:2px solid var(--surface);display:inline-block;}
   .livecard2 .lc2-ava .more{margin-left:6px;font-size:11px;color:var(--soft);}
@@ -323,6 +325,8 @@
   .praysame .ps-ico svg{width:20px;height:20px;}
   .praysame .ps-tx{flex:1;font-size:13px;color:var(--ink);line-height:1.5;}
   .praysame .ps-tx b{color:#6f9150;}
+  .praysame .ps-sub{display:block;font-size:11.5px;color:var(--soft);margin-top:3px;}
+  .praysame .ps-sub b{color:#b58a4a;}
   .praysame .ps-avas{display:flex;flex-shrink:0;}
   .praysame .ps-ar{color:var(--faint);font-size:18px;}
   .live-ava{flex-shrink:0;width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#eef6e9,#e1eed7);display:flex;align-items:center;justify-content:center;position:relative;}
@@ -801,7 +805,7 @@
         <!-- 지금 함께 기도중 -->
         <div class="livecard2">
           <span class="lc2-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.3"/><path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5M15 19c0-2 1-3.4 3-3.4s3 1.4 3 3.4"/></svg></span>
-          <span class="lc2-tx">지금 <b id="liveCount">0</b>명이 함께 기도 중</span>
+          <span class="lc2-tx" id="liveLineHome">지금 <b>0</b>명이 함께 기도 중</span>
           <span class="lc2-ava"><i style="background:#cdb89a"></i><i style="background:#c98f6a"></i><i style="background:#8ba36a"></i><i style="background:#e7c98c"></i><i style="background:#c3a9d8"></i><span class="more" id="avaMore">+0</span></span>
         </div>
 
@@ -815,7 +819,6 @@
 
         <!-- 오늘의 말씀 (리치 카드) -->
         <div class="versecard4">
-          <span class="vc4-ico"><svg viewBox="0 0 24 24"><path d="M4 5.2C4 4.5 4.6 4 5.3 4H11c.6 0 1 .3 1.3.8.3-.5.7-.8 1.3-.8h5.1c.7 0 1.3.5 1.3 1.2v12.3c0 .7-.6 1.2-1.3 1.2h-5.1c-.6 0-1 .3-1.3.7-.3-.4-.7-.7-1.3-.7H5.3C4.6 18.7 4 18.2 4 17.5z" fill="#6f9150"/><path d="M12 5.6v12.6" stroke="#fff" stroke-width="1" opacity=".55"/></svg></span>
           <div class="vc4-body">
             <div class="vc4-lbl">오늘의 말씀</div>
             <div class="vc-text" id="verseLine"></div>
@@ -875,7 +878,7 @@
           <div id="mineGate" style="display:none;"></div>
         </div>
 
-        <div class="praysame"><span class="ps-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.3"/><path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5M15 19c0-2 1-3.4 3-3.4s3 1.4 3 3.4"/></svg></span><span class="ps-tx">지금 <b id="liveText2">0</b>명이 같은 기도제목으로<br>기도하고 있어요</span><span class="ps-avas"><span class="wava" style="background:#cdb89a"><svg viewBox="0 0 36 36"><circle cx="18" cy="14" r="6.3" fill="#fff" opacity=".92"/><path d="M6 33c0-6.6 5.4-10 12-10s12 3.4 12 10" fill="#fff" opacity=".92"/></svg></span><span class="wava" style="background:#9aa6a0"><svg viewBox="0 0 36 36"><circle cx="18" cy="14" r="6.3" fill="#fff" opacity=".92"/><path d="M6 33c0-6.6 5.4-10 12-10s12 3.4 12 10" fill="#fff" opacity=".92"/></svg></span><span class="wava" style="background:#e3b86a"><svg viewBox="0 0 36 36"><circle cx="18" cy="14" r="6.3" fill="#fff" opacity=".92"/><path d="M6 33c0-6.6 5.4-10 12-10s12 3.4 12 10" fill="#fff" opacity=".92"/></svg></span></span><span class="ps-ar">›</span></div>
+        <div class="praysame"><span class="ps-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.3"/><path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5M15 19c0-2 1-3.4 3-3.4s3 1.4 3 3.4"/></svg></span><span class="ps-tx" id="liveLinePray">지금 <b>0</b>명이 같은 기도제목으로 기도하고 있어요</span><span class="ps-avas"><span class="wava" style="background:#cdb89a"><svg viewBox="0 0 36 36"><circle cx="18" cy="14" r="6.3" fill="#fff" opacity=".92"/><path d="M6 33c0-6.6 5.4-10 12-10s12 3.4 12 10" fill="#fff" opacity=".92"/></svg></span><span class="wava" style="background:#9aa6a0"><svg viewBox="0 0 36 36"><circle cx="18" cy="14" r="6.3" fill="#fff" opacity=".92"/><path d="M6 33c0-6.6 5.4-10 12-10s12 3.4 12 10" fill="#fff" opacity=".92"/></svg></span><span class="wava" style="background:#e3b86a"><svg viewBox="0 0 36 36"><circle cx="18" cy="14" r="6.3" fill="#fff" opacity=".92"/><path d="M6 33c0-6.6 5.4-10 12-10s12 3.4 12 10" fill="#fff" opacity=".92"/></svg></span></span><span class="ps-ar">›</span></div>
         <button class="finish start" id="finishBtn" onclick="togglePray()" style="margin-top:16px;">기도 시작</button>
       </div>
     </div>
@@ -1289,9 +1292,15 @@
     return '지금 <b>'+prep+'</b>명이 기도를 준비하고 있어요';
   }
   function renderLive(fade){
-    var t=liveLineText();
-    ['liveText'].forEach(function(id){
+    var prep=Math.max(0,(connN||0)-(liveN||0));
+    var lines={
+      liveText: liveLineText(),
+      liveLineHome: _livePhase===0 ? '지금 <b>'+(liveN||0)+'</b>명이 함께 기도 중' : '지금 <b>'+prep+'</b>명이 함께 기도 준비 중',
+      liveLinePray: _livePhase===0 ? '지금 <b>'+(liveN||0)+'</b>명이 같은 기도제목으로 기도하고 있어요' : '지금 <b>'+prep+'</b>명이 기도를 준비 중에 있어요'
+    };
+    Object.keys(lines).forEach(function(id){
       var e=document.getElementById(id); if(!e) return;
+      var t=lines[id];
       if(fade){ e.style.transition='opacity .3s'; e.style.opacity='0'; setTimeout(function(){ e.innerHTML=t; e.style.opacity='1'; },280); }
       else { e.innerHTML=t; }
     });
@@ -1300,12 +1309,10 @@
     renderLive(false);
     var zs=document.getElementById('zoneLiveSum');
     if(zs){ var prep=Math.max(0,(connN||0)-(liveN||0)); zs.innerHTML='<span class="zls-pray">🙏 기도 중 <b>'+(liveN||0)+'</b></span><span class="zls-prep">📖 기도 준비 중 <b>'+prep+'</b></span>'; }
-    var nc=document.getElementById('liveCount'); if(nc) nc.textContent=(connN||0);
-    var am=document.getElementById('avaMore'); if(am) am.textContent='+'+Math.max(0,(connN||0)-5);
     var prepP=Math.max(0,(connN||0)-(liveN||0));
+    var am=document.getElementById('avaMore'); if(am) am.textContent='+'+Math.max(0,(connN||0)-5);
     var pn=document.getElementById('prayLiveN'); if(pn) pn.textContent=(liveN||0);
     var pp=document.getElementById('prayPrepN'); if(pp) pp.textContent=prepP;
-    var lt2=document.getElementById('liveText2'); if(lt2) lt2.textContent=(liveN||0);
   }
   setInterval(function(){ _livePhase=_livePhase?0:1; renderLive(true); }, 4500);
   const PC=['#e0a93a','#6fa45c','#7aa7d8','#d98b5e','#b59ad8'];
