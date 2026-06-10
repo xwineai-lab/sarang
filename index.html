@@ -631,7 +631,7 @@
   .link{color:var(--amber-deep);font-weight:600;cursor:pointer;}
 
   /* tabbar */
-  .tabbar{position:absolute;left:0;right:0;bottom:0;height:58px;display:none;justify-content:space-around;align-items:flex-start;padding-top:7px;
+  .tabbar{position:absolute;left:0;right:0;bottom:0;height:58px;display:none;justify-content:space-around;align-items:flex-start;padding-top:7px;z-index:50;
     background:#fdfbf6;border-top:1px solid var(--line);box-shadow:0 -3px 14px rgba(150,120,60,.07);}
   .tabbar.on{display:flex;}
   .tabbar.tbhide{transform:none;}
@@ -1996,10 +1996,10 @@
     // 최근 기록
     const rl=document.getElementById('recentList');
     if(rl){ rl.innerHTML = rows.length ? rows.slice(0,6).map(function(r){
-      var personal = !!(r.my_prayers && r.my_prayers.title);
+      var personal = !!(r.my_prayer_id);
       var manual = r.source==='manual';
       var neg = (r.minutes||0)<0;
-      var t = manual ? (neg?'시간 보정':'수동 입력') : (personal ? r.my_prayers.title : '함께 기도');
+      var t = manual ? (neg?'시간 보정':'수동 입력') : (personal ? '함께 기도 + 나의 기도' : '함께 기도');
       var ic = personal ? mpIcon('praying') : REC_ICON_PRAY;
       var val = neg ? ('−'+korDur(-r.minutes)) : korDur(r.minutes);
       return '<div class="recrow2"><div class="rr-ic'+(personal?' personal':'')+'">'+ic+'</div><div class="rr-body"><div class="rr-t">'+mpEsc(t)+'</div><div class="rr-d">'+mpRelDay(r.ended_at)+'</div></div><div class="rr-v'+(neg?' neg':'')+'">'+val+'</div></div>';
