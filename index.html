@@ -367,6 +367,7 @@
   /* 기도 기록 — 목업 */
   #record{background:url('bg-record.png') top center/cover no-repeat, #f4ecdb;}
   #zone{background:url('bg-zone.png') top center/cover no-repeat, #f6efe2;}
+  #admin{background:url('bg-admin.png') top center/cover no-repeat, #f6efe2;}
   .todaycard{display:flex;align-items:center;gap:12px;background:var(--surface);border-radius:18px;padding:18px;margin-top:14px;box-shadow:0 8px 22px rgba(150,120,60,.08);}
   .todaycard .tcleft{flex:1;}
   .todaycard .tct{font-family:"Gowun Dodum",sans-serif;font-size:16px;color:var(--ink);}
@@ -625,6 +626,11 @@
   .seclbl{font-size:11.5px;color:var(--soft);margin:18px 4px 8px;}
   .mrow{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;background:var(--surface);font-size:14px;border-radius:14px;margin-top:9px;box-shadow:0 5px 14px rgba(150,120,60,.05);}
   .mrow .r{color:var(--soft);font-size:13px;}
+  .policy{margin-top:6px;}
+  .policy .pp-upd{font-size:12px;color:var(--soft);margin-bottom:14px;}
+  .policy h4{font-family:"Gowun Dodum",sans-serif;font-size:14.5px;color:var(--ink);margin:16px 0 6px;}
+  .policy p{font-size:13px;color:var(--soft);line-height:1.65;margin:0;}
+  .policy p b{color:var(--ink);}
   .sw{width:44px;height:26px;border-radius:999px;background:#dcd2bf;position:relative;cursor:pointer;transition:background .2s;}
   .sw::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:left .2s;box-shadow:0 1px 2px rgba(0,0,0,.15);}
   .sw.on{background:var(--amber);}.sw.on::after{left:21px;}
@@ -1070,6 +1076,37 @@
         <div class="seclbl">계정</div>
         <div class="mrow" id="linkRow" onclick="go('connect')" style="cursor:pointer;"><span>기록 지키기 (이메일 연결)</span><span class="link" id="linkRowState">연결 ›</span></div>
         <div class="mrow"><span class="link" onclick="logout()">로그아웃</span><span></span></div>
+        <div class="seclbl">약관 · 정보</div>
+        <div class="mrow" onclick="go('privacy')" style="cursor:pointer;"><span>개인정보처리방침</span><span class="r">›</span></div>
+        <div class="mrow" onclick="deleteAccount()" style="cursor:pointer;"><span class="link" style="color:#c0392b;">계정 · 모든 기록 삭제</span><span class="r" style="color:#c0392b;">›</span></div>
+        <div class="meprivacy" style="margin-top:14px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><span>계정을 삭제하면 기도제목·기록·내 정보가 모두 영구 삭제되며 되돌릴 수 없어요.</span></div>
+      </div>
+    </div>
+
+    <!-- ===== 개인정보처리방침 ===== -->
+    <div class="screen" id="privacy">
+      <div class="pad">
+        <div class="statusbar"><span>9:41</span><span class="r">5G &nbsp; 87%</span></div>
+        <div class="subhead"><span class="bk" onclick="go('more')">‹</span><span class="ttl">개인정보처리방침</span></div>
+        <div class="policy">
+          <p class="pp-upd">프랑크푸르트 사랑의 교회 · 5만시간 기도</p>
+          <h4>1. 수집하는 정보</h4>
+          <p>· 별명(선택 입력)<br>· 카카오·이메일 연동 시 이메일 주소<br>· 기도 기록(기도 시간·횟수·시각)과 소속 구역<br>· 중보기도 나눔에 직접 작성한 기도제목 내용</p>
+          <h4>2. 이용 목적</h4>
+          <p>기도 시간 집계와 구역별 현황 표시, 내 기도 기록 보관, 중보기도 나눔 운영을 위해서만 사용합니다.</p>
+          <h4>3. 익명 이용</h4>
+          <p>로그인 없이 익명으로 이용할 수 있습니다. 익명 기록은 사용하는 기기·세션에 연결되며, 카카오·이메일로 연결하면 어느 기기에서나 안전하게 보관됩니다.</p>
+          <h4>4. 공개 범위</h4>
+          <p>내 기도 기록·기도제목·별명은 <b>본인만</b> 볼 수 있습니다. 구역별 순위 등 통계는 개인을 식별할 수 없는 익명 합계로만 표시됩니다.</p>
+          <h4>5. 보관 및 파기</h4>
+          <p>기록은 서비스 이용 기간 동안 보관되며, 사용자가 <b>[더보기 → 계정 · 모든 기록 삭제]</b>에서 직접 삭제할 수 있습니다. 삭제 시 관련 데이터는 즉시 영구 삭제되며 복구할 수 없습니다.</p>
+          <h4>6. 제3자 제공·처리 위탁</h4>
+          <p>데이터 저장은 Supabase, 로그인은 카카오를 통해 처리됩니다. 그 외 제3자에게 개인정보를 판매하거나 광고 목적으로 제공하지 않습니다.</p>
+          <h4>7. 이용자의 권리</h4>
+          <p>언제든지 별명 수정, 로그아웃, 계정·기록 삭제를 할 수 있습니다.</p>
+          <h4>8. 문의</h4>
+          <p>개인정보 관련 문의는 교회 담당자에게 연락해 주세요.</p>
+        </div>
       </div>
     </div>
 
@@ -1241,6 +1278,19 @@
     myName=''; myEmail=null; isAnon=true; authProvider=null;
     if(SB){ try{ await SB.auth.signOut(); }catch(e){} }   // Supabase 세션까지 종료(이메일/카카오 로그아웃)
     location.reload();                                      // 새로고침 → 깨끗한 익명 상태로 시작
+  }
+  async function deleteAccount(){
+    if(!SB || !myLoggedIn()){ alert('로그인 후 이용할 수 있어요.'); return; }
+    if(!confirm('정말 계정과 모든 기록을 삭제할까요?\n\n기도제목·기도 기록·내 정보가 모두 영구 삭제되며 되돌릴 수 없어요.')) return;
+    if(!confirm('마지막 확인이에요.\n정말로 모든 데이터를 삭제하시겠어요?')) return;
+    try{
+      const { error } = await SB.rpc('delete_my_account');
+      if(error){ alert('삭제에 실패했어요: '+error.message); return; }
+      try{ localStorage.removeItem(PKEY); localStorage.removeItem('omansigan_active'); localStorage.removeItem('om_li'); }catch(e){}
+      try{ await SB.auth.signOut(); }catch(e){}
+      alert('계정과 모든 기록이 삭제되었어요.');
+      location.reload();
+    }catch(e){ alert('삭제 중 오류가 발생했어요: '+(e&&e.message||e)); }
   }
   function restoreSession(){
     const s=loadProfile();
