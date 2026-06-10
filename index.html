@@ -142,9 +142,13 @@
   .minegate .mg-d{font-size:12.5px;color:var(--soft);line-height:1.6;margin:8px 0 16px;}
   .minegate button{background:#3a8a5a;color:#fff;border:none;border-radius:11px;padding:10px 20px;font-family:"Gowun Dodum",sans-serif;font-size:13.5px;cursor:pointer;}
   /* 부서 선택 / 요약 */
-  .deptpills{display:flex;gap:8px;margin-top:18px;}
-  .deptpill{flex:1;padding:11px 4px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);font-size:13px;font-family:"Gowun Dodum",sans-serif;color:var(--ink);cursor:pointer;}
+  .deptpills{display:flex;gap:8px;margin-top:12px;}
+  .deptpill{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:12px 4px;border-radius:14px;border:1.5px solid var(--line);background:var(--surface);font-size:13px;font-family:"Gowun Dodum",sans-serif;color:var(--ink);cursor:pointer;box-shadow:0 4px 10px rgba(150,120,60,.05);}
+  .deptpill svg{width:18px;height:18px;flex-shrink:0;}
   .deptpill.sel{background:var(--amber-tint);border-color:var(--amber);color:var(--amber-deep);}
+  .jz-kicker{font-family:"Gowun Dodum",sans-serif;font-size:12px;color:var(--amber-deep);letter-spacing:1px;margin-bottom:6px;}
+  .seclbl-bar{font-family:"Gowun Dodum",sans-serif;font-size:13.5px;color:var(--ink);margin:20px 2px 2px;padding-left:11px;position:relative;}
+  .seclbl-bar::before{content:"";position:absolute;left:0;top:3px;bottom:3px;width:3px;border-radius:2px;background:var(--amber);}
   .subglabel{font-size:12px;color:var(--soft);margin:16px 2px 0;}
   .deptsum{display:flex;gap:9px;margin:16px 0 14px;}
   .deptsum .ds{flex:1;background:var(--surface);border-radius:14px;padding:13px 8px;text-align:center;box-shadow:0 5px 14px rgba(150,120,60,.06);}
@@ -368,6 +372,7 @@
   #record{background:url('bg-record.png') top center/cover no-repeat, #f4ecdb;}
   #zone{background:url('bg-zone.png') top center/cover no-repeat, #f6efe2;}
   #admin{background:url('bg-admin.png') top center/cover no-repeat, #f6efe2;}
+  #joinzone{background:url('bg-join.png') top center/cover no-repeat, #f6efe2;}
   .adminhead{position:relative;aspect-ratio:1960/780;background:url('bg-admin-head.png') center/cover no-repeat,#f3e9cf;border-radius:20px;margin:12px 0 4px;overflow:hidden;}
   .adminhead .ah-ic{position:absolute;left:16.5%;top:43%;transform:translate(-50%,-50%);width:13%;display:flex;align-items:center;justify-content:center;}
   .adminhead .ah-ic svg{width:78%;height:auto;}
@@ -713,15 +718,17 @@
         <div class="statusbar"><span>9:41</span><span class="r">5G &nbsp; 87%</span></div>
         <div class="subhead"><span class="bk" onclick="go('welcome')">‹</span><span class="ttl">구역 선택</span></div>
         <div style="text-align:center;margin-top:10px;">
+          <div class="jz-kicker">· 구역 선택 ·</div>
           <div class="h-title">어디에 속해 있나요?</div>
           <div class="h-desc">부서를 고르고, 내 구역·마을·반을 선택하세요</div>
         </div>
+        <div class="seclbl-bar">부서</div>
         <div class="deptpills">
-          <button class="deptpill sel" data-d="장년부" onclick="pickDept('장년부')">장년부</button>
-          <button class="deptpill" data-d="청년부" onclick="pickDept('청년부')">청년부</button>
-          <button class="deptpill" data-d="청소년부" onclick="pickDept('청소년부')">청소년부</button>
+          <button class="deptpill sel" data-d="장년부" onclick="pickDept('장년부')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.3"/><path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5M15 19c0-2 1-3.4 3-3.4s3 1.4 3 3.4"/></svg>장년부</button>
+          <button class="deptpill" data-d="청년부" onclick="pickDept('청년부')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.3"/><path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5M15 19c0-2 1-3.4 3-3.4s3 1.4 3 3.4"/></svg>청년부</button>
+          <button class="deptpill" data-d="청소년부" onclick="pickDept('청소년부')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.3"/><path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5M15 19c0-2 1-3.4 3-3.4s3 1.4 3 3.4"/></svg>청소년부</button>
         </div>
-        <div class="subglabel" id="subgLabel">선교지 구역</div>
+        <div class="seclbl-bar" id="subgLabel">선교지 구역</div>
         <div class="chipgrid" id="chipgrid"></div>
         <button class="primary" onclick="go('joinmode')">다음</button>
       </div>
@@ -1079,7 +1086,7 @@
         <div class="mrow only" onclick="go('joinzone')" style="cursor:pointer;"><span>내 구역</span><span class="r" id="myZoneLabel">독일열방 ›</span></div>
         <div class="seclbl">캠페인</div>
         <div class="mrow"><span>현재 목표</span><span class="r">50,000 시간</span></div>
-        <div class="mrow" onclick="go('admin')" style="cursor:pointer;"><span>중보기도 관리자 검수</span><span class="r">›</span></div>
+        <div class="mrow" id="adminMenuRow" onclick="go('admin')" style="cursor:pointer;display:none;"><span>중보기도 검수 <span style="font-size:11px;color:var(--amber-deep);">· 교역자</span></span><span class="r">›</span></div>
         <div class="seclbl">계정</div>
         <div class="mrow" id="linkRow" onclick="go('connect')" style="cursor:pointer;"><span>기록 지키기 (이메일 연결)</span><span class="link" id="linkRowState">연결 ›</span></div>
         <div class="mrow"><span class="link" onclick="logout()">로그아웃</span><span></span></div>
@@ -1145,12 +1152,7 @@
           <div class="ah-tx"><div class="ah-t">중보기도 검수</div><div class="ah-s">교역자만 보고 승인할 수 있어요</div></div>
           <span class="ah-pill">교역자 전용</span>
         </div>
-        <div id="adminGate" style="margin-top:16px;">
-          <div class="mseglbl">관리자 비밀번호</div>
-          <input class="minput" id="adminPass" type="password" placeholder="비밀번호" onkeydown="if(event.key==='Enter')adminLogin()">
-          <button class="primary" onclick="adminLogin()">확인</button>
-          <div class="reqhint" id="adminMsg"></div>
-        </div>
+        <div id="adminDeny" style="display:none;margin-top:18px;"><div class="myempty">교역자 전용 화면입니다.<br>교역자 계정으로 로그인하면 검수할 수 있어요.</div></div>
         <div id="adminWrap" style="display:none;">
           <div class="reclbl">검수 대기 중인 요청</div>
           <div id="adminList"></div>
@@ -1174,6 +1176,7 @@
   function trackPresence(){ if(PRESENCE){ try{ PRESENCE.track({ zone:selZone, praying:amPraying, at:Date.now() }); }catch(e){} } }
   let MY_PRAYER_ID=null, MY_PRAYER_TITLE='', MY_PRAYERS=[], myEditId=null, modalStatus='praying';
   function syncAuthUI(){
+    try{ syncAdminMenu(); }catch(e){}
     const linked = !!authProvider || !!myEmail || isAnon===false;
     var everLI=false; try{ everLI = localStorage.getItem('om_li')==='1'; }catch(e){}
     if(linked){ try{ localStorage.setItem('om_li','1'); }catch(e){} everLI=true; }
@@ -1252,7 +1255,7 @@
     if(id==='topics') buildTopics();
     if(id==='record'){ loadMyRecord(); recTab(window._recTab||'log'); }
     if(id==='intercede') loadRequests();
-    if(id==='admin') resetAdminGate();
+    if(id==='admin') loadAdminReview();
     if(id==='more' || id==='connect') syncAuthUI();
   }
   /* 프로필 기억하기 + 익명 가상 닉네임 */
@@ -2025,19 +2028,14 @@
   }
   /* 관리자 검수 */
   var ADMIN_PASS='';
-  function resetAdminGate(){ ADMIN_PASS=''; var g=document.getElementById('adminGate'), w=document.getElementById('adminWrap'), p=document.getElementById('adminPass'), m=document.getElementById('adminMsg'); if(g)g.style.display='block'; if(w)w.style.display='none'; if(p)p.value=''; if(m)m.textContent=''; }
-  async function adminLogin(){
-    var pass=document.getElementById('adminPass').value; var msg=document.getElementById('adminMsg'); if(msg)msg.textContent='';
-    if(!pass){ if(msg)msg.textContent='비밀번호를 입력해주세요.'; return; }
-    if(!SB) return;
-    try{
-      var res=await SB.rpc('admin_pending',{ p_pass: pass });
-      ADMIN_PASS=pass;
-      document.getElementById('adminGate').style.display='none';
-      document.getElementById('adminWrap').style.display='block';
-      renderAdmin(res.data||[]);
-    }catch(e){ if(msg)msg.textContent='비밀번호가 올바르지 않습니다.'; }
+  function isClergy(){ return (selZone==='교역자') || (myEmail==='duckey@naver.com'); }
+  async function loadAdminReview(){
+    var deny=document.getElementById('adminDeny'), wrap=document.getElementById('adminWrap');
+    if(!SB || !isClergy()){ if(deny)deny.style.display='block'; if(wrap)wrap.style.display='none'; return; }
+    if(deny)deny.style.display='none'; if(wrap)wrap.style.display='block';
+    try{ var res=await SB.rpc('admin_pending_v2'); renderAdmin(res.data||[]); }catch(e){ renderAdmin([]); }
   }
+  function syncAdminMenu(){ var row=document.getElementById('adminMenuRow'); if(row) row.style.display = isClergy() ? 'flex' : 'none'; }
   function renderAdmin(rows){
     var list=document.getElementById('adminList'); if(!list) return;
     if(!rows.length){ list.innerHTML='<div class="myempty">검수할 요청이 없어요.</div>'; return; }
@@ -2046,9 +2044,9 @@
     }).join('');
   }
   async function adminAct(id, status){
-    if(!SB || !ADMIN_PASS) return;
-    try{ await SB.rpc('admin_set_status',{ p_id: id, p_status: status, p_pass: ADMIN_PASS }); }catch(e){ alert('처리에 실패했어요.'); return; }
-    try{ var res=await SB.rpc('admin_pending',{ p_pass: ADMIN_PASS }); renderAdmin(res.data||[]); }catch(e){}
+    if(!SB) return;
+    try{ await SB.rpc('admin_set_status_v2',{ p_id: id, p_status: status }); }catch(e){ alert('처리에 실패했어요.'); return; }
+    try{ var res=await SB.rpc('admin_pending_v2'); renderAdmin(res.data||[]); }catch(e){}
   }
   function korDur(m){ m=Math.round(m||0); if(m<=0) return '0분'; const h=Math.floor(m/60), r=m%60; return h?(h+'시간'+(r?' '+r+'분':'')):(r+'분'); }
   function setTxt(id,v){ var e=document.getElementById(id); if(e) e.textContent=v; }
