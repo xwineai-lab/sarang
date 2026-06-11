@@ -567,8 +567,9 @@
   .zcard .ar{color:var(--faint);font-size:17px;}
   .zcard.me{outline:1.5px solid rgba(224,169,58,.55);background:var(--amber-tint);}
   .metag{font-size:10px;color:var(--amber-deep);background:#fff;border:1px solid rgba(224,169,58,.5);padding:1px 7px;border-radius:7px;margin-left:7px;vertical-align:2px;white-space:nowrap;display:inline-block;}
-  .zcard .ziccol{display:flex;flex-direction:column;align-items:center;gap:4px;flex-shrink:0;}
-  .zcard .zmetag2{font-size:8.5px;font-weight:700;color:var(--amber-deep);background:#fff;border:1px solid rgba(224,169,58,.55);padding:1px 6px;border-radius:6px;white-space:nowrap;line-height:1.5;}
+  .zcard .zbot{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:6px;}
+  .zcard .zbot .zbr{font-size:11px;color:var(--soft);text-align:right;}
+  .zmetag3{flex-shrink:0;font-size:9px;font-weight:700;color:var(--amber-deep);background:#fff;border:1px solid rgba(224,169,58,.55);padding:1px 7px;border-radius:7px;white-space:nowrap;}
   .langsel{display:flex;gap:8px;margin:2px 0 4px;}
   .langbtn{flex:1;padding:9px 0;border:1px solid var(--track);border-radius:10px;background:var(--surface);color:var(--soft);font-family:"Gowun Dodum",sans-serif;font-size:13px;cursor:pointer;transition:all .15s;}
   .langbtn.on{background:var(--amber);color:#fff;border-color:var(--amber);font-weight:700;}
@@ -2106,17 +2107,18 @@
       const lvPct=zoneLvPct(hours), lvNum=zoneLvIdx(hours)+1;
       const pfx=(zoneDept!=='전체'||nm==='청년부'||nm==='청소년부')?'':zonePrefix(z[4]);
       // 실제 라이브: 기도 중이면 '지금 N명 기도 중'을 아래에 강조(심장 점), 아니면 준비 중만
-      var livePart='';
-      if(pray>0){ livePart='<div class="zp zlivec"><span class="zlc-now"><i class="zlc-dot"></i>지금 '+pray+'명 기도 중</span>'+(prep>0?' <span class="zlc-sep">·</span> <span>준비 중 '+prep+'</span>':'')+'</div>'; }
-      else if(conn>0){ livePart='<div class="zp zlivec"><span>준비 중 '+prep+'</span></div>'; }
+      var liveTxt='';
+      if(pray>0){ liveTxt='<span class="zlc-now"><i class="zlc-dot"></i>지금 '+pray+'명 기도 중</span>'+(prep>0?' <span class="zlc-sep">·</span> <span>준비 중 '+prep+'</span>':''); }
+      else if(conn>0){ liveTxt='준비 중 '+prep; }
+      var botRow = (me||liveTxt) ? ('<div class="zbot">'+(me?'<span class="zmetag3">우리 구역</span>':'<span></span>')+'<span class="zlivec zbr">'+liveTxt+'</span></div>') : '';
       var inten = maxH>0 ? Math.min(hours/maxH,1) : 0;
       var tdy = (nm==='청년부'||nm==='청소년부') ? (aggToday[nm]||0) : (TODAY_ZONE[nm]||0);
       const rank = '<div class="zglow'+(pray>0?' live':'')+'" style="--g:'+inten.toFixed(2)+'"><span class="zg-core"></span></div>';
       return '<div class="zcard'+(i===0?' top':'')+(me?' me':'')+'">'+rank+
-        '<div class="ziccol"><div class="zic '+zicClass(nm,z[4])+'">'+zoneSymbol(nm,z[4])+'</div>'+(me?'<div class="zmetag2">우리 구역</div>':'')+'</div>'+
+        '<div class="zic '+zicClass(nm,z[4])+'">'+zoneSymbol(nm,z[4])+'</div>'+
         '<div class="zmid"><div class="zrow1"><span class="znm">'+pfx+zoneDisplayName(nm)+'</span><span class="zh num">'+fmtHM(hours*60)+(tdy>0?'<span class="ztoday">+'+tdy+'분</span>':'')+'</span></div>'+
         '<div class="zbarrow"><div class="ztrack"><i style="width:'+lvPct+'%"></i></div><span class="zlvsym" title="'+PLEVELS[lvNum-1][1]+' 단계">'+flowerSVG(lvNum)+'</span><span class="zlvtxt">Lv.'+lvNum+'</span></div>'+
-        livePart+'</div><div class="ar">›</div></div>';
+        botRow+'</div><div class="ar">›</div></div>';
     }).join('');
   }
   // 기도 제목 (교회를 위한 합심 기도제목 — 교회 이전 + 성도들의 모든 삶의 자리)
