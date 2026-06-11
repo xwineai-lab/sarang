@@ -6,8 +6,9 @@
 <title>5만시간 · 프랑크푸르트 사랑의 교회</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Gamja+Flower&family=Nanum+Myeongjo:wght@400;700;800&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
   :root{
     --paper:#f7efe0; --paper2:#f1e7d4; --surface:#ffffff;
@@ -655,6 +656,30 @@
   .hpstep .hp-d{font-size:12.5px;color:var(--soft);line-height:1.62;margin-top:4px;}
   .hpstep .hp-d b{color:var(--amber-deep);font-weight:600;}
   .hpend{text-align:center;font-family:"Gowun Dodum",sans-serif;font-size:14px;color:#5e4720;background:var(--amber-tint);border-radius:14px;padding:15px;margin-top:16px;line-height:1.65;}
+  /* 은혜 말씀 카드 */
+  .gracesec{margin-top:18px;}
+  .gc-head{display:flex;align-items:baseline;justify-content:space-between;}
+  .gc-count-w{font-size:12px;color:var(--amber-deep);}
+  .gc-sub{font-size:12px;color:var(--soft);margin:3px 0 9px;}
+  .gc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+  .gc-thumb{position:relative;aspect-ratio:9/16;background:#efe7d6 center/cover no-repeat;border-radius:12px;border:1px solid var(--line);cursor:pointer;overflow:hidden;}
+  .gc-th-d{position:absolute;left:0;right:0;bottom:5px;text-align:center;font-size:9.5px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.55);}
+  .gc-empty{grid-column:1/-1;text-align:center;color:var(--soft);font-size:13px;line-height:1.6;padding:20px 8px;background:var(--surface);border:1px solid var(--line);border-radius:14px;}
+  .gcard-bg{position:relative;aspect-ratio:9/16;background:#efe7d6 center/cover no-repeat;border-radius:18px;overflow:hidden;}
+  .gcard-ov{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;text-align:center;padding:30px 24px;}
+  .gcard-lbl{position:absolute;top:20px;left:0;right:0;font-size:11px;letter-spacing:2.5px;}
+  .gcard-vs{font-size:21px;line-height:1.85;word-break:keep-all;}
+  .gcard-rf{margin-top:13px;font-size:15px;letter-spacing:.3px;}
+  .gcard-cap{position:absolute;bottom:22px;left:0;right:0;font-size:11.5px;}
+  .gmodal{position:absolute;inset:0;z-index:70;background:rgba(40,30,12,.62);display:flex;align-items:center;justify-content:center;padding:20px;}
+  .gmodal-box{width:100%;max-width:320px;display:flex;flex-direction:column;align-items:center;gap:13px;}
+  .gmodal-top{color:#fff;font-family:"Gowun Dodum",sans-serif;font-size:15px;text-align:center;}
+  .gmodal-card{width:100%;box-shadow:0 16px 40px rgba(0,0,0,.4);border-radius:18px;}
+  .gmodal-btns{display:flex;gap:10px;}
+  .gmodal-btns button{border:none;border-radius:999px;padding:10px 20px;font-family:"Gowun Dodum",sans-serif;font-size:14px;cursor:pointer;}
+  .gm-save{background:#e7a93c;color:#fff;}
+  .gm-close{background:rgba(255,255,255,.22);color:#fff;}
+  .gmodal-hint{color:rgba(255,250,235,.85);font-size:11.5px;text-align:center;}
   /* 더보기 소리 스위치 */
   .swtoggle{position:relative;width:42px;height:24px;border-radius:999px;background:#d8d0c0;transition:background .2s;flex-shrink:0;cursor:pointer;display:inline-block;vertical-align:middle;}
   .swtoggle.on{background:#e7a93c;}
@@ -1032,6 +1057,11 @@
             <div class="wcl">이번 주 기도 흐름</div>
             <div class="wcbars" id="rc-bars"></div>
           </div>
+          <div class="gracesec">
+            <div class="gc-head"><span class="reclbl" style="margin:0;">은혜 말씀 카드</span><span class="gc-count-w">받은 카드 <b id="graceCount">0</b>장</span></div>
+            <div class="gc-sub">기도 30분을 드린 날, 하루 한 장 받는 오늘의 말씀이에요.</div>
+            <div class="gc-grid" id="graceGrid"><div class="gc-empty">아직 받은 카드가 없어요.</div></div>
+          </div>
           <div class="reclbl">최근 기도 기록</div>
           <div id="recentList">
             <div class="recrow"><span class="d">아직 기록이 없어요</span><span class="v num">—</span></div>
@@ -1314,7 +1344,7 @@
     if(id==='zone'){ buildZones(); loadDept(); }
     if(id==='joinzone') buildChips();
     if(id==='topics') buildTopics();
-    if(id==='record'){ loadMyRecord(); recTab(window._recTab||'log'); }
+    if(id==='record'){ loadMyRecord(); recTab(window._recTab||'log'); loadGraceCards(); }
     if(id==='intercede') loadRequests();
     if(id==='admin') loadAdminReview();
     if(id==='more' || id==='connect') syncAuthUI();
@@ -1618,6 +1648,113 @@
     if(tx){ tx.textContent = !on ? '찬양 꺼짐 · 탭하여 켜기' : ((running && playing) ? '찬양이 함께하고 있어요 · 탭하여 음소거' : '기도와 함께 찬양이 흘러요'); }
     var sw=document.getElementById('bgmSwitch'); if(sw) sw.classList.toggle('on', on);
   }
+  /* ===== 은혜 말씀 카드 (기도 30분 보상) ===== */
+  var GFONT={M:"'Nanum Myeongjo',serif",G:"'Gowun Dodum',sans-serif",F:"'Gamja Flower',cursive"};
+  // 배경별 [글씨체, 글자색, 어두움(1=흰글씨), 위치(c=중앙/u=상단)]  index 1..24
+  var CARDBG=[null,
+   ['F','#5a4326',0,'c'],['M','#463a28',0,'c'],['M','#6e4f54',0,'c'],['G','#4a4a2e',0,'u'],
+   ['M','#5a4326',0,'c'],['F','#5a4326',0,'c'],['M','#f2ead4',1,'c'],['M','#5a3a23',0,'c'],
+   ['G','#3f4a2c',0,'c'],['G','#6a4a2a',0,'c'],['M','#3f5560',0,'u'],['F','#5a4326',0,'c'],
+   ['M','#f2ead4',1,'c'],['M','#6a3f24',0,'u'],['G','#4a4630',0,'c'],['G','#6a4a2a',0,'c'],
+   ['G','#3f5560',0,'c'],['M','#3a3a34',0,'c'],['G','#6a4a2a',0,'c'],['M','#f2ead4',1,'c'],
+   ['M','#5a4a2e',0,'c'],['M','#5a3f22',0,'u'],['G','#4a5560',0,'u'],['G','#5a4a52',0,'c']];
+  var GVERSES=[
+   ['수고하고 무거운 짐 진 자들아 다 내게로 오라 내가 너희를 쉬게 하리라','마태복음 11:28'],
+   ['평안을 너희에게 끼치노니 곧 나의 평안을 너희에게 주노라','요한복음 14:27'],
+   ['너는 마음을 강하게 하고 담대히 하라 내가 너와 함께 하느니라','여호수아 1:9'],
+   ['내가 너와 함께 있어 네가 어디로 가든지 너를 지키리라','창세기 28:15'],
+   ['여호와는 나의 목자시니 내게 부족함이 없으리로다','시편 23:1'],
+   ['너희 염려를 다 주께 맡기라 이는 그가 너희를 돌보심이라','베드로전서 5:7'],
+   ['두려워하지 말라 내가 너와 함께 함이라 놀라지 말라 나는 네 하나님이 됨이라','이사야 41:10'],
+   ['여호와는 너를 지키시는 이시라','시편 121:5'],
+   ['또 여호와를 기뻐하라 그가 네 마음의 소원을 이루어 주시리로다','시편 37:4'],
+   ['내게 능력 주시는 자 안에서 내가 모든 것을 할 수 있느니라','빌립보서 4:13'],
+   ['너희를 향한 나의 생각은 평안이요 미래와 희망을 주는 것이니라','예레미야 29:11'],
+   ['소망의 하나님이 모든 기쁨과 평강을 너희에게 충만하게 하시기를','로마서 15:13'],
+   ['범사에 감사하라 이것이 너희를 향하신 하나님의 뜻이니라','데살로니가전서 5:18'],
+   ['여호와께 감사하라 그는 선하시며 그 인자하심이 영원함이로다','시편 107:1'],
+   ['내 영혼아 여호와를 송축하라 그의 모든 은택을 잊지 말지어다','시편 103:2'],
+   ['쉬지 말고 기도하라','데살로니가전서 5:17'],
+   ['너희는 먼저 그의 나라와 그의 의를 구하라','마태복음 6:33'],
+   ['구하라 그리하면 너희에게 주실 것이요 찾으라 그리하면 찾아낼 것이요','마태복음 7:7'],
+   ['주의 말씀은 내 발에 등이요 내 길에 빛이니이다','시편 119:105'],
+   ['항상 기뻐하라 쉬지 말고 기도하라','빌립보서 4:4'],
+   ['너는 내게 부르짖으라 내가 네게 응답하겠고','예레미야 33:3'],
+   ['오직 여호와를 앙망하는 자는 새 힘을 얻으리니','이사야 40:31'],
+   ['선을 행하되 낙심하지 말지니 때가 이르매 거두리라','갈라디아서 6:9'],
+   ['환난은 인내를 인내는 연단을 연단은 소망을 이루는 줄 앎이로다','로마서 5:3'],
+   ['하나님이 세상을 이처럼 사랑하사 독생자를 주셨으니','요한복음 3:16'],
+   ['사랑은 오래 참고 사랑은 온유하며','고린도전서 13:4'],
+   ['네가 내 눈에 보배롭고 존귀하며 내가 너를 사랑하였은즉','이사야 43:4'],
+   ['우리가 사랑함은 그가 먼저 우리를 사랑하셨음이라','요한일서 4:19'],
+   ['여호와께서 너를 지켜 모든 환난을 면하게 하시며','시편 121:7'],
+   ['내가 산을 향하여 눈을 들리라 나의 도움이 어디서 올까','시편 121:1'],
+   ['하나님은 우리의 피난처시요 힘이시니 환난 중에 만날 큰 도움이시라','시편 46:1'],
+   ['여호와는 나의 빛이요 나의 구원이시니 내가 누구를 두려워하리요','시편 27:1'],
+   ['내 안에 거하라 나도 너희 안에 거하리라','요한복음 15:4'],
+   ['주께서 평강에 평강으로 지키시리니 이는 그가 주를 신뢰함이니이다','이사야 26:3'],
+   ['여호와는 마음이 상한 자를 가까이 하시고','시편 34:18'],
+   ['새 힘을 얻으리니 독수리가 날개치며 올라감 같을 것이요','이사야 40:31']];
+  function gpad(n){return n<10?'0'+n:''+n;}
+  function gLocalDate(){var d=new Date();return d.getFullYear()+'-'+gpad(d.getMonth()+1)+'-'+gpad(d.getDate());}
+  function gDayBounds(){var n=new Date();return {from:new Date(n.getFullYear(),n.getMonth(),n.getDate()).toISOString(),to:new Date(n.getFullYear(),n.getMonth(),n.getDate()+1).toISOString()};}
+  function gDateKor(ds){var p=(ds||gLocalDate()).split('-');return parseInt(p[1],10)+'월 '+parseInt(p[2],10)+'일';}
+  function gSeen(){try{return JSON.parse(localStorage.getItem('grace_seen')||'[]');}catch(e){return[];}}
+  function gMarkSeen(i){try{var a=gSeen();if(a.indexOf(i)<0){a.push(i);} if(a.length>=GVERSES.length){a=[i];} localStorage.setItem('grace_seen',JSON.stringify(a));}catch(e){}}
+  function gPickVerse(){var s=gSeen(),pool=[];for(var i=0;i<GVERSES.length;i++)if(s.indexOf(i)<0)pool.push(i);if(!pool.length)for(var j=0;j<GVERSES.length;j++)pool.push(j);var k=pool[Math.floor(Math.random()*pool.length)];return {i:k,t:GVERSES[k][0],r:GVERSES[k][1]};}
+  function graceCardInner(card){
+    var idx=parseInt((card.bg||'cardbg01').replace('cardbg',''),10)||1; var m=CARDBG[idx]||CARDBG[1];
+    var font=GFONT[m[0]],col=m[1],dark=m[2],pos=m[3];
+    var sh=dark?'0 2px 12px rgba(0,0,0,.6)':'0 1px 8px rgba(255,250,240,.7)';
+    var lbl=dark?'rgba(255,250,235,.82)':'rgba(120,90,40,.85)';
+    var capCol=dark?'rgba(255,250,235,.88)':'rgba(80,64,36,.92)';
+    var just=pos==='u'?'flex-start':'center', ptop=pos==='u'?'16%':'0';
+    var cap=(myName||'성도')+' 성도님 · '+gDateKor(card.earned_date)+' · '+(card.minutes||0)+'분 기도';
+    return '<div class="gcard-bg" style="background-image:url(\''+card.bg+'.jpg\')">'
+      +'<div class="gcard-ov" style="justify-content:'+just+';padding-top:'+ptop+'">'
+      +'<div class="gcard-lbl" style="color:'+lbl+';text-shadow:'+sh+'">은혜 말씀 카드</div>'
+      +'<div class="gcard-vs" style="font-family:'+font+';color:'+col+';text-shadow:'+sh+'">'+mpEsc(card.verse)+'</div>'
+      +'<div class="gcard-rf" style="font-family:'+font+';color:'+col+';text-shadow:'+sh+'">'+mpEsc(card.ref||'')+'</div></div>'
+      +'<div class="gcard-cap" style="color:'+capCol+';text-shadow:'+sh+'">'+mpEsc(cap)+'</div></div>';
+  }
+  function showGraceCard(card,fresh){
+    closeGraceModal();
+    var ov=document.createElement('div'); ov.className='gmodal'; ov.id='graceModal'; ov.onclick=function(e){if(e.target===ov)closeGraceModal();};
+    ov.innerHTML='<div class="gmodal-box">'+(fresh?'<div class="gmodal-top">🌿 오늘의 은혜 말씀 카드를 받았어요</div>':'')
+      +'<div class="gmodal-card" id="graceCardEl">'+graceCardInner(card)+'</div>'
+      +'<div class="gmodal-btns"><button class="gm-save" onclick="saveGraceImage()">이미지로 저장</button><button class="gm-close" onclick="closeGraceModal()">닫기</button></div>'
+      +(fresh?'<div class="gmodal-hint">기록 탭 · 은혜 말씀 카드함에 보관됩니다</div>':'')+'</div>';
+    document.querySelector('.phone').appendChild(ov);
+  }
+  function closeGraceModal(){var o=document.getElementById('graceModal');if(o)o.remove();}
+  async function saveGraceImage(){
+    var el=document.getElementById('graceCardEl'); if(!el||!window.html2canvas){ alert('잠시 후 다시 시도해 주세요.'); return; }
+    try{ var cv=await html2canvas(el,{scale:2,useCORS:true,backgroundColor:null,logging:false});
+      cv.toBlob(function(blob){ if(!blob)return; var file=new File([blob],'말씀카드.png',{type:'image/png'});
+        if(navigator.canShare&&navigator.canShare({files:[file]})){ navigator.share({files:[file],title:'은혜 말씀 카드'}).catch(function(){}); }
+        else{ var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='말씀카드.png'; document.body.appendChild(a); a.click(); a.remove(); } });
+    }catch(e){ alert('이미지 저장에 실패했어요.'); }
+  }
+  async function maybeAwardCard(sessionMins){
+    if(!SB) return;
+    await new Promise(function(r){setTimeout(r,1500);});   // 방금 기도 기록이 반영될 시간
+    var b=gDayBounds(), tot=sessionMins;
+    try{ var r=await SB.rpc('today_timer_minutes',{p_from:b.from,p_to:b.to}); if(typeof r.data==='number') tot=Math.max(tot,r.data); }catch(e){}
+    if(!(sessionMins>=30 || tot>=30)) return;
+    var bgi=1+Math.floor(Math.random()*24), v=gPickVerse();
+    try{ var res=await SB.rpc('claim_grace_card',{p_date:gLocalDate(),p_bg:'cardbg'+gpad(bgi),p_verse:v.t,p_ref:v.r,p_minutes:tot});
+      if(res&&res.data){ gMarkSeen(v.i); showGraceCard(res.data,true); } }catch(e){}
+  }
+  var GRACE_CACHE=[];
+  async function loadGraceCards(){
+    var grid=document.getElementById('graceGrid'), cnt=document.getElementById('graceCount'); if(!grid) return;
+    if(!SB){ grid.innerHTML='<div class="gc-empty">로그인하면 받은 카드가 여기에 모여요.</div>'; if(cnt)cnt.textContent='0'; return; }
+    var rows=[]; try{ var r=await SB.rpc('my_grace_cards'); rows=r.data||[]; }catch(e){ rows=[]; }
+    GRACE_CACHE=rows; if(cnt) cnt.textContent=rows.length;
+    if(!rows.length){ grid.innerHTML='<div class="gc-empty">아직 받은 카드가 없어요.<br>기도 30분을 드리면 오늘의 말씀 카드를 받아요.</div>'; return; }
+    grid.innerHTML=rows.map(function(c,i){ return '<div class="gc-thumb" onclick="openGraceView('+i+')" style="background-image:url(\''+c.bg+'.jpg\')"><span class="gc-th-d">'+gDateKor(c.earned_date)+'</span></div>'; }).join('');
+  }
+  function openGraceView(i){ var c=GRACE_CACHE[i]; if(c) showGraceCard(c,false); }
   function startPray(){
     running=true; amPraying=true; trackPresence(); startAt=Date.now(); nextCheck=startAt+CHECK_MS;
     bgmOnPrayStart();
@@ -1641,7 +1778,7 @@
       if(to){ document.getElementById('toastB').textContent='조금 더 함께해요'; if(ts) ts.textContent='1분 미만은 기록되지 않아요';
         to.classList.add('show'); setTimeout(function(){to.classList.remove('show'); if(ts) ts.textContent='내 기도가 모두의 시간에 더해졌어요';},2200); }
     } else {
-      if(SB){ recordPrayer(mins); } else { current+=mins/60; liveN=Math.max(0,liveN-1); updateLive(); renderGauge(); }
+      if(SB){ recordPrayer(mins); maybeAwardCard(mins); } else { current+=mins/60; liveN=Math.max(0,liveN-1); updateLive(); renderGauge(); }
       if(to){ document.getElementById('toastB').textContent='+'+mins+'분'; if(ts) ts.textContent='내 기도가 모두의 시간에 더해졌어요';
         to.classList.add('show'); setTimeout(function(){to.classList.remove('show');},2200); }
     }
