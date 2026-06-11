@@ -1988,7 +1988,7 @@
   var zoneDept='전체';
   function zonePrefix(dept){ return dept==='청년부'?'청년부 ':(dept==='청소년부'?'청소년부 ':''); }
   // 교역자·청년부·청소년부는 그대로, 나머지 구역은 '구역' 접미사 (이미 포함된 경우 제외)
-  function zoneDisplayName(nm){ if(nm==='교역자'||nm==='청년부'||nm==='청소년부') return nm; if(/구역/.test(nm)) return nm; return nm+' 구역'; }
+  function zoneDisplayName(nm){ if(nm==='교역자'||nm==='청년부'||nm==='청소년부') return nm; if(/구역/.test(nm)||/마을$/.test(nm)||/반$/.test(nm)) return nm; return nm+' 구역'; }
   function zoneTab(d){
     zoneDept=d;
     var map={'전체':'zdt-all','장년부':'zdt-jang','청년부':'zdt-young','청소년부':'zdt-youth'};
@@ -2019,7 +2019,10 @@
     e=document.getElementById('zstat-total'); if(e) e.textContent=fmtHM(tot*60);
     e=document.getElementById('zstat-zones'); if(e) e.textContent=zc+' 구역';
     e=document.getElementById('zstat-live'); if(e) e.textContent=lv+' 구역';
-    var Z = (zoneDept==='전체') ? disp.slice() : disp.filter(function(z){ return (z[4]||'장년부')===zoneDept; });
+    var Z;
+    if(zoneDept==='전체'){ Z = disp.slice(); }
+    else if(zoneDept==='청년부'||zoneDept==='청소년부'){ Z = all.filter(function(z){ return (z[4]||'장년부')===zoneDept; }); }   // 부서 선택 시 마을/반별로 펼침
+    else { Z = disp.filter(function(z){ return (z[4]||'장년부')===zoneDept; }); }
     Z.sort(function(a,b){ return b[1]-a[1]; });
     const medal=['gold','silver','bronze'];
     const list=document.getElementById('zoneList');
@@ -2029,7 +2032,7 @@
       var nm=z[0]; const hours=z[1], me=z[3]===true;
       const pray=zPray(nm), conn=zConn(nm), prep=Math.max(0,conn-pray);
       const lvPct=zoneLvPct(hours), lvNum=zoneLvIdx(hours)+1;
-      const pfx=(nm==='청년부'||nm==='청소년부')?'':zonePrefix(z[4]);
+      const pfx=(zoneDept!=='전체'||nm==='청년부'||nm==='청소년부')?'':zonePrefix(z[4]);
       // 실제 라이브(접속/기도)가 있을 때만 표시
       const livePart = conn>0 ? ('<div class="zp zlivec"><span class="zlc-pray">기도 중 '+pray+'</span> · <span>준비 중 '+prep+'</span></div>') : '';
       var inten = maxH>0 ? Math.min(hours/maxH,1) : 0;
