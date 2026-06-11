@@ -542,6 +542,7 @@
   .zcard .zic svg{width:19px;height:19px;}
   .zcard .zmid{flex:1;min-width:0;}
   .zcard .zrow1{display:flex;justify-content:space-between;align-items:baseline;}
+  .zcard .zh .ztoday{margin-left:5px;font-size:11px;font-weight:600;color:#9cbf6e;letter-spacing:.2px;}
   .zcard .znm{font-size:14px;font-weight:600;color:var(--ink);}
   .zcard .zh{font-family:"Outfit";font-size:15px;font-weight:600;color:var(--ink);}
   .zcard .ztrack{height:7px;border-radius:999px;background:var(--track);overflow:hidden;margin-top:8px;}
@@ -1565,7 +1566,7 @@
   function _hashStr(s){ var h=0; s=s||''; for(var i=0;i<s.length;i++){ h=(h*31+s.charCodeAt(i))|0; } return Math.abs(h); }
   function defaultElder(seed){ return (_hashStr(seed)%2===0) ? 'avatar06' : 'avatar05'; }   // 장로님(06)·권사님(05) 랜덤(사람마다 고정)
   function avatarCircle(u, idx, px, border, first){
-    var av=(u&&u.avatar&&AV_LIST.indexOf(u.avatar)>=0) ? u.avatar : defaultElder((u&&u.key)||('s'+idx));
+    var av=(u&&u.avatar&&AV_LIST.indexOf(u.avatar)>=0) ? u.avatar : AV_LIST[_hashStr((u&&u.key)||('s'+idx)) % AV_LIST.length];   // 미설정자: 8종 중 랜덤(사람마다 고정)
     var st='width:'+px+'px;height:'+px+'px;border-radius:50%;'+(first?'':'margin-left:-'+Math.round(px*0.3)+'px;')+'border:2px solid '+(border||'#fff')+';overflow:hidden;display:inline-flex;flex-shrink:0;vertical-align:middle;background:#f0e7d4;';
     return '<span style="'+st+'"><img src="'+av+'.png" alt="" style="width:100%;height:100%;object-fit:cover;display:block;"></span>';
   }
@@ -2012,10 +2013,11 @@
       // 실제 라이브(접속/기도)가 있을 때만 표시
       const livePart = conn>0 ? ('<div class="zp zlivec"><span class="zlc-pray">기도 중 '+pray+'</span> · <span>준비 중 '+prep+'</span></div>') : '';
       var inten = maxH>0 ? Math.min(hours/maxH,1) : 0;
+      var tdy = TODAY_ZONE[nm]||0;
       const rank = '<div class="zglow'+(pray>0?' live':'')+'" style="--g:'+inten.toFixed(2)+'"><span class="zg-core"></span></div>';
       return '<div class="zcard'+(i===0?' top':'')+(me?' me':'')+'">'+rank+
         '<div class="zic '+zicClass(nm,z[4])+'">'+zoneSymbol(nm,z[4])+'</div>'+
-        '<div class="zmid"><div class="zrow1"><span class="znm">'+pfx+zoneDisplayName(nm)+(me?'<span class="metag">우리 구역</span>':'')+(pray>0?'<span class="lvtag">지금 기도 중</span>':'')+'</span><span class="zh num">'+fmtHM(hours*60)+'</span></div>'+
+        '<div class="zmid"><div class="zrow1"><span class="znm">'+pfx+zoneDisplayName(nm)+(me?'<span class="metag">우리 구역</span>':'')+(pray>0?'<span class="lvtag">지금 기도 중</span>':'')+'</span><span class="zh num">'+fmtHM(hours*60)+(tdy>0?'<span class="ztoday">+'+tdy+'분</span>':'')+'</span></div>'+
         '<div class="zbarrow"><div class="ztrack"><i style="width:'+lvPct+'%"></i></div><span class="zlvsym" title="레벨 '+lvNum+'">'+flowerSVG(lvNum)+'</span></div>'+
         livePart+'</div><div class="ar">›</div></div>';
     }).join('');
@@ -2508,11 +2510,16 @@
     set('dept-all', (m['장년부']||0)+(m['청년부']||0)+(m['청소년부']||0));
     set('dept-jang', m['장년부']); set('dept-young', m['청년부']); set('dept-youth', m['청소년부']);
   }
+  var TODAY_ZONE={};
   async function loadRankings(){
     if(!SB) return;
     const { data } = await SB.rpc('group_rankings');
     if(!data) return;
     SERVER_ZONES = data.map(function(r){ return [ r.group_name, Number(r.hours)||0, 'people', r.group_name===selZone, r.dept_name||'장년부' ]; });
+    try{ var n=new Date(); var from=new Date(n.getFullYear(),n.getMonth(),n.getDate()).toISOString(), to=new Date(n.getFullYear(),n.getMonth(),n.getDate()+1).toISOString();
+      var r2=await SB.rpc('group_today_minutes',{p_from:from,p_to:to}); TODAY_ZONE={};
+      (r2.data||[]).forEach(function(x){ TODAY_ZONE[x.group_name]=Number(x.mins)||0; });
+    }catch(e){}
     if(document.getElementById('zone').classList.contains('on')) buildZones();
   }
   function setupPresence(){
