@@ -1455,22 +1455,27 @@
     const msg=document.getElementById('linkMsg');
     if(!SB){ if(msg) msg.textContent='서버 연결이 필요합니다.'; alert('서버 연결이 필요합니다.'); return; }
     if(msg) msg.textContent='카카오로 이동 중...';
-    // 깨끗한 루트 URL로 리다이렉트(허용목록 일치) — '?v=' 등 캐시버스트 제거
-    const opts={ provider:'kakao', options:{ redirectTo: location.origin+'/', scopes:'profile_nickname' } };
+    // 통합 토큰: 인증 후 돌아왔을 때 익명 기록을 자동으로 가져오기 위함 (저장공간이 날아가도 URL로 전달됨)
+    var token=((window.crypto&&crypto.randomUUID)?crypto.randomUUID():(Date.now()+''+Math.random())).replace(/[^a-z0-9]/gi,'');
+    var redirect=location.origin+'/?mt='+token;
+    const opts={ provider:'kakao', options:{ redirectTo: redirect, scopes:'profile_nickname' } };
     try{
-      // 현재(익명) 세션에 저장된 내 기도제목이 있는지 확인
+      // 현재가 익명 계정이면, 서버에 통합 토큰을 남겨 인증 후 자동 통합되게 함
+      try{ const uu=await SB.auth.getUser(); const u=uu.data&&uu.data.user;
+        if(u && u.is_anonymous){ await SB.from('merge_pending').insert({ token: token }); } }catch(e){}
+      // 기존 익명 기록이 있는지(기도제목 또는 기도세션)
       let hasData=false;
       try{ const c=await SB.from('my_prayers').select('id',{count:'exact',head:true}); hasData=(c.count||0)>0; }catch(e){}
+      if(!hasData){ try{ const c2=await SB.from('prayer_sessions').select('id',{count:'exact',head:true}); hasData=(c2.count||0)>0; }catch(e){} }
       if(hasData){
-        // 기존 익명 데이터가 있으면 → 데이터 보존하며 카카오 '연결'
+        // 데이터 보존: 먼저 카카오 '연결'(linkIdentity). 이미 가입된 카카오면 돌아온 뒤 로그인+통합으로 처리.
         const { error } = await SB.auth.linkIdentity(opts);
-        if(error){ if(msg) msg.textContent='카카오 연결 오류: '+error.message; alert('카카오 연결 오류: '+error.message); }
+        if(error){ const { error:e2 } = await SB.auth.signInWithOAuth(opts); if(e2 && msg) msg.textContent='카카오 오류: '+e2.message; }
       }else{
-        // 데이터가 없는 새 세션이면 → 카카오 '로그인'(기존 계정으로 복귀)
         const { error } = await SB.auth.signInWithOAuth(opts);
-        if(error){ if(msg) msg.textContent='카카오 로그인 오류: '+error.message; alert('카카오 로그인 오류: '+error.message); }
+        if(error){ if(msg) msg.textContent='카카오 로그인 오류: '+error.message; }
       }
-    }catch(e){ if(msg) msg.textContent='문제가 발생했어요: '+(e&&e.message||e); alert('카카오 처리 중 오류: '+(e&&e.message||e)); }
+    }catch(e){ if(msg) msg.textContent='문제가 발생했어요: '+(e&&e.message||e); }
   }
   const fmt=n=>n.toLocaleString('en-US');
   function liveLineText(){
@@ -1574,11 +1579,24 @@
   }
   setInterval(function(){ hhIdx++; paintHead(); }, 9000);
   paintHead();
+  var _gaugeShown=0, _gaugeRAF=0;
+  function paintGauge(mins, goalMin){
+    var p=Math.min(mins/goalMin,1);
+    var cu=document.getElementById('cur'); if(cu) cu.textContent=fmtHM(mins);
+    var bar=document.getElementById('bar'); if(bar) bar.style.width=(p*100)+'%';
+    var pc=document.getElementById('pct'); if(pc) pc.textContent=(p>=1?'100':(p*100).toFixed(2))+'%';
+    _gaugeShown=mins;
+  }
   function renderGauge(){
     const totMin=Math.round((current||0)*60), goalMin=TOTAL*60, p=Math.min(totMin/goalMin,1);
-    document.getElementById('cur').textContent=fmtHM(totMin);
-    document.getElementById('bar').style.width=(p*100)+'%';
-    document.getElementById('pct').textContent=(p>=1?'100':(p*100).toFixed(2))+'%';
+    // 0 → 실제값으로 부드럽게 카운트업
+    if(window.requestAnimationFrame && Math.abs(totMin-_gaugeShown)>1){
+      cancelAnimationFrame(_gaugeRAF);
+      var start=_gaugeShown, t0=null, dur=Math.min(1400, 500+Math.abs(totMin-start)*1.2);
+      var stepFn=function(ts){ if(!t0)t0=ts; var k=Math.min((ts-t0)/dur,1); var e=1-Math.pow(1-k,3);
+        paintGauge(Math.round(start+(totMin-start)*e), goalMin); if(k<1){ _gaugeRAF=requestAnimationFrame(stepFn);} else { paintGauge(totMin,goalMin);} };
+      _gaugeRAF=requestAnimationFrame(stepFn);
+    } else { paintGauge(totMin, goalMin); }
     const wasDone=campaignDone; campaignDone=(p>=1);
     if(campaignDone!==wasDone) paintVerse();
   }
@@ -2038,6 +2056,45 @@
   const SUPABASE_URL      = 'https://vwcsyilkhfmdyqxavsqz.supabase.co';
   const SUPABASE_ANON_KEY = 'sb_publishable_CgAvbJckT5ctLRHBxkmTqg_1qqs3DSj';
 
+  /* ===== 같은 기기 익명 기록 → 로그인 계정 자동 통합 ===== */
+  var ANON_UID_KEY='omansigan_anon_uid';
+  async function autoMergeAnon(){
+    if(!SB) return;
+    var u=null; try{ var r=await SB.auth.getUser(); u=r.data&&r.data.user; }catch(e){}
+    if(!u) return;
+    if(u.is_anonymous){ try{ localStorage.setItem(ANON_UID_KEY, u.id); }catch(e){} return; }   // 익명일 땐 uid 기억
+    var prev=null; try{ prev=localStorage.getItem(ANON_UID_KEY); }catch(e){}
+    if(!prev || prev===u.id) return;
+    try{
+      var res=await SB.rpc('merge_anon_into_current',{ p_old: prev });
+      if(res && !res.error && res.data){
+        try{ localStorage.removeItem(ANON_UID_KEY); }catch(e){}
+        var d=res.data, moved=(d.sessions||0)+(d.prayers||0)+(d.requests||0)+(d.cards||0);
+        if(d.ok && moved>0){
+          try{ var to=document.getElementById('toast'); if(to){ document.getElementById('toastB').textContent='이전 기도 기록을 불러왔어요';
+            var ts=to.querySelector('.s'); if(ts) ts.textContent='카카오 계정으로 안전하게 합쳐졌어요';
+            to.classList.add('show'); setTimeout(function(){to.classList.remove('show');},2800); } }catch(e){}
+        }
+      }
+    }catch(e){}
+  }
+  function gMergedToast(d){
+    var moved=(d.sessions||0)+(d.prayers||0)+(d.requests||0)+(d.cards||0);
+    if(moved<=0) return;
+    try{ var to=document.getElementById('toast'); if(to){ document.getElementById('toastB').textContent='이전 기도 기록을 불러왔어요';
+      var ts=to.querySelector('.s'); if(ts) ts.textContent='로그인 계정으로 안전하게 합쳐졌어요';
+      to.classList.add('show'); setTimeout(function(){to.classList.remove('show');},2800); } }catch(e){}
+  }
+  async function mergeByTokenIfAny(){
+    if(!SB) return;
+    var mt=''; try{ mt=new URLSearchParams(location.search).get('mt')||''; }catch(e){}
+    if(!mt) return;
+    var u=null; try{ var r=await SB.auth.getUser(); u=r.data&&r.data.user; }catch(e){}
+    try{ history.replaceState(null,'',location.origin+'/'); }catch(e){}   // URL의 토큰 제거
+    if(!u || u.is_anonymous) return;
+    try{ var res=await SB.rpc('merge_by_token',{ p_token: mt });
+      if(res && !res.error && res.data && res.data.ok){ gMergedToast(res.data); } }catch(e){}
+  }
   async function initBackend(){
     try{
       if(!SUPABASE_URL || !SUPABASE_ANON_KEY || !window.supabase) return; // 미설정 → 데모 모드로 동작
@@ -2045,8 +2102,9 @@
       // [복구] 카카오 '연결'이 이미 가입된 계정 때문에 실패한 경우 → '로그인'으로 자동 전환
       var _authErr = (location.hash||'') + (location.search||'');
       if(_authErr.indexOf('identity_already_exists') >= 0){
+        var _mt0=''; try{ _mt0=new URLSearchParams(location.search).get('mt')||''; }catch(e){}
         try{ history.replaceState(null,'',location.origin+'/'); }catch(e){}
-        try{ await SB.auth.signInWithOAuth({ provider:'kakao', options:{ redirectTo: location.origin+'/', scopes:'profile_nickname' } }); }catch(e){ alert('카카오 로그인 재시도 오류: '+(e&&e.message||e)); }
+        try{ await SB.auth.signInWithOAuth({ provider:'kakao', options:{ redirectTo: location.origin+'/'+(_mt0?('?mt='+_mt0):''), scopes:'profile_nickname' } }); }catch(e){ alert('카카오 로그인 재시도 오류: '+(e&&e.message||e)); }
         return; // 카카오로 리다이렉트되므로 초기화 종료
       }
       const { data:s } = await SB.auth.getSession();
@@ -2078,6 +2136,8 @@
           }
         }catch(e){}
       }
+      try{ await mergeByTokenIfAny(); }catch(e){}   // 인증 토큰으로 익명 기록 자동 통합(1순위)
+      try{ await autoMergeAnon(); }catch(e){}       // 같은 기기 익명 기록 자동 통합(백업)
       await refreshProgress();
       await loadRankings();
       await loadDept();
