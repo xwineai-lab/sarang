@@ -1814,7 +1814,7 @@
     var capCol=dark?'rgba(255,250,235,.88)':'rgba(80,64,36,.92)';
     var just=pos==='u'?'flex-start':'center', ptop=pos==='u'?'16%':'0';
     var cap=(myName||'성도')+' 성도님 · '+gDateKor(card.earned_date)+' · '+(card.minutes||0)+'분 기도';
-    return '<div class="gcard-bg" style="background-image:url(\''+card.bg+'.jpg\')">'
+    return '<div class="gcard-bg" style="background-color:'+(dark?'#574f41':'#ece2cf')+';background-image:url(\''+card.bg+'.jpg\')">'
       +'<div class="gcard-ov" style="justify-content:'+just+';padding-top:'+ptop+'">'
       +'<div class="gcard-lbl" style="color:'+lbl+';text-shadow:'+sh+'">은혜 말씀 카드</div>'
       +'<div class="gcard-vs" style="font-family:'+font+';color:'+col+';text-shadow:'+sh+'">'+mpEsc(card.verse)+'</div>'
@@ -1854,7 +1854,9 @@
     if(!(sessionMins>=30 || tot>=30)) return;
     var bgi=1+Math.floor(Math.random()*24), v=gPickVerse();
     try{ var res=await SB.rpc('claim_grace_card',{p_date:gLocalDate(),p_bg:'cardbg'+gpad(bgi),p_verse:v.t,p_ref:v.r,p_minutes:tot});
-      if(res&&res.data){ gMarkSeen(v.i); showGraceCard(res.data,true); } }catch(e){}
+      if(res&&res.data&&res.data.verse){ gMarkSeen(v.i);
+        await new Promise(function(rs){ var im=new Image(); im.onload=im.onerror=function(){rs();}; im.src=(res.data.bg||'cardbg01')+'.jpg'; setTimeout(rs,2500); });   // 배경 이미지 미리 로딩 → 빈 카드 방지
+        showGraceCard(res.data,true); } }catch(e){}
   }
   var GRACE_CACHE=[];
   async function loadGraceCards(){
