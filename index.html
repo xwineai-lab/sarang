@@ -1319,6 +1319,7 @@
     if(id==='admin') loadAdminReview();
     if(id==='more' || id==='connect') syncAuthUI();
     if(id==='pray' || id==='more') syncBgmUI();
+    if(id==='home' && typeof setTimeBanner==='function') setTimeBanner();
   }
   /* 프로필 기억하기 + 익명 가상 닉네임 */
   const PKEY='omansigan_profile';
@@ -1552,6 +1553,21 @@
     if(campaignDone!==wasDone) paintVerse();
   }
   renderGauge();
+  /* ===== 시간대별 홈 배너 (접속자의 기기 현지 시각 기준) ===== */
+  function timeBannerImg(){
+    var h=new Date().getHours();
+    if(h>=22 || h<5) return 'sky-night.png';     // 밤 22:00–04:59
+    if(h<8)  return 'sky-dawn.png';              // 새벽 05:00–07:59
+    if(h<11) return 'sky-morning.png';           // 아침 08:00–10:59
+    if(h<18) return 'sky-day.png';               // 낮 11:00–17:59
+    return 'sky-evening.png';                     // 저녁 18:00–21:59
+  }
+  function setTimeBanner(){
+    var el=document.querySelector('#home .todaycard.ringcard'); if(!el) return;
+    el.style.setProperty('background-image', "url('"+timeBannerImg()+"')", 'important');
+  }
+  setTimeBanner();
+  setInterval(setTimeBanner, 10*60*1000);   // 10분마다 시간대 갱신
   startVerseRotation();
   setInterval(()=>{if(!SB && !running){liveN+=(Math.random()>.5?1:-1);liveN=Math.max(12,Math.min(26,liveN));connN=liveN+Math.floor(Math.random()*7)+3;updateLive();}},4000);
 
