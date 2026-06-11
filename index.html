@@ -396,6 +396,22 @@
   .todaycard .tcleaf{width:60px;height:auto;flex-shrink:0;opacity:.9;align-self:flex-start;}
   .weekchart{background:var(--surface);border-radius:18px;padding:16px 14px 12px;margin-top:14px;box-shadow:0 6px 16px rgba(150,120,60,.06);}
   .weekchart .wcl{font-size:13px;color:var(--soft);margin-bottom:12px;}
+  .calcard .cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+  .calcard .cc-title{font-size:14px;font-weight:600;color:var(--ink);}
+  .calcard .cc-arrow{color:var(--amber-deep);font-size:18px;cursor:pointer;padding:0 7px;user-select:none;}
+  .calcard .cal-dow{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;text-align:center;font-size:11px;color:var(--soft);margin-bottom:5px;}
+  .calcard .cal-dow .sun{color:#cf8f6e;} .calcard .cal-dow .sat{color:#8aa0c0;}
+  .calcard .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;}
+  .calcard .cal-day{aspect-ratio:1;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:12.5px;color:var(--ink);position:relative;}
+  .calcard .cal-day.empty{background:transparent;}
+  .calcard .cal-day.prayed{background:#dff0c6;} .calcard .cal-day.prayed b{color:#3b6d11;font-weight:600;}
+  .calcard .cal-day.today{box-shadow:inset 0 0 0 2px var(--amber);} .calcard .cal-day.today b{color:var(--amber-deep);font-weight:700;}
+  .calcard .cal-day.future b{color:var(--faint);}
+  .calcard .cal-day b{font-weight:500;}
+  .calcard .cal-day .cd-mark{font-size:9px;line-height:1;font-style:normal;margin-top:-1px;}
+  .calcard .cal-legend{display:flex;gap:16px;justify-content:center;margin-top:11px;font-size:11px;color:var(--soft);}
+  .calcard .cal-legend i{display:inline-block;width:9px;height:9px;border-radius:50%;vertical-align:0;margin-right:3px;}
+  .calcard .cal-legend .lg-p{background:#bcd592;} .calcard .cal-legend .lg-t{background:transparent;box-shadow:inset 0 0 0 1.6px var(--amber);}
   .wcbars{display:flex;align-items:flex-end;justify-content:space-between;gap:6px;}
   .wcbars .wcd{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;}
   .wcbars .wcv{font-size:10px;color:var(--faint);margin-bottom:5px;}
@@ -1094,6 +1110,13 @@
           <div class="weekchart">
             <div class="wcl">이번 주 기도 흐름</div>
             <div class="wcbars" id="rc-bars"></div>
+          </div>
+          <div class="weekchart calcard">
+            <div class="wcl" style="margin-bottom:8px;">기도 캘린더 · 기도한 날엔 새싹이 켜져요</div>
+            <div class="cal-head"><span class="cc-title" id="calTitle">달력</span><span class="cc-nav"><span class="cc-arrow" onclick="calMove(-1)">‹</span><span class="cc-arrow" onclick="calMove(1)">›</span></span></div>
+            <div class="cal-dow"><span class="sun">일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span class="sat">토</span></div>
+            <div class="cal-grid" id="calGrid"></div>
+            <div class="cal-legend"><span><i class="lg-p"></i>기도한 날</span><span><i class="lg-t"></i>오늘</span></div>
           </div>
           <div class="gracesec">
             <div class="gc-head"><span class="reclbl" style="margin:0;">은혜 말씀 카드</span><span class="gc-count-w">받은 카드 <b id="graceCount">0</b>장</span></div>
@@ -2555,6 +2578,24 @@
   function korDur(m){ m=Math.round(m||0); if(m<=0) return '0분'; const h=Math.floor(m/60), r=m%60; return h?(h+'시간'+(r?' '+r+'분':'')):(r+'분'); }
   function setTxt(id,v){ var e=document.getElementById(id); if(e) e.textContent=v; }
   function fmtAmPm(d){ var h=d.getHours(),m=d.getMinutes(); var ap=h<12?'오전':'오후'; var hh=h%12; if(hh===0)hh=12; return ap+' '+hh+':'+String(m).padStart(2,'0'); }
+  var CAL_PRAYED=new Set(); var CAL_Y=null, CAL_M=null;
+  function renderCalendar(){
+    var grid=document.getElementById('calGrid'); if(!grid) return;
+    if(CAL_Y===null){ var n0=new Date(); CAL_Y=n0.getFullYear(); CAL_M=n0.getMonth(); }
+    var title=document.getElementById('calTitle');
+    var offset=new Date(CAL_Y, CAL_M, 1).getDay();
+    var dim=new Date(CAL_Y, CAL_M+1, 0).getDate();
+    var now=new Date(); var thisM=(now.getFullYear()===CAL_Y&&now.getMonth()===CAL_M); var td=now.getDate();
+    if(title) title.textContent=CAL_Y+'년 '+(CAL_M+1)+'월';
+    var h=''; for(var i=0;i<offset;i++) h+='<span class="cal-day empty"></span>';
+    for(var d=1; d<=dim; d++){
+      var pr=CAL_PRAYED.has(CAL_Y+'-'+CAL_M+'-'+d);
+      var isT=thisM&&d===td, fu=thisM&&d>td;
+      h+='<span class="cal-day'+(pr?' prayed':'')+(isT?' today':'')+(fu?' future':'')+'"><b>'+d+'</b>'+(pr?'<i class="cd-mark">🌱</i>':'')+'</span>';
+    }
+    grid.innerHTML=h;
+  }
+  function calMove(delta){ if(CAL_Y===null){ var n=new Date(); CAL_Y=n.getFullYear(); CAL_M=n.getMonth(); } CAL_M+=delta; if(CAL_M<0){CAL_M=11;CAL_Y--;} else if(CAL_M>11){CAL_M=0;CAL_Y++;} renderCalendar(); }
   async function loadMyRecord(){
     if(!SB) return;
     const { data } = await SB.from('prayer_sessions').select('minutes,ended_at,my_prayer_id,source,my_prayers(title)').order('ended_at',{ascending:false}).limit(500);
@@ -2580,6 +2621,11 @@
     const maxB=Math.max(30, Math.max.apply(null, buckets));
     const bars=document.getElementById('rc-bars');
     if(bars){ bars.innerHTML=buckets.map(function(v,i){ var h=Math.max(3, Math.round(v/maxB*64)); return '<div class="wcd"><div class="wcv">'+v+'분</div><div class="wcb'+(i===todayIdx?' today':'')+'" style="height:'+h+'px"></div><div class="wclb">'+names[i]+'</div></div>'; }).join(''); }
+    // 기도 캘린더 (로컬 날짜 기준, 양수 기록만)
+    CAL_PRAYED=new Set();
+    rows.forEach(function(r){ if((r.minutes||0)>0){ var dd=new Date(r.ended_at); CAL_PRAYED.add(dd.getFullYear()+'-'+dd.getMonth()+'-'+dd.getDate()); } });
+    if(CAL_Y===null){ CAL_Y=now.getFullYear(); CAL_M=now.getMonth(); }
+    renderCalendar();
     // 최근 기록
     const rl=document.getElementById('recentList');
     if(rl){ rl.innerHTML = rows.length ? rows.slice(0,6).map(function(r){
