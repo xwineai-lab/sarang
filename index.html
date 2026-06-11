@@ -640,6 +640,21 @@
   .bgmctrl.on .bgm-ico{animation:bgmpulse 1.9s ease-in-out infinite;}
   @keyframes bgmpulse{0%,100%{opacity:.5;}50%{opacity:1;}}
   .bgm-credit{margin-top:5px;font-size:10px;color:var(--faint);letter-spacing:.2px;}
+  /* 사용 설명서 */
+  .helpentry{display:flex;align-items:center;gap:12px;background:linear-gradient(110deg,#fdf4df,#fbe7bd 60%,#fdf4df);border-radius:16px;padding:13px 15px;margin-top:4px;cursor:pointer;box-shadow:0 6px 18px rgba(200,150,50,.12);}
+  .helpentry .he-ic{width:38px;height:38px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0;}
+  .helpentry .he-tx{flex:1;min-width:0;display:flex;flex-direction:column;}
+  .helpentry .he-t{font-family:"Gowun Dodum",sans-serif;font-size:15px;color:#5e4720;}
+  .helpentry .he-d{font-size:11.5px;color:var(--amber-deep);margin-top:2px;opacity:.85;}
+  .helpentry .he-ar{color:var(--amber-deep);font-size:18px;}
+  .hpintro{font-size:13.5px;color:var(--soft);line-height:1.6;text-align:center;margin:4px 4px 6px;}
+  .hpstep{display:flex;gap:13px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px 15px;margin-top:11px;}
+  .hpstep .hp-n{width:27px;height:27px;border-radius:50%;background:var(--amber-tint);color:var(--amber-deep);font-family:"Outfit";font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .hpstep .hp-b{flex:1;min-width:0;}
+  .hpstep .hp-t{font-family:"Gowun Dodum",sans-serif;font-size:15px;color:var(--ink);display:flex;align-items:center;gap:6px;}
+  .hpstep .hp-d{font-size:12.5px;color:var(--soft);line-height:1.62;margin-top:4px;}
+  .hpstep .hp-d b{color:var(--amber-deep);font-weight:600;}
+  .hpend{text-align:center;font-family:"Gowun Dodum",sans-serif;font-size:14px;color:#5e4720;background:var(--amber-tint);border-radius:14px;padding:15px;margin-top:16px;line-height:1.65;}
   /* 더보기 소리 스위치 */
   .swtoggle{position:relative;width:42px;height:24px;border-radius:999px;background:#d8d0c0;transition:background .2s;flex-shrink:0;cursor:pointer;display:inline-block;vertical-align:middle;}
   .swtoggle.on{background:#e7a93c;}
@@ -1090,6 +1105,7 @@
       <div class="pad">
         <div class="statusbar"><span>9:41</span><span class="r">5G &nbsp; 87%</span></div>
         <div class="h-title" style="margin-top:6px;">더보기</div>
+        <div class="helpentry" onclick="go('help')"><span class="he-ic">📖</span><span class="he-tx"><span class="he-t">처음 오셨나요?</span><span class="he-d">5만시간 기도 사용 설명서 · 빠른 시작</span></span><span class="he-ar">›</span></div>
         <div class="seclbl">알림</div>
         <div class="mrow"><span>기도 리마인더</span><span class="r">준비 중</span></div>
         <div class="mrow"><span>새벽기도 알림 (06:00)</span><span class="r">준비 중</span></div>
@@ -1117,6 +1133,30 @@
         <div class="mrow" onclick="go('privacy')" style="cursor:pointer;"><span>개인정보처리방침</span><span class="r">›</span></div>
         <div class="mrow" onclick="deleteAccount()" style="cursor:pointer;"><span class="link" style="color:#c0392b;">계정 · 모든 기록 삭제</span><span class="r" style="color:#c0392b;">›</span></div>
         <div class="meprivacy" style="margin-top:14px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><span>계정을 삭제하면 기도제목·기록·내 정보가 모두 영구 삭제되며 되돌릴 수 없어요.</span></div>
+      </div>
+    </div>
+
+    <!-- ===== 사용 설명서 ===== -->
+    <div class="screen" id="help">
+      <div class="pad">
+        <div class="statusbar"><span>9:41</span><span class="r">5G &nbsp; 87%</span></div>
+        <div class="subhead"><span class="bk" onclick="go('more')">‹</span><span class="ttl">사용 설명서</span></div>
+        <div class="hpintro">프랑크푸르트 사랑의 교회 <b>5만시간 기도</b>에 오신 것을 환영합니다.<br>아래 순서만 따라오시면 돼요.</div>
+
+        <div class="hpstep"><span class="hp-n">1</span><div class="hp-b"><div class="hp-t">🙋 시작하기</div><div class="hp-d"><b>더보기</b>에서 카카오톡으로 연결하고 별명을 정하면, 내 기도가 어느 기기에서나 안전하게 보관돼요. 로그인 없이 <b>익명으로 바로</b> 기도해도 됩니다.</div></div></div>
+
+        <div class="hpstep"><span class="hp-n">2</span><div class="hp-b"><div class="hp-t">📍 내 구역 정하기</div><div class="hp-d">아래 <b>구역별</b> 탭(또는 더보기 → 내 구역)에서 부서·구역을 한 번만 골라두면 끝. 내 기도 시간이 우리 구역에 함께 더해져요.</div></div></div>
+
+        <div class="hpstep"><span class="hp-n">3</span><div class="hp-b"><div class="hp-t">🙏 기도 시작하기</div><div class="hp-d">아래 <b>기도하기</b> 탭에서 제목을 따라 기도하고 <b>기도 시작</b>을 누르세요. 마치면 <b>기도 마치기</b>. 그 시간이 모두의 시간에 더해집니다. 시작과 함께 잔잔한 찬양이 흐르고, <b>♪ 버튼</b>으로 끌 수 있어요.</div></div></div>
+
+        <div class="hpstep"><span class="hp-n">4</span><div class="hp-b"><div class="hp-t">📖 함께 / 나의 기도</div><div class="hp-d">모두의 기도제목으로 <b>함께 기도</b>하거나, <b>나의 기도</b>에서 나만의 제목으로 기도할 수 있어요.</div></div></div>
+
+        <div class="hpstep"><span class="hp-n">5</span><div class="hp-b"><div class="hp-t">📝 기록 · 수동 입력</div><div class="hp-d"><b>기록</b> 탭에서 내 기도 시간을 확인해요. 깜빡 잊고 못 누른 시간은 <b>수동 입력</b>으로 하나님 앞에서 정직하게 더하거나 뺄 수 있어요.</div></div></div>
+
+        <div class="hpstep"><span class="hp-n">6</span><div class="hp-b"><div class="hp-t">🕊️ 중보기도 나눔</div><div class="hp-d">기도제목을 익명으로 올리면 <b>교역자 확인 후</b> 함께 나눠요. 다른 분의 제목에는 <b>기도했어요</b>로 마음을 더해주세요.</div></div></div>
+
+        <div class="hpend">우리의 작은 기도가 모여<br>함께 <b>5만 시간</b>을 채워갑니다 🌿</div>
+        <button class="primary" style="margin-top:16px;" onclick="go('pray')">기도 시작하러 가기</button>
       </div>
     </div>
 
