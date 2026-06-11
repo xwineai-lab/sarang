@@ -528,6 +528,10 @@
   .finish{margin-top:30px;height:54px;padding:0 40px;border-radius:999px;border:1.5px solid var(--amber);background:var(--surface);color:var(--amber-deep);font-family:"Gowun Dodum",sans-serif;font-size:16px;cursor:pointer;transition:transform .15s;}
   .finish:active{transform:scale(.97);}
   .finish.start{background:var(--amber);color:#fff;border-color:var(--amber);}
+  .praystartc{display:inline-flex;align-items:center;gap:7px;margin-top:16px;padding:12px 30px;border:none;border-radius:999px;font-family:"Gowun Dodum",sans-serif;font-size:16px;font-weight:700;letter-spacing:.3px;cursor:pointer;transition:transform .15s,box-shadow .2s;background:linear-gradient(135deg,#a3bd80,#86a460);color:#fff;box-shadow:0 7px 18px rgba(124,150,90,.38);}
+  .praystartc .psc-ico{font-size:17px;line-height:1;}
+  .praystartc:active{transform:scale(.96);}
+  .praystartc.running{background:var(--surface);color:#8a9468;border:1.5px solid #d2c4a0;box-shadow:none;}
   .subhead{display:flex;align-items:center;justify-content:center;position:relative;height:24px;margin-bottom:8px;}
   .subhead .bk{position:absolute;left:0;font-size:22px;color:var(--ink);cursor:pointer;}
   .subhead .ttl{font-family:"Gowun Dodum",sans-serif;font-size:16px;}
@@ -967,6 +971,7 @@
           </svg>
           <div class="clock" id="clock">00:00:00</div>
         </div>
+        <button class="praystartc start" id="prayCenterBtn" onclick="togglePray()"><span class="psc-ico">🙏</span><span id="prayCenterTx">기도 시작</span></button>
         <div class="praylivebar"><span class="plb-ava" id="prayAva"><span class="wava" style="background:#cdb89a"><svg viewBox="0 0 36 36"><circle cx="18" cy="14" r="6.3" fill="#fff" opacity=".92"/><path d="M6 33c0-6.6 5.4-10 12-10s12 3.4 12 10" fill="#fff" opacity=".92"/></svg></span><span class="wava" style="background:#9aa6a0"><svg viewBox="0 0 36 36"><circle cx="18" cy="14" r="6.3" fill="#fff" opacity=".92"/><path d="M6 33c0-6.6 5.4-10 12-10s12 3.4 12 10" fill="#fff" opacity=".92"/></svg></span><span class="wava" style="background:#e3b86a"><svg viewBox="0 0 36 36"><circle cx="18" cy="14" r="6.3" fill="#fff" opacity=".92"/><path d="M6 33c0-6.6 5.4-10 12-10s12 3.4 12 10" fill="#fff" opacity=".92"/></svg></span></span><span class="plb-tx">🙏 <b id="prayLiveN">0</b>명 기도 중 · 📖 <b id="prayPrepN">0</b>명 준비 중</span></div>
 
         <div class="topiccard" id="topicCard">
@@ -1867,6 +1872,7 @@
     bgmOnPrayStart();
     try{ localStorage.setItem(AKEY, JSON.stringify({ startAt:startAt })); }catch(e){}
     const b=document.getElementById('finishBtn'); if(b){ b.textContent='기도 마치기'; b.classList.remove('start'); }
+    const cb=document.getElementById('prayCenterBtn'), ct=document.getElementById('prayCenterTx'); if(cb){ cb.classList.add('running'); cb.classList.remove('start'); } if(ct){ ct.textContent='기도 마치기'; }
     if(!autoOn) toggleAuto();
     if(!SB){ liveN++; updateLive(); }
     paintTimer(); tickLoop();
@@ -1879,6 +1885,7 @@
     const endMs = capAt ? Math.min(Date.now(), capAt) : Date.now();
     const mins = Math.round((endMs - startAt)/60000);   // 벽시계: 시작~종료 실제 차이
     const b=document.getElementById('finishBtn'); if(b){ b.textContent='기도 시작'; b.classList.add('start'); }
+    const cb=document.getElementById('prayCenterBtn'), ct=document.getElementById('prayCenterTx'); if(cb){ cb.classList.remove('running'); cb.classList.add('start'); } if(ct){ ct.textContent='기도 시작'; }
     if(autoOn) toggleAuto();
     const to=document.getElementById('toast'), ts=to?to.querySelector('.s'):null;
     if(mins<1){
