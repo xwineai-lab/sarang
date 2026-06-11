@@ -317,7 +317,7 @@
   .prayring2{position:relative;width:286px;height:286px;max-width:84%;margin:6px auto 2px;}
   .prayring2 .pr-ring{position:absolute;inset:0;width:100%;height:100%;}
   .prayring2 .pr-dot{transform-origin:100px 10px;animation:rcdotpulse 2.8s ease-in-out infinite;}
-  .prayring2 .clock{position:absolute;inset:0;z-index:1;display:flex;align-items:center;justify-content:center;padding-top:36px;font-family:"Outfit";font-weight:600;font-size:38px;letter-spacing:1px;color:#5d6f49;}
+  .prayring2 .clock{position:absolute;inset:0;z-index:1;display:flex;align-items:center;justify-content:center;padding-top:8px;font-family:"Outfit";font-weight:600;font-size:38px;letter-spacing:1px;color:#5d6f49;}
   @media (prefers-reduced-motion: reduce){ .prayring2 .pr-dot{animation:none;} }
   .praylivebar{display:flex;align-items:center;justify-content:center;gap:9px;margin:0 auto 14px;font-size:13px;color:var(--ink);}
   .praylivebar .plb-ava{display:inline-flex;}
@@ -528,9 +528,9 @@
   .finish{margin-top:30px;height:54px;padding:0 40px;border-radius:999px;border:1.5px solid var(--amber);background:var(--surface);color:var(--amber-deep);font-family:"Gowun Dodum",sans-serif;font-size:16px;cursor:pointer;transition:transform .15s;}
   .finish:active{transform:scale(.97);}
   .finish.start{background:var(--amber);color:#fff;border-color:var(--amber);}
-  #prayCenterBtn{border:none;cursor:pointer;background:linear-gradient(135deg,#9cb070,#7e9a54);color:#fff;font-family:"Gowun Dodum",sans-serif;font-size:15px;padding:9px 20px;border-radius:999px;box-shadow:0 6px 14px rgba(120,150,80,.3);display:inline-flex;align-items:center;gap:6px;transition:transform .15s;}
-  #prayCenterBtn .rc-tri{font-size:10px;}
-  #prayCenterBtn:active{transform:scale(.97);}
+  #prayCenterBtn{position:absolute;left:50%;top:62%;transform:translateX(-50%);z-index:2;width:156px;height:86px;border:none;background:url('pray_btn.png') center/contain no-repeat;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:"Gowun Dodum",sans-serif;font-size:15px;font-weight:700;letter-spacing:.5px;color:#5d6f49;text-shadow:0 1px 2px rgba(255,255,255,.55);transition:transform .15s;}
+  #prayCenterBtn #prayCenterTx{transform:translateX(-10px);}
+  #prayCenterBtn:active{transform:translateX(-50%) scale(.96);}
   .subhead{display:flex;align-items:center;justify-content:center;position:relative;height:24px;margin-bottom:8px;}
   .subhead .bk{position:absolute;left:0;font-size:22px;color:var(--ink);cursor:pointer;}
   .subhead .ttl{font-family:"Gowun Dodum",sans-serif;font-size:16px;}
@@ -969,8 +969,8 @@
             <g transform="translate(100 64)"><path d="M0 11 V-1" stroke="#8aa363" stroke-width="1.3" fill="none" stroke-linecap="round"/><g fill="#9cb878"><ellipse cx="-4.5" cy="5" rx="3.2" ry="1.7" transform="rotate(-32 -4.5 5)"/><ellipse cx="4.5" cy="2.5" rx="3.2" ry="1.7" transform="rotate(32 4.5 2.5)"/><ellipse cx="-3.6" cy="-.5" rx="2.8" ry="1.5" transform="rotate(-28 -3.6 -.5)"/><ellipse cx="3.6" cy="-2.5" rx="2.8" ry="1.5" transform="rotate(28 3.6 -2.5)"/></g></g>
           </svg>
           <div class="clock" id="clock">00:00:00</div>
+          <button id="prayCenterBtn" onclick="togglePray()"><span id="prayCenterTx">기도 시작</span></button>
         </div>
-        <button class="rc-btn" id="prayCenterBtn" onclick="togglePray()" style="margin-top:14px;"><span class="rc-tri" id="prayCenterIco">▶</span> <span id="prayCenterTx">기도 시작</span></button>
         <div class="praylivebar"><span class="plb-ava" id="prayAva"><span class="wava" style="background:#cdb89a"><svg viewBox="0 0 36 36"><circle cx="18" cy="14" r="6.3" fill="#fff" opacity=".92"/><path d="M6 33c0-6.6 5.4-10 12-10s12 3.4 12 10" fill="#fff" opacity=".92"/></svg></span><span class="wava" style="background:#9aa6a0"><svg viewBox="0 0 36 36"><circle cx="18" cy="14" r="6.3" fill="#fff" opacity=".92"/><path d="M6 33c0-6.6 5.4-10 12-10s12 3.4 12 10" fill="#fff" opacity=".92"/></svg></span><span class="wava" style="background:#e3b86a"><svg viewBox="0 0 36 36"><circle cx="18" cy="14" r="6.3" fill="#fff" opacity=".92"/><path d="M6 33c0-6.6 5.4-10 12-10s12 3.4 12 10" fill="#fff" opacity=".92"/></svg></span></span><span class="plb-tx">🙏 <b id="prayLiveN">0</b>명 기도 중 · 📖 <b id="prayPrepN">0</b>명 준비 중</span></div>
 
         <div class="topiccard" id="topicCard">
