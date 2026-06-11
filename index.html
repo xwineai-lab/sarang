@@ -248,12 +248,12 @@
   .livecard2 .lc2-ava .more{margin-left:6px;font-size:11px;color:var(--soft);}
   .progcard2{background:var(--surface);border-radius:18px;padding:16px 18px;margin-top:12px;box-shadow:0 8px 22px rgba(150,120,60,.08);}
   .progcard2 .pc2-lbl{font-size:13px;color:var(--soft);}
-  .progcard2 .pc2-row{display:flex;align-items:baseline;gap:7px;margin-top:4px;}
-  .progcard2 .pc2-big .num{font-family:"Outfit";font-weight:700;font-size:30px;color:var(--ink);}
-  .progcard2 .pc2-tot{font-size:12.5px;color:var(--soft);display:inline-flex;align-items:baseline;gap:2px;}
-  .progcard2 .pc2-tot b{font-family:"Outfit";font-weight:700;font-size:17px;color:var(--amber-deep);letter-spacing:.2px;}
-  .progcard2 .pc2-tot i{font-style:normal;font-size:12.5px;color:var(--amber-deep);opacity:.85;}
-  .progcard2 .pc2-pct{margin-left:auto;font-family:"Outfit";font-weight:700;font-size:19px;color:#7e9a54;}
+  .progcard2 .pc2-row{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:nowrap;gap:8px;margin-top:4px;}
+  .progcard2 .pc2-big{min-width:0;}
+  .progcard2 .pc2-big .num{font-family:"Outfit";font-weight:700;font-size:25px;color:var(--ink);white-space:nowrap;line-height:1.15;}
+  .progcard2 .pc2-goal{margin-top:3px;font-size:12.5px;color:var(--soft);}
+  .progcard2 .pc2-goal b{font-family:"Outfit";font-weight:700;font-size:15px;color:var(--amber-deep);letter-spacing:.2px;}
+  .progcard2 .pc2-pct{flex-shrink:0;font-family:"Outfit";font-weight:700;font-size:19px;color:#7e9a54;white-space:nowrap;}
   .progcard2 .pc2-bar{height:9px;border-radius:999px;background:#eceae2;overflow:hidden;margin-top:11px;}
   .progcard2 .pc2-bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#9cb070,#83a05a);}
   .progcard2 .pc2-foot{display:flex;align-items:center;justify-content:space-between;margin-top:9px;}
@@ -872,7 +872,8 @@
         <!-- 누적 진행 -->
         <div class="progcard2">
           <div class="pc2-lbl">함께 채워가는 기도</div>
-          <div class="pc2-row"><span class="pc2-big"><span class="num" id="cur">0분</span></span><span class="pc2-tot">/ 목표 <b>50,000</b><i>시간</i></span><span class="pc2-pct" id="pct">0%</span></div>
+          <div class="pc2-row"><span class="pc2-big"><span class="num" id="cur">0분</span></span><span class="pc2-pct" id="pct">0.00%</span></div>
+          <div class="pc2-goal">목표 <b>50,000</b>시간</div>
           <div class="pc2-bar"><i id="bar"></i></div>
           <div class="pc2-foot"><span>작은 기도가 모여 큰 변화를 만듭니다.</span><svg class="pc2-leaf" viewBox="0 0 24 24"><path d="M12 21c-1-6 2-10 8-11-1 6-4 10-8 11z" fill="#9cc47a"/><path d="M12 21C8 20 5 16 4 10c6 1 9 5 8 11z" fill="#7fae5e"/></svg></div>
         </div>
@@ -1545,7 +1546,7 @@
     const totMin=Math.round((current||0)*60), goalMin=TOTAL*60, p=Math.min(totMin/goalMin,1);
     document.getElementById('cur').textContent=fmtHM(totMin);
     document.getElementById('bar').style.width=(p*100)+'%';
-    document.getElementById('pct').textContent=(p>=1?'100':(p*100).toFixed(1))+'%';
+    document.getElementById('pct').textContent=(p>=1?'100':(p*100).toFixed(2))+'%';
     const wasDone=campaignDone; campaignDone=(p>=1);
     if(campaignDone!==wasDone) paintVerse();
   }
