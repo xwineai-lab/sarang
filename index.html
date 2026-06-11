@@ -1727,12 +1727,19 @@
     document.querySelector('.phone').appendChild(ov);
   }
   function closeGraceModal(){var o=document.getElementById('graceModal');if(o)o.remove();}
+  function gDownloadBlob(blob){ var url=URL.createObjectURL(blob); var a=document.createElement('a'); a.href=url; a.download='말씀카드.png'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){URL.revokeObjectURL(url);},5000); }
   async function saveGraceImage(){
     var el=document.getElementById('graceCardEl'); if(!el||!window.html2canvas){ alert('잠시 후 다시 시도해 주세요.'); return; }
     try{ var cv=await html2canvas(el,{scale:2,useCORS:true,backgroundColor:null,logging:false});
-      cv.toBlob(function(blob){ if(!blob)return; var file=new File([blob],'말씀카드.png',{type:'image/png'});
-        if(navigator.canShare&&navigator.canShare({files:[file]})){ navigator.share({files:[file],title:'은혜 말씀 카드'}).catch(function(){}); }
-        else{ var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='말씀카드.png'; document.body.appendChild(a); a.click(); a.remove(); } });
+      cv.toBlob(async function(blob){
+        if(!blob){ alert('이미지 저장에 실패했어요.'); return; }
+        var file=new File([blob],'말씀카드.png',{type:'image/png'});
+        if(navigator.canShare && navigator.canShare({files:[file]})){
+          try{ await navigator.share({files:[file],title:'은혜 말씀 카드'}); return; }
+          catch(e){ if(e && e.name==='AbortError') return; }   // 공유 취소면 그대로, 실패면 아래 다운로드
+        }
+        gDownloadBlob(blob);
+      },'image/png');
     }catch(e){ alert('이미지 저장에 실패했어요.'); }
   }
   async function maybeAwardCard(sessionMins){
