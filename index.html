@@ -680,6 +680,23 @@
   .gm-save{background:#e7a93c;color:#fff;}
   .gm-close{background:rgba(255,255,255,.22);color:#fff;}
   .gmodal-hint{color:rgba(255,250,235,.85);font-size:11.5px;text-align:center;}
+  /* 아바타 */
+  .avbox{display:inline-flex;align-items:center;justify-content:center;border-radius:50%;background:var(--amber-tint);overflow:hidden;flex-shrink:0;vertical-align:middle;}
+  .avbox img{width:100%;height:100%;object-fit:cover;display:block;}
+  .avbox.avini{color:var(--amber-deep);font-family:"Gowun Dodum",sans-serif;}
+  .avmodal{position:absolute;inset:0;z-index:80;background:rgba(40,30,12,.5);display:flex;align-items:center;justify-content:center;padding:22px;}
+  .avmodal-box{width:100%;max-width:330px;background:#fffdf7;border-radius:20px;padding:20px 18px;box-shadow:0 18px 44px rgba(0,0,0,.3);}
+  .avmodal-t{font-family:"Gowun Dodum",sans-serif;font-size:16px;color:#5e4720;text-align:center;margin-bottom:13px;}
+  .avmodal-box input{width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:12px;padding:11px 13px;font-size:15px;font-family:"Gowun Dodum",sans-serif;background:#fff;color:var(--ink);}
+  .av-lbl{font-size:12.5px;color:var(--soft);margin:15px 0 9px;}
+  .avgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;}
+  .avopt{border:2px solid transparent;background:var(--amber-tint);border-radius:50%;padding:0;cursor:pointer;aspect-ratio:1;overflow:hidden;}
+  .avopt img{width:100%;height:100%;object-fit:cover;display:block;}
+  .avopt.on{border-color:#e7a93c;box-shadow:0 0 0 2px rgba(231,169,60,.3);}
+  .avmodal-btns{display:flex;gap:10px;margin-top:17px;}
+  .avmodal-btns button{flex:1;border:none;border-radius:999px;padding:11px;font-family:"Gowun Dodum",sans-serif;font-size:15px;cursor:pointer;}
+  .avmodal-btns .cc{background:#eee9df;color:#7a6a4a;}
+  .avmodal-btns .sv{background:#e7a93c;color:#fff;}
   /* 더보기 소리 스위치 */
   .swtoggle{position:relative;width:42px;height:24px;border-radius:999px;background:#d8d0c0;transition:background .2s;flex-shrink:0;cursor:pointer;display:inline-block;vertical-align:middle;}
   .swtoggle.on{background:#e7a93c;}
@@ -1221,6 +1238,17 @@
 
     <div class="toast" id="toast"><div class="b" id="toastB">+12분</div><div class="s">내 기도가 모두의 시간에 더해졌어요</div></div>
 
+    <!-- ===== 아바타(별명·아이콘) 모달 ===== -->
+    <div class="avmodal" id="avatarModal" style="display:none;" onclick="if(event.target===this)closeAvatarModal()">
+      <div class="avmodal-box">
+        <div class="avmodal-t">별명과 아이콘</div>
+        <input id="avNameIn" maxlength="20" placeholder="표시할 별명 (실명은 안 보여요)">
+        <div class="av-lbl">아이콘 선택 <span style="color:var(--faint);">· 다시 누르면 해제</span></div>
+        <div class="avgrid" id="avGrid"></div>
+        <div class="avmodal-btns"><button class="cc" onclick="closeAvatarModal()">취소</button><button class="sv" onclick="saveAvatarModal()">저장</button></div>
+      </div>
+    </div>
+
     <!-- ===== TABBAR ===== -->
     <!-- ===== 중보기도 나눔 ===== -->
     <div class="screen" id="intercede">
@@ -1284,21 +1312,41 @@
   }
   function renderMeCard(){
     const na=document.getElementById('meName'); if(na) na.textContent=(myName||'별명 설정');
-    const av=document.getElementById('meAvatar'); if(av) av.textContent=(myName&&myName.trim()? myName.trim().charAt(0):'?');
+    const av=document.getElementById('meAvatar'); if(av){ if(myAvatar && AV_LIST.indexOf(myAvatar)>=0){ av.innerHTML='<img src="'+myAvatar+'.png" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;">'; } else { av.innerHTML=''; av.textContent=(myName&&myName.trim()? myName.trim().charAt(0):'?'); } }
     const st=document.getElementById('meStatus'); if(!st) return;
     const ok='<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4L19 7"/></svg>';
     if(authProvider==='kakao'){ st.innerHTML='<span class="mebadge ok">'+ok+'카카오 연동됨 · 인증완료</span>'; }
     else if(authProvider==='email'||myEmail){ st.innerHTML='<span class="mebadge ok">'+ok+'이메일 연결됨 · 인증완료</span>'; }
     else { st.innerHTML='<span class="mebadge anon" onclick="go(\'connect\')">익명 참여 중 · 기록 지키기 ›</span>'; }
   }
-  function changeName(){
-    const v = window.prompt('표시할 별명을 입력하세요. (남에게 실명은 보이지 않아요)', myName||'');
-    if(v===null) return;
-    const name = (v.trim()) ? v.trim() : (myName||makeAlias());
-    myName=name; const p=loadProfile()||{joined:true,dept:selDept,zone:selZone,mode:joinMode}; p.name=name; if(v.trim()) p.mode='nick'; joinMode=p.mode||joinMode; saveProfile(p);
-    if(SB) upsertProfile(name);
-    syncProfileUI();
+  /* ===== 아바타(프로필 아이콘) ===== */
+  var myAvatar='';
+  var AV_LIST=['avatar01','avatar02','avatar03','avatar04','avatar05','avatar06','avatar07','avatar08'];
+  function avatarBox(av, nick, px){
+    px=px||44; var sz='width:'+px+'px;height:'+px+'px;';
+    if(av && AV_LIST.indexOf(av)>=0){ return '<span class="avbox" style="'+sz+'"><img src="'+av+'.png" alt=""></span>'; }
+    var ini=(nick&&String(nick).trim()? String(nick).trim().charAt(0):'?');
+    return '<span class="avbox avini" style="'+sz+'font-size:'+Math.round(px*0.42)+'px;">'+ini+'</span>';
   }
+  var _avPick='';
+  function openAvatarModal(){
+    _avPick=myAvatar||'';
+    var grid=document.getElementById('avGrid');
+    if(grid){ grid.innerHTML=AV_LIST.map(function(a){ return '<button type="button" class="avopt'+(a===_avPick?' on':'')+'" data-av="'+a+'" onclick="pickAvatar(\''+a+'\')"><img src="'+a+'.png" alt=""></button>'; }).join(''); }
+    var ni=document.getElementById('avNameIn'); if(ni) ni.value=myName||'';
+    var m=document.getElementById('avatarModal'); if(m) m.style.display='flex';
+  }
+  function closeAvatarModal(){ var m=document.getElementById('avatarModal'); if(m) m.style.display='none'; }
+  function pickAvatar(a){ _avPick=(_avPick===a?'':a); var g=document.getElementById('avGrid'); if(g) g.querySelectorAll('.avopt').forEach(function(b){ b.classList.toggle('on', b.dataset.av===_avPick); }); }
+  function saveAvatarModal(){
+    var v=((document.getElementById('avNameIn')||{}).value||'').trim();
+    var name=v||myName||makeAlias();
+    myName=name; myAvatar=_avPick;
+    var p=loadProfile()||{joined:true,dept:selDept,zone:selZone,mode:joinMode}; p.name=name; p.avatar=myAvatar; if(v) p.mode='nick'; joinMode=p.mode||joinMode; saveProfile(p);
+    if(SB) upsertProfile(name);
+    syncProfileUI(); if(typeof trackPresence==='function') trackPresence(); closeAvatarModal();
+  }
+  function changeName(){ openAvatarModal(); }
   // 구역(공동체) 레벨 — 포도나무: 가지 → 풍성한 수확 (요 15장 "내 안에 거하면 열매를 많이 맺으리라")
   const LEVELS=[[0,'가지'],[10,'새잎'],[40,'포도꽃'],[120,'풋포도'],[300,'포도송이'],[800,'풍성한 수확']];
   const GRAPE='<svg width="11" height="11" viewBox="0 0 12 12" style="vertical-align:-1px"><g fill="#fff"><circle cx="4" cy="4.5" r="1.7"/><circle cx="8" cy="4.5" r="1.7"/><circle cx="6" cy="8" r="1.7"/><circle cx="6" cy="3" r="1.4"/></g></svg>';
@@ -1402,7 +1450,7 @@
   }
   function restoreSession(){
     const s=loadProfile();
-    if(s && s.joined){ if(s.dept)selDept=s.dept; if(s.zone)selZone=s.zone; if(s.mode)joinMode=s.mode; if(s.name)myName=s.name; syncProfileUI(); go('home'); return true; }
+    if(s && s.joined){ if(s.dept)selDept=s.dept; if(s.zone)selZone=s.zone; if(s.mode)joinMode=s.mode; if(s.name)myName=s.name; if(s.avatar)myAvatar=s.avatar; syncProfileUI(); go('home'); return true; }
     return false;
   }
   // join: 부서 → 하위그룹(구역/마을/반)
@@ -2122,8 +2170,9 @@
       try{ if(document.getElementById('joinzone').classList.contains('on')) buildChips(); }catch(e){}
       // 로그인 사용자(카카오/이메일)는 항상 서버 프로필로 별명·구역 복원 → 별명이 매번 바뀌지 않음
       if(!loadProfile() || isAnon===false){
-        try{ const { data:prof } = await SB.from('profiles').select('group_id,display_name,is_anonymous').maybeSingle();
+        try{ const { data:prof } = await SB.from('profiles').select('group_id,display_name,is_anonymous,avatar').maybeSingle();
           if(prof){
+            if(prof.avatar){ myAvatar=prof.avatar; }
             if(prof.group_id){
               const gname = Object.keys(GROUPS_BY_NAME).find(function(k){ return GROUPS_BY_NAME[k]===prof.group_id; });
               if(gname) selZone=gname; MY_GROUP_ID=prof.group_id;
@@ -2456,7 +2505,7 @@
   async function upsertProfile(name){
     if(!SB) return;
     try{ const { data:u } = await SB.auth.getUser(); if(!u || !u.user) return;
-      await SB.from('profiles').upsert({ id:u.user.id, group_id:MY_GROUP_ID, is_anonymous:(joinMode!=='nick'), display_name:(name||null) });
+      await SB.from('profiles').upsert({ id:u.user.id, group_id:MY_GROUP_ID, is_anonymous:(joinMode!=='nick'), display_name:(name||null), avatar:(myAvatar||null) });
     }catch(e){ console.warn('profile upsert:', e); }
   }
   // 하단 탭바: 항상 하단 고정 (스크롤 숨김 없음)
