@@ -683,6 +683,10 @@
   .gmodal-btns button{border:none;border-radius:999px;padding:10px 20px;font-family:"Gowun Dodum",sans-serif;font-size:14px;cursor:pointer;}
   .gm-save{background:#e7a93c;color:#fff;}
   .gm-close{background:rgba(255,255,255,.22);color:#fff;}
+  .gcgot{width:100%;background:#fbf6ec;border-radius:20px;padding:34px 24px 30px;text-align:center;box-shadow:0 16px 40px rgba(0,0,0,.35);}
+  .gcgot-emo{font-size:44px;line-height:1;}
+  .gcgot-ttl{margin-top:12px;font-family:"Gowun Dodum",sans-serif;font-size:21px;font-weight:700;color:#5d6f49;line-height:1.45;}
+  .gcgot-sub{margin-top:12px;font-size:13px;color:#9a8f78;line-height:1.65;}
   .gmodal-hint{color:rgba(255,250,235,.85);font-size:11.5px;text-align:center;}
   /* 아바타 */
   .avbox{display:inline-flex;align-items:center;justify-content:center;border-radius:50%;background:var(--amber-tint);overflow:hidden;flex-shrink:0;vertical-align:middle;}
@@ -1831,6 +1835,16 @@
     document.querySelector('.phone').appendChild(ov);
   }
   function closeGraceModal(){var o=document.getElementById('graceModal');if(o)o.remove();}
+  function gCardGotBanner(){
+    closeGraceModal();
+    var ov=document.createElement('div'); ov.className='gmodal'; ov.id='graceModal'; ov.onclick=function(e){if(e.target===ov)closeGraceModal();};
+    ov.innerHTML='<div class="gmodal-box"><div class="gcgot">'
+      +'<div class="gcgot-emo">🌿</div>'
+      +'<div class="gcgot-ttl">오늘의 은혜 말씀 카드를<br>받았어요</div>'
+      +'<div class="gcgot-sub">기록 탭 · 은혜 말씀 카드함에서<br>지금 바로 확인할 수 있어요</div></div>'
+      +'<div class="gmodal-btns"><button class="gm-save" onclick="closeGraceModal();go(\'record\')">카드 보러가기</button><button class="gm-close" onclick="closeGraceModal()">닫기</button></div></div>';
+    document.querySelector('.phone').appendChild(ov);
+  }
   function gDownloadBlob(blob){ var url=URL.createObjectURL(blob); var a=document.createElement('a'); a.href=url; a.download='말씀카드.png'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){URL.revokeObjectURL(url);},5000); }
   async function saveGraceImage(){
     var el=document.getElementById('graceCardEl'); if(!el||!window.html2canvas){ alert('잠시 후 다시 시도해 주세요.'); return; }
@@ -1854,9 +1868,7 @@
     if(!(sessionMins>=30 || tot>=30)) return;
     var bgi=1+Math.floor(Math.random()*24), v=gPickVerse();
     try{ var res=await SB.rpc('claim_grace_card',{p_date:gLocalDate(),p_bg:'cardbg'+gpad(bgi),p_verse:v.t,p_ref:v.r,p_minutes:tot});
-      if(res&&res.data&&res.data.verse){ gMarkSeen(v.i);
-        await new Promise(function(rs){ var im=new Image(); im.onload=im.onerror=function(){rs();}; im.src=(res.data.bg||'cardbg01')+'.jpg'; setTimeout(rs,2500); });   // 배경 이미지 미리 로딩 → 빈 카드 방지
-        showGraceCard(res.data,true); } }catch(e){}
+      if(res&&res.data){ gMarkSeen(v.i); gCardGotBanner(); } }catch(e){}   // 받을 땐 안내만, 실제 카드는 기록 탭 카드함에서
   }
   var GRACE_CACHE=[];
   async function loadGraceCards(){
