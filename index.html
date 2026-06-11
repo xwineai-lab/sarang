@@ -567,6 +567,8 @@
   .zcard .ar{color:var(--faint);font-size:17px;}
   .zcard.me{outline:1.5px solid rgba(224,169,58,.55);background:var(--amber-tint);}
   .metag{font-size:10px;color:var(--amber-deep);background:#fff;border:1px solid rgba(224,169,58,.5);padding:1px 7px;border-radius:7px;margin-left:7px;vertical-align:2px;white-space:nowrap;display:inline-block;}
+  .zcard .ziccol{display:flex;flex-direction:column;align-items:center;gap:4px;flex-shrink:0;}
+  .zcard .zmetag2{font-size:8.5px;font-weight:700;color:var(--amber-deep);background:#fff;border:1px solid rgba(224,169,58,.55);padding:1px 6px;border-radius:6px;white-space:nowrap;line-height:1.5;}
   /* 구역별 — 통계카드/부서탭/메달 */
   .zlivesum{display:flex;justify-content:center;gap:8px;margin-top:12px;}
   .zlivesum span{font-size:12px;padding:4px 13px;border-radius:999px;display:inline-flex;align-items:center;gap:4px;}
@@ -2045,8 +2047,8 @@
       var tdy = (nm==='청년부'||nm==='청소년부') ? (aggToday[nm]||0) : (TODAY_ZONE[nm]||0);
       const rank = '<div class="zglow'+(pray>0?' live':'')+'" style="--g:'+inten.toFixed(2)+'"><span class="zg-core"></span></div>';
       return '<div class="zcard'+(i===0?' top':'')+(me?' me':'')+'">'+rank+
-        '<div class="zic '+zicClass(nm,z[4])+'">'+zoneSymbol(nm,z[4])+'</div>'+
-        '<div class="zmid"><div class="zrow1"><span class="znm">'+pfx+zoneDisplayName(nm)+(me?'<span class="metag">우리 구역</span>':'')+'</span><span class="zh num">'+fmtHM(hours*60)+(tdy>0?'<span class="ztoday">+'+tdy+'분</span>':'')+'</span></div>'+
+        '<div class="ziccol"><div class="zic '+zicClass(nm,z[4])+'">'+zoneSymbol(nm,z[4])+'</div>'+(me?'<div class="zmetag2">우리 구역</div>':'')+'</div>'+
+        '<div class="zmid"><div class="zrow1"><span class="znm">'+pfx+zoneDisplayName(nm)+'</span><span class="zh num">'+fmtHM(hours*60)+(tdy>0?'<span class="ztoday">+'+tdy+'분</span>':'')+'</span></div>'+
         '<div class="zbarrow"><div class="ztrack"><i style="width:'+lvPct+'%"></i></div><span class="zlvsym" title="'+PLEVELS[lvNum-1][1]+' 단계">'+flowerSVG(lvNum)+'</span><span class="zlvtxt">Lv.'+lvNum+'</span></div>'+
         livePart+'</div><div class="ar">›</div></div>';
     }).join('');
