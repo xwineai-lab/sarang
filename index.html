@@ -337,6 +337,13 @@
   .ydbanner{background:rgba(250,238,216,.94);}
   .ydbanner .ps-ico{background:#f0dcab;color:#9a6a1e;}
   .ydbanner .ps-tx b{color:#b5742a;}
+  .topicamen{display:flex;flex-direction:column;align-items:center;gap:7px;margin:13px 0 2px;}
+  .amenbtn{display:inline-flex;align-items:center;gap:5px;border:none;cursor:pointer;background:linear-gradient(135deg,#9cb070,#7e9a54);color:#fff;font-family:"Gowun Dodum",sans-serif;font-size:13px;font-weight:600;padding:8px 20px;border-radius:999px;box-shadow:0 5px 12px rgba(120,150,80,.32);transition:transform .12s;}
+  .amenbtn:active{transform:scale(.94);}
+  .amencnt{font-size:12px;color:var(--soft);}
+  .amencnt b{display:inline-block;color:var(--amber-deep);font-weight:700;font-family:"Outfit";}
+  .amencnt b.bump{animation:amenBump .45s ease;}
+  @keyframes amenBump{0%{transform:scale(1)}40%{transform:scale(1.45);color:#6f9150}100%{transform:scale(1)}}
   .praysame .ps-avas{display:flex;flex-shrink:0;}
   .praysame .ps-ar{color:var(--faint);font-size:18px;}
   .live-ava{flex-shrink:0;width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#eef6e9,#e1eed7);display:flex;align-items:center;justify-content:center;position:relative;}
@@ -1044,6 +1051,7 @@
             <div class="topictitle" id="topicTitle">교회와 목회자를 위해</div>
             <div class="topicdesc" id="topicDesc">담임목사님과 교회 공동체의 부흥을 위해</div>
             <div class="topicmeta" id="topicMeta" style="display:none;"></div>
+            <div class="topicamen" id="topicAmen"><button class="amenbtn" id="amenBtn" onclick="amenTopic()"><svg viewBox="0 0 24 28" width="15" height="17"><path d="M12 4 C9 9 6.5 15 6 19 C5.7 22 8 25 12 25 Z" fill="#fff" opacity=".95"/><path d="M12 4 C15 9 17.5 15 18 19 C18.3 22 16 25 12 25 Z" fill="#fff" opacity=".8"/></svg>기도했어요</button><span class="amencnt">지금까지 <b id="amenCnt">0</b>번 함께 기도했어요</span></div>
             <div class="topicdots" id="topicDots"></div>
             <div class="topicnav"><button onclick="prevTopic()">‹ 이전</button><button onclick="nextTopic()">다음 ›</button></div>
           </div>
@@ -1525,7 +1533,7 @@
     const el=document.getElementById(id); if(el) el.scrollTop=0;
     tabbarEl.classList.remove('tbhide');  // 탭바는 항상 하단 고정
     if(id!=='pray') MY_PRAYER_ID=null;        // 개인 제목 연동은 prayMyTopic 진입에서만 유지
-    if(id==='pray'){ setPrayMode(MY_PRAYER_ID ? 'mine' : 'together'); updateMyPrayTag(); }
+    if(id==='pray'){ setPrayMode(MY_PRAYER_ID ? 'mine' : 'together'); updateMyPrayTag(); if(typeof loadAmens==='function') loadAmens(); }
     var _fab=document.getElementById('myFab'); if(_fab && id!=='record') _fab.style.display='none';  // FAB는 기록 화면에서만
     if(id==='zone'){ buildZones(); loadDept(); }
     if(id==='joinzone') buildChips();
@@ -2281,6 +2289,7 @@
       document.getElementById('topicIdx').textContent=(mti+1)+' / '+MY_PRAYERS.length;
       document.getElementById('topicDots').innerHTML=MY_PRAYERS.map(function(_,i){return '<span class="'+(i===mti?'on':'')+'"></span>';}).join('');
       MY_PRAYER_ID=p.id; MY_PRAYER_TITLE=p.title||''; updateMyPrayTag();
+      setAmenDisplay();
       return;
     }
     if(autoB) autoB.style.display='';
@@ -2296,9 +2305,14 @@
     document.getElementById('topicDesc').textContent=TOPICS[ti][1];
     document.getElementById('topicIdx').textContent=(ti+1)+' / '+TOPICS.length;
     document.getElementById('topicDots').innerHTML=TOPICS.map(function(_,i){return '<span class="'+(i===ti?'on':'')+'"></span>';}).join('');
+    setAmenDisplay();
   }
   function nextTopic(){ if(prayMode==='mine'){ if(MY_PRAYERS.length){ mti=(mti+1)%MY_PRAYERS.length; renderTopic(); } } else { ti=(ti+1)%TOPICS.length; renderTopic(); } }
   function prevTopic(){ if(prayMode==='mine'){ if(MY_PRAYERS.length){ mti=(mti-1+MY_PRAYERS.length)%MY_PRAYERS.length; renderTopic(); } } else { ti=(ti-1+TOPICS.length)%TOPICS.length; renderTopic(); } }
+  var AMEN={};
+  async function loadAmens(){ if(!SB) return; try{ var r=await SB.rpc('get_topic_amens'); (r.data||[]).forEach(function(x){ AMEN[Number(x.topic_key)]=Number(x.cnt)||0; }); setAmenDisplay(); }catch(e){} }
+  function setAmenDisplay(){ var row=document.getElementById('topicAmen'); if(!row) return; if(prayMode==='mine'){ row.style.display='none'; return; } row.style.display='flex'; var el=document.getElementById('amenCnt'); if(el) el.textContent=(AMEN[ti]||0).toLocaleString('en-US'); }
+  function amenTopic(){ if(prayMode==='mine') return; var key=ti; AMEN[key]=(AMEN[key]||0)+1; var el=document.getElementById('amenCnt'); if(el){ el.textContent=(AMEN[key]).toLocaleString('en-US'); el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump'); } if(SB){ try{ SB.rpc('amen_topic',{p_key:key}); }catch(e){} } }
   function toggleAuto(){autoOn=!autoOn;const b=document.getElementById('autoBtn');if(b){b.classList.toggle('on',autoOn);b.textContent=autoOn?'자동 넘김 켜짐':'자동 넘김 꺼짐';}clearInterval(autoTk);if(autoOn){autoTk=setInterval(nextTopic,15000);}}
   function buildTopics(){
     function cardHTML(t,i,life){
