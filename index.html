@@ -1606,7 +1606,7 @@
     const el=document.getElementById(id); if(el) el.scrollTop=0;
     tabbarEl.classList.remove('tbhide');  // 탭바는 항상 하단 고정
     if(id!=='pray') MY_PRAYER_ID=null;        // 개인 제목 연동은 prayMyTopic 진입에서만 유지
-    if(id==='pray'){ setPrayMode(MY_PRAYER_ID ? 'mine' : 'together'); updateMyPrayTag(); if(typeof loadAmens==='function') loadAmens(); }
+    if(id==='pray'){ setPrayMode(MY_PRAYER_ID ? 'mine' : 'together'); updateMyPrayTag(); if(typeof loadAmens==='function') loadAmens(); if(prayMode==='together' && !autoOn && typeof toggleAuto==='function') toggleAuto(); }   /* 진입 시 자동 넘김 기본 ON(기도 누르면 OFF) */
     var _fab=document.getElementById('myFab'); if(_fab && id!=='record') _fab.style.display='none';  // FAB는 기록 화면에서만
     if(id==='zone'){ buildZones(); loadDept(); if(typeof loadPeopleCounts==='function') loadPeopleCounts(); }
     if(id==='joinzone') buildChips();
