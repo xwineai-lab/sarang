@@ -1965,7 +1965,7 @@
 
   // ===== active prayer timer — 벽시계(실제 경과 시각) 기준. 화면이 꺼져도 시간 손실 없음 =====
   const CIRC=565.5, goalSec=1800;
-  const CHECK_MS=3*60*60*1000;   // 3시간마다 "아직 기도 중?" 확인
+  const CHECK_MS=2*60*60*1000;   // 2시간마다 "아직 기도 중?" 확인
   const GRACE_MS=5*60*1000;      // 확인에 5분 무응답 → 자동 종료(잠듦/이탈 과다집계 방지)
   const AKEY='omansigan_active'; // 진행 중 세션(시작 시각) 저장 → 탭 강제종료 시 복구
   let running=false, startAt=0, tk=null, nextCheck=0, graceTk=null;
@@ -2521,12 +2521,12 @@
     go('home');
   }
   function togglePray(){ if(!running) startPray(); else finishPray(); }
-  // 3시간 경과 시 "아직 기도 중?" 확인 — 응답하면 연장, 5분 무응답이면 체크포인트까지만 기록하고 종료
+  // 2시간 경과 시 "아직 기도 중?" 확인 — 응답하면 연장, 5분 무응답이면 체크포인트까지만 기록하고 종료
   function askStillPraying(){
     if(document.getElementById('stillAsk')) return;
     clearInterval(tk);
     const ov=document.createElement('div'); ov.id='stillAsk'; ov.className='stillask';
-    ov.innerHTML='<div class="stillbox"><div class="stt">아직 기도 중이세요?</div><div class="sts">3시간이 지났어요. 계속하시려면 눌러주세요.</div>'+
+    ov.innerHTML='<div class="stillbox"><div class="stt">아직 기도 중이세요?</div><div class="sts">2시간이 지났어요. 계속하시려면 눌러주세요.</div>'+
       '<button class="primary" onclick="keepPraying()">네, 계속 기도 중이에요</button>'+
       '<button class="lbtn2 email" onclick="finishPray()">기도 마치기</button></div>';
     document.querySelector('.phone').appendChild(ov);
@@ -2543,7 +2543,7 @@
     if(!a || !a.startAt) return;
     const el=Date.now()-a.startAt;
     if(el<60000) return;                                  // 1분 미만은 무시
-    const mins=Math.round(Math.min(el, CHECK_MS)/60000);  // 최대 3시간까지만 인정
+    const mins=Math.round(Math.min(el, CHECK_MS)/60000);  // 최대 2시간까지만 인정(앱 강제종료 복구 시)
     if(mins>=1){ if(SB){ recordPrayer(mins); } else { current+=mins/60; renderGauge(); } }
   }
 
@@ -2814,9 +2814,9 @@
   var AMEN={}, _amenAdvTk=null;
   async function loadAmens(){ if(!SB) return; try{ var r=await SB.rpc('get_topic_amens'); (r.data||[]).forEach(function(x){ AMEN[Number(x.topic_key)]=Number(x.cnt)||0; }); setAmenDisplay(); }catch(e){} }
   function setAmenDisplay(){ var row=document.getElementById('topicAmen'); if(!row) return; row.style.display='flex'; var el=document.getElementById('amenCnt'); if(!el) return; var v; if(prayMode==='mine'){ var p=MY_PRAYERS[mti]; v=(p&&p.pray_count)||0; } else { v=AMEN[ti]||0; } el.textContent=v.toLocaleString('en-US'); }
-  function amenTopic(ev){ if(ev&&ev.stopPropagation) ev.stopPropagation(); var btn=document.getElementById('amenBtn'), el=document.getElementById('amenCnt'); if(autoOn){ clearInterval(autoTk); autoTk=setInterval(nextTopic,15000); }
-    if(prayMode==='mine'){ var p=MY_PRAYERS[mti]; if(!p) return; p.pray_count=(p.pray_count||0)+1; p.last_prayed_at=new Date().toISOString(); if(el){ el.textContent=p.pray_count.toLocaleString('en-US'); el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump'); } var meta=document.getElementById('topicMeta'); if(meta){ meta.textContent='마지막 기도 '+mpRelDay(p.last_prayed_at)+' · 총 '+p.pray_count+'회'; } if(btn){ btn.classList.remove('pop'); void btn.offsetWidth; btn.classList.add('pop'); spawnHearts(btn); } if(SB){ try{ SB.from('my_prayers').update({pray_count:p.pray_count,last_prayed_at:p.last_prayed_at}).eq('id',p.id).then(function(){},function(){}); }catch(e){} } clearTimeout(_amenAdvTk); _amenAdvTk=setTimeout(function(){ if(prayMode==='mine') nextTopic(); }, 1000); return; }
-    var key=ti; AMEN[key]=(AMEN[key]||0)+1; if(el){ el.textContent=(AMEN[key]).toLocaleString('en-US'); el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump'); } if(btn){ btn.classList.remove('pop'); void btn.offsetWidth; btn.classList.add('pop'); spawnHearts(btn); } if(SB){ try{ SB.rpc('amen_topic',{p_key:key}).then(function(){},function(){}); }catch(e){} } clearTimeout(_amenAdvTk); _amenAdvTk=setTimeout(function(){ if(prayMode!=='mine') nextTopic(); }, 1000); }
+  function amenTopic(ev){ if(ev&&ev.stopPropagation) ev.stopPropagation(); var btn=document.getElementById('amenBtn'), el=document.getElementById('amenCnt'); if(autoOn) toggleAuto();   /* 기도 누르면 자동 넘김 끄고 사용자가 직접 컨트롤 */
+    if(prayMode==='mine'){ var p=MY_PRAYERS[mti]; if(!p) return; p.pray_count=(p.pray_count||0)+1; p.last_prayed_at=new Date().toISOString(); if(el){ el.textContent=p.pray_count.toLocaleString('en-US'); el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump'); } var meta=document.getElementById('topicMeta'); if(meta){ meta.textContent='마지막 기도 '+mpRelDay(p.last_prayed_at)+' · 총 '+p.pray_count+'회'; } if(btn){ btn.classList.remove('pop'); void btn.offsetWidth; btn.classList.add('pop'); spawnHearts(btn); } if(SB){ try{ SB.from('my_prayers').update({pray_count:p.pray_count,last_prayed_at:p.last_prayed_at}).eq('id',p.id).then(function(){},function(){}); }catch(e){} } return; }
+    var key=ti; AMEN[key]=(AMEN[key]||0)+1; if(el){ el.textContent=(AMEN[key]).toLocaleString('en-US'); el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump'); } if(btn){ btn.classList.remove('pop'); void btn.offsetWidth; btn.classList.add('pop'); spawnHearts(btn); } if(SB){ try{ SB.rpc('amen_topic',{p_key:key}).then(function(){},function(){}); }catch(e){} } }
   function spawnHearts(btn){ var cols=['#e58a80','#f0a98f','#e7b15a','#ec9a86']; for(var i=0;i<4;i++){ (function(i){ var h=document.createElement('span'); h.className='fly-heart'; h.textContent='♥'; h.style.left=(32+Math.random()*34)+'%'; h.style.color=cols[i%cols.length]; h.style.fontSize=(11+Math.random()*7)+'px'; h.style.animationDelay=(i*55)+'ms'; btn.appendChild(h); setTimeout(function(){ if(h.parentNode) h.parentNode.removeChild(h); }, 1150+i*55); })(i); } }
   function toggleAuto(){autoOn=!autoOn;const b=document.getElementById('autoBtn');if(b){b.classList.toggle('on',autoOn);b.textContent=autoOn?'자동 넘김 켜짐':'자동 넘김 꺼짐';}clearInterval(autoTk);if(autoOn){autoTk=setInterval(nextTopic,15000);}}
   function buildTopics(){
