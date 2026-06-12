@@ -1947,6 +1947,7 @@
     const wasDone=campaignDone; campaignDone=(p>=1);
     if(campaignDone!==wasDone) paintVerse();
   }
+  try{ var _gc=parseFloat(localStorage.getItem('gauge_total_h')); if(!isNaN(_gc)&&_gc>0) current=_gc; }catch(e){}   // 직전 누적값 캐시 → 로드 즉시 카운트업(0 정지 없이)
   renderGauge();
   /* ===== 시간대별 홈 배너 (접속자의 기기 현지 시각 기준) ===== */
   function timeBannerImg(){
@@ -2938,7 +2939,7 @@
   async function refreshProgress(){
     if(!SB) return;
     const { data } = await SB.rpc('get_progress');
-    if(data){ current = Number(data.total_hours)||0; renderGauge(); }
+    if(data){ current = Number(data.total_hours)||0; try{ localStorage.setItem('gauge_total_h', current); }catch(e){} renderGauge(); }
   }
   async function recordPrayer(mins){
     const linkedId = MY_PRAYER_ID;   // 이 세션에서 연동된 개인 제목
