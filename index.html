@@ -645,6 +645,7 @@
   .zd-tile .zd-tv .u{font-size:12px;color:var(--soft);font-weight:400;font-family:"Gowun Dodum",sans-serif;margin-left:1px;}
   .zd-tile.green{background:#eef4e4;} .zd-tile.green .zd-tl{color:#7e8a5e;} .zd-tile.green .zd-tv{color:#5f7a36;}
   .zd-tile.live{background:#fdeee7;} .zd-tile.live .zd-tl{color:#c0856f;}
+  .zd-tile.blue{background:#e9eef7;} .zd-tile.blue .zd-tl{color:#6a7aa0;} .zd-tile.blue .zd-tv{color:#3f5488;}
   .zd-tile.live .zd-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#e8643c;margin-right:6px;vertical-align:middle;animation:zgheart 1.5s ease-in-out infinite;}
   .zd-wk{background:var(--surface);border-radius:16px;padding:13px 14px 11px;box-shadow:0 4px 11px rgba(150,120,60,.05);}
   .zd-wk .zd-wkh{display:flex;align-items:center;gap:6px;font-size:12px;color:#8a7f6d;margin-bottom:12px;}
@@ -2276,7 +2277,8 @@
     flame:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c1 3-2 4-2 7a2 2 0 0 0 4 0c0-1 0-1 0-1 1.2 1.2 3 3 3 6a5 5 0 0 1-10 0c0-4.2 4-5 5-12z"/></svg>',
     chart:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#b5742a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V11M10 20V4M16 20v-7M2 20h20"/></svg>',
     trophy:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#cf9a1e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M6 4h12v4a6 6 0 0 1-12 0V4zM6 6H4v1a3 3 0 0 0 3 3M18 6h2v1a3 3 0 0 1-3 3"/></svg>',
-    heart:'<svg width="14" height="14" viewBox="0 0 24 24" fill="#e58a80"><path d="M12 21s-7.4-4.55-9.9-9.2C.7 8.6 2.4 5.4 5.5 5.4c1.95 0 3.35 1.15 4.15 2.35l.35.55.35-.55C11.15 6.55 12.55 5.4 14.5 5.4c3.1 0 4.8 3.2 3.4 6.4C19.4 16.45 12 21 12 21z"/></svg>'
+    heart:'<svg width="14" height="14" viewBox="0 0 24 24" fill="#e58a80"><path d="M12 21s-7.4-4.55-9.9-9.2C.7 8.6 2.4 5.4 5.5 5.4c1.95 0 3.35 1.15 4.15 2.35l.35.55.35-.55C11.15 6.55 12.55 5.4 14.5 5.4c3.1 0 4.8 3.2 3.4 6.4C19.4 16.45 12 21 12 21z"/></svg>',
+    prayheart:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-6.5-4-9-8.2C1.2 8.5 2.8 5.5 5.8 5.5c1.8 0 3.2 1.1 3.9 2.3l.3.5.3-.5c.7-1.2 2.1-2.3 3.9-2.3 3 0 4.6 3 2.8 6.3C18.5 16 12 20 12 20z"/></svg>'
   };
   function zoneGroupIds(nm,dept){
     if(nm==='청년부'||nm==='청소년부'){ var src=SERVER_ZONES||[]; return src.filter(function(z){return (z[4]||'장년부')===nm;}).map(function(z){return GROUPS_BY_NAME[z[0]];}).filter(Boolean); }
@@ -2285,10 +2287,9 @@
   async function loadPeopleCounts(){ if(!SB) return; try{ var r=await SB.rpc('group_people_counts'); if(r.error) return; ZONE_PEOPLE={}; (r.data||[]).forEach(function(x){ ZONE_PEOPLE[x.group_id]={members:x.members||0,prayed:x.prayed||0}; }); _peopleLoaded=true; }catch(e){} }
   function openZoneDetail(nm){
     var info=ZONE_INFO[nm]; if(!info) return;
-    var members=0; (info.groupIds||[]).forEach(function(id){ var pc=ZONE_PEOPLE[id]; if(pc) members+=pc.members; });
+    var members=0, prayed=0; (info.groupIds||[]).forEach(function(id){ var pc=ZONE_PEOPLE[id]; if(pc){ members+=pc.members; prayed+=pc.prayed; } });
     var box=document.getElementById('zoneBox'); if(!box) return;
     var nextTxt = (info.nextRemain!=null) ? ('다음 레벨까지<br><b>'+fmtHM(info.nextRemain*60)+'</b>') : '<b>최고 레벨!</b>';
-    var liveDot = info.pray>0 ? '<span class="zd-dot"></span>' : '';
     box.innerHTML =
       '<div class="zd-head"><div class="zd-ti"><span class="zd-ic '+zicClass(info.nm,info.dept)+'">'+zoneSymbol(info.nm,info.dept)+'</span><span><span class="zd-nm">'+zoneDisplayName(info.nm)+'</span><br><span class="zd-dp">'+info.dept+'</span></span></div><span class="zd-x" onclick="closeZoneDetail()">✕</span></div>'+
       '<div class="zd-lv"><span class="zd-lvsym">'+flowerSVG(info.lvNum)+'</span><span class="zd-lvmid"><span class="zd-lvrow"><span class="zd-lvn">Lv.'+info.lvNum+'</span><span class="zd-lvname">'+PLEVELS[info.lvNum-1][1]+'</span></span><span class="zd-track"><i style="width:'+info.lvPct+'%"></i></span></span><span class="zd-next">'+nextTxt+'</span></div>'+
@@ -2297,7 +2298,7 @@
         '<div class="zd-tile"><span class="zd-tl">'+ZICO.users+'참여 인원</span><span class="zd-tv">'+(_peopleLoaded?(members+'<span class="u">명</span>'):'<span class="u" style="font-size:14px">집계 준비 중</span>')+'</span></div>'+
         '<div class="zd-tile"><span class="zd-tl">'+ZICO.clock+'누적 기도</span><span class="zd-tv">'+fmtHM(info.hours*60)+'</span></div>'+
         '<div class="zd-tile green"><span class="zd-tl">'+ZICO.up+'오늘 증가</span><span class="zd-tv">+'+info.today+'<span class="u">분</span></span></div>'+
-        '<div class="zd-tile live"><span class="zd-tl">'+ZICO.flame+'지금 기도 중</span><span class="zd-tv">'+liveDot+info.pray+'<span class="u">명</span></span></div>'+
+        '<div class="zd-tile blue"><span class="zd-tl">'+ZICO.prayheart+'누적 기도 인원</span><span class="zd-tv">'+(_peopleLoaded?(prayed+'<span class="u">명</span>'):'<span class="u" style="font-size:14px">집계 준비 중</span>')+'</span></div>'+
       '</div>'+
       '<div class="zd-wk"><div class="zd-wkh">'+ZICO.chart+'최근 7일 기도시간</div><div class="zd-bars" id="zdBars"><div style="width:100%;text-align:center;color:var(--faint);font-size:12px;padding:32px 0;">불러오는 중…</div></div></div>'+
       '<div class="zd-foot">'+ZICO.heart+zoneDisplayName(info.nm)+'이 함께 쌓아온 기도예요</div>';
