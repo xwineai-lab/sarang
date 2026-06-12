@@ -532,6 +532,57 @@
   .modalmask .modalbox{max-width:430px;}
   .modalmask.on{display:flex;}
   .modalbox{background:var(--surface);width:100%;border-radius:22px 22px 0 0;padding:20px 18px calc(18px + env(safe-area-inset-bottom));max-height:88%;overflow:auto;animation:tickin .25s ease;}
+  /* 나의 기도 정원 */
+  .garden{margin-top:14px;position:relative;}
+  .g-track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;border-radius:18px;}
+  .g-track::-webkit-scrollbar{display:none;}
+  .g-slide{flex:0 0 100%;scroll-snap-align:center;position:relative;}
+  .g-slide img{display:block;width:100%;height:290px;object-fit:cover;}
+  .g-noimg{width:100%;height:290px;background:linear-gradient(180deg,#eef3e6,#e3ecd9);}
+  .g-scrim{position:absolute;left:0;right:0;top:0;height:76%;background:linear-gradient(to bottom,rgba(247,243,234,.82),rgba(247,243,234,.28) 52%,rgba(247,243,234,0));}
+  .g-ov{position:absolute;left:0;right:0;top:0;padding-top:14px;text-align:center;}
+  .g-arc{width:230px;height:112px;margin:0 auto;border:1.4px solid #cdbf93;border-bottom:none;border-radius:120px 120px 0 0;}
+  .g-ovin{position:absolute;left:0;right:0;top:26px;}
+  .g-lab{font-size:12.5px;color:#7e8a72;}
+  .g-num{margin-top:2px;line-height:1;}
+  .g-num .d{font-family:"Outfit",sans-serif;font-weight:700;font-size:46px;color:#5e7d4f;letter-spacing:-1px;}
+  .g-num .u{font-family:"Gowun Dodum",sans-serif;font-size:20px;color:#3f4a3a;margin:0 1px;}
+  .g-num0{font-family:"Gowun Dodum",sans-serif;font-size:19px;color:#4f6a43;margin-top:6px;line-height:1.5;}
+  .g-vs{font-size:12.5px;color:#6e7a64;font-style:italic;margin-top:7px;}
+  .g-vs .r{display:block;font-style:normal;font-size:11px;color:#8a9483;margin-top:2px;}
+  .g-cta{display:inline-block;margin-top:12px;background:#6f9a5a;color:#fff;font-size:13px;font-weight:700;padding:9px 20px;border-radius:22px;cursor:pointer;box-shadow:0 4px 12px rgba(111,154,90,.3);}
+  .g-badge{position:absolute;left:12px;bottom:12px;background:rgba(255,255,255,.9);border-radius:999px;padding:5px 12px;font-size:12px;font-weight:700;color:#5e7d4f;box-shadow:0 2px 6px rgba(0,0,0,.08);}
+  .g-lock{position:absolute;inset:0;background:rgba(244,240,231,.6);backdrop-filter:blur(2px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;color:#5b6450;border-radius:18px;}
+  .g-lock svg{width:25px;height:25px;}
+  .g-lt{font-size:13.5px;font-weight:700;}
+  .g-ls{font-size:11px;color:#7a8470;}
+  .g-dots{display:flex;justify-content:center;gap:6px;margin-top:9px;}
+  .g-dots span{width:7px;height:7px;border-radius:50%;background:#cfd3c8;}
+  .g-dots span.on{background:#7bbf63;width:18px;border-radius:4px;}
+  .g-hint{text-align:center;font-size:11.5px;color:#9aa48d;margin-top:6px;}
+  .g-stats{display:flex;gap:9px;margin-top:14px;}
+  .g-sc{flex:1;background:var(--surface);border-radius:16px;padding:13px 6px;text-align:center;box-shadow:0 3px 10px rgba(60,70,50,.06);}
+  .g-ic{height:22px;display:flex;align-items:center;justify-content:center;}
+  .g-ic svg{width:21px;height:21px;}
+  .g-lb{font-size:12px;color:var(--soft);margin-top:6px;}
+  .g-vl{font-family:"Outfit",sans-serif;font-weight:700;font-size:22px;color:var(--ink);margin-top:3px;line-height:1;letter-spacing:-.4px;}
+  .g-grow{margin-top:14px;background:var(--surface);border-radius:18px;padding:15px 15px 13px;box-shadow:0 3px 10px rgba(60,70,50,.06);}
+  .g-grow-h{display:flex;align-items:center;gap:6px;font-size:11px;}
+  .g-grow-h svg{width:17px;height:17px;}
+  .g-grow-h b{font-size:15px;color:var(--ink);}
+  .g-grow-h span{color:var(--soft);}
+  .g-steps{display:flex;justify-content:space-between;margin-top:15px;position:relative;}
+  .g-ln{position:absolute;left:30px;right:30px;top:21px;height:3px;background:#e0e3d7;border-radius:2px;}
+  .g-ln-f{position:absolute;left:30px;top:21px;height:3px;background:#7bbf63;border-radius:2px;width:0;transition:width .5s;}
+  .g-step{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;width:18%;}
+  .g-dot{width:44px;height:44px;border-radius:50%;background:#eef0e7;display:flex;align-items:center;justify-content:center;border:2px solid #e0e3d7;}
+  .g-dot svg{width:26px;height:26px;}
+  .g-step.cur .g-dot{background:#fff;border:3px solid #6f9a5a;box-shadow:0 0 0 4px rgba(123,191,99,.18);}
+  .g-step.done .g-dot{background:#eaf3e2;border-color:#9ccb80;}
+  .g-nm{font-size:10.5px;color:var(--soft);margin-top:7px;}
+  .g-step.cur .g-nm{color:var(--ink);font-weight:700;}
+  .g-next{margin-top:13px;background:#eef2e6;border-radius:12px;padding:11px;text-align:center;font-size:13px;color:#5e6b50;}
+  .g-next b{font-family:"Outfit",sans-serif;color:#4f6a43;}
   /* 기도문 전문: 돋보기 아이콘 + 모달 */
   #topicMain{position:relative;}
   .topicmag{position:absolute;top:24px;right:-2px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border:none;border-radius:50%;background:rgba(150,120,60,.10);color:var(--soft);cursor:pointer;padding:0;z-index:4;transition:background .15s,color .15s,transform .1s;}
@@ -1196,38 +1247,33 @@
           <div class="h-desc" style="margin-top:6px;" data-i18n="rec.desc">하나님께 드린 시간을 돌아보세요</div>
           <div class="h-desc" id="recSub" style="margin-top:5px;font-weight:600;color:var(--amber-deep);">고요한 등불 · 독일열방 구역</div>
         </div>
-        <div class="ieentry" onclick="go('intercede')">
-          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21C5 16 3 12 3 8.5 3 6 5 4 7.5 4 9.5 4 11 5.2 12 6.7 13 5.2 14.5 4 16.5 4 19 4 21 6 21 8.5 21 12 19 16 12 21z"/></svg></div>
-          <div class="tx"><div class="t" data-i18n="rec.intercede">중보기도 나눔</div><div class="s">서로의 기도제목을 익명으로 함께 나눠요</div></div>
-          <div class="go">›</div>
-        </div>
         <div class="rectabs">
           <button class="rectab on" id="rt-log" onclick="recTab('log')" data-i18n="rec.tab.log">기도 기록</button>
           <button class="rectab" id="rt-my" onclick="recTab('my')" data-i18n="rec.tab.my">나의 기도제목</button>
         </div>
         <div id="recPaneLog">
-          <div class="todaycard">
-            <div class="tcleft">
-              <div class="tct">오늘 하나님께 드린 기도</div>
-              <div class="tcs">오늘의 기도 시간을 돌아보세요</div>
-              <div class="tcbig"><span id="rc-today">0</span><span class="u">분</span></div>
-              <div class="tcmeta">기도 <b id="rc-todaycnt">0</b>회 · 마지막 기도 <span id="rc-last">—</span></div>
-            </div>
-            <svg class="tcleaf" viewBox="0 0 44 54" fill="none">
-              <path d="M9 50 C11 37 15 28 23 20" stroke="#c9b487" stroke-width="1.5" stroke-linecap="round"/>
-              <g fill="#b9d097" opacity=".9">
-                <ellipse cx="12" cy="41" rx="4.2" ry="2.3" transform="rotate(-35 12 41)"/>
-                <ellipse cx="17" cy="33" rx="4.2" ry="2.3" transform="rotate(-30 17 33)"/>
-                <ellipse cx="22" cy="24" rx="4" ry="2.2" transform="rotate(-25 22 24)"/>
-                <ellipse cx="8" cy="37" rx="3.6" ry="2" transform="rotate(22 8 37)"/>
-                <ellipse cx="13" cy="29" rx="3.6" ry="2" transform="rotate(26 13 29)"/>
-              </g>
-            </svg>
+          <!-- ===== 나의 기도 정원 ===== -->
+          <div class="garden">
+            <div class="g-track" id="gTrack"></div>
+            <div class="g-dots" id="gDots"></div>
+            <div class="g-hint" id="gHint" style="display:none;">← 옆으로 밀어 정원의 다음 이야기를 미리 봐요 →</div>
           </div>
-          <div class="statcard">
-            <div class="col"><div class="cl">이번 주</div><div class="cv" id="st-week">0분</div></div>
-            <div class="col"><div class="cl">연속</div><div class="cv" id="st-streak"><b>0</b>일</div></div>
-            <div class="col"><div class="cl">이번 달</div><div class="cv" id="st-month">0분</div></div>
+          <div class="g-stats">
+            <div class="g-sc"><div class="g-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#dca73b" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2.6v2.3M12 19.1v2.3M2.6 12h2.3M19.1 12h2.3M5.4 5.4l1.6 1.6M16.9 16.9l1.6 1.6M18.6 5.4l-1.6 1.6M6.9 16.9l-1.6 1.6"/></svg></div><div class="g-lb">오늘</div><div class="g-vl" id="g-today">0분</div></div>
+            <div class="g-sc"><div class="g-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#7a9466" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.4" y="5" width="17.2" height="15" rx="2.6"/><path d="M3.4 9.4h17.2M8 3.4v3M16 3.4v3"/></svg></div><div class="g-lb">이번 주</div><div class="g-vl" id="g-week">0분</div></div>
+            <div class="g-sc"><div class="g-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#6f9a5a" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21v-8"/><path d="M12 14c-.9-3.4-3.6-4.8-6.6-4.8C5.4 12.6 8.2 14 12 14z"/><path d="M12 12.5c.6-3 2.9-4.3 5.6-4.3C17.6 11 15.3 12.5 12 12.5z"/></svg></div><div class="g-lb">연속</div><div class="g-vl" id="g-streak">0일</div></div>
+          </div>
+          <div class="g-grow">
+            <div class="g-grow-h"><svg viewBox="0 0 24 24" fill="none" stroke="#6f9a5a" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21v-8"/><path d="M12 14c-.9-3.4-3.6-4.8-6.6-4.8C5.4 12.6 8.2 14 12 14z"/><path d="M12 12.5c.6-3 2.9-4.3 5.6-4.3C17.6 11 15.3 12.5 12 12.5z"/></svg> <b>나의 기도 정원</b> <span>기도 시간이 쌓여 정원이 자랍니다</span></div>
+            <div class="g-steps" id="gSteps">
+              <div class="g-ln"></div><div class="g-ln-f" id="gLnF"></div>
+              <div class="g-step" data-m="0"><div class="g-dot"><svg viewBox="0 0 28 28"><ellipse cx="14" cy="15" rx="4.6" ry="6.6" transform="rotate(22 14 15)" fill="#c9a24b"/></svg></div><div class="g-nm">씨앗</div></div>
+              <div class="g-step" data-m="1"><div class="g-dot"><svg viewBox="0 0 28 28" fill="none" stroke="#9bbf80" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 22v-8"/><path d="M14 16c-1-4-4-5-7-5 0 4 3 5 7 5z"/><path d="M14 14c.6-3 3-4 6-4 0 3.4-2.4 4-6 4z"/></svg></div><div class="g-nm">새싹</div></div>
+              <div class="g-step" data-m="2"><div class="g-dot"><svg viewBox="0 0 28 28" fill="none" stroke="#c79bb0" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 23v-8"/><path d="M14 15c-2.6 0-4.2-2-4.2-4.6 0-2.1 1.9-3.7 4.2-3.7s4.2 1.6 4.2 3.7C18.2 13 16.6 15 14 15z"/></svg></div><div class="g-nm">꽃봉오리</div></div>
+              <div class="g-step" data-m="3"><div class="g-dot"><svg viewBox="0 0 28 28"><g fill="#e6a6bf"><circle cx="14" cy="8.6" r="3"/><circle cx="9" cy="12.2" r="3"/><circle cx="19" cy="12.2" r="3"/><circle cx="11" cy="17.4" r="3"/><circle cx="17" cy="17.4" r="3"/></g><circle cx="14" cy="13" r="2.7" fill="#f3d27a"/></svg></div><div class="g-nm">꽃밭</div></div>
+              <div class="g-step" data-m="4"><div class="g-dot"><svg viewBox="0 0 28 28"><path d="M14 24v-6" stroke="#9c8a63" stroke-width="2" stroke-linecap="round"/><circle cx="14" cy="11.5" r="7.2" fill="#bcd9a3"/><circle cx="10" cy="10" r="4" fill="#cfe6b6"/></svg></div><div class="g-nm">풍성한 정원</div></div>
+            </div>
+            <div class="g-next" id="gNext">다음 정원 단계까지 —</div>
           </div>
           <div class="weekchart">
             <div class="wcl">이번 주 기도 흐름</div>
@@ -1246,6 +1292,11 @@
             <div class="gc-grid" id="graceGrid"><div class="gc-empty">아직 받은 카드가 없어요.</div></div>
           </div>
           <button class="manualbtn" onclick="openManualModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v8M8 12h8"/><circle cx="12" cy="12" r="9"/></svg>기도 시간 직접 기록 · 보정</button>
+          <div class="ieentry" onclick="go('intercede')" style="margin-top:18px;">
+            <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21C5 16 3 12 3 8.5 3 6 5 4 7.5 4 9.5 4 11 5.2 12 6.7 13 5.2 14.5 4 16.5 4 19 4 21 6 21 8.5 21 12 19 16 12 21z"/></svg></div>
+            <div class="tx"><div class="t" data-i18n="rec.intercede">중보기도 나눔</div><div class="s">서로의 기도제목을 익명으로 함께 나눠요</div></div>
+            <div class="go">›</div>
+          </div>
           <div class="reclbl">최근 기도 기록</div>
           <div id="recentList">
             <div class="recrow"><span class="d">아직 기록이 없어요</span><span class="v num">—</span></div>
@@ -3207,6 +3258,61 @@
   }
   function korDur(m){ m=Math.round(m||0); if(m<=0) return '0분'; const h=Math.floor(m/60), r=m%60; return h?(h+'시간'+(r?' '+r+'분':'')):(r+'분'); }
   function setTxt(id,v){ var e=document.getElementById(id); if(e) e.textContent=v; }
+  // ===== 나의 기도 정원 (개인 누적시간 기반 레벨) =====
+  // index == 레벨. h=도달 누적시간(시간). img=배너 파일(없으면 잠금/플레이스홀더). macro=진행바 5단계(0~4)
+  var GARDEN=[
+    {name:'빈 화분',h:0,img:'garden-lv0.jpg',macro:0},
+    {name:'씨앗을 받다',h:0,img:'garden-lv1.jpg',macro:0},
+    {name:'화분에 심다',h:5,img:'garden-lv2.jpg',macro:0},
+    {name:'새싹이 트다',h:12,img:'garden-lv3.jpg',macro:1},
+    {name:'잎이 자라다',h:22,img:'garden-lv4.jpg',macro:1},
+    {name:'화단으로 옮기다',h:35,img:null,macro:1},
+    {name:'줄기가 굵어지다',h:52,img:null,macro:2},
+    {name:'꽃봉오리 맺다',h:73,img:null,macro:2},
+    {name:'첫 꽃이 피다',h:100,img:null,macro:3},
+    {name:'꽃밭을 이루다',h:135,img:null,macro:3},
+    {name:'풍성한 정원',h:180,img:null,macro:4}
+  ];
+  var G_LOCK='<svg viewBox="0 0 24 24" fill="none" stroke="#6f7a64" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
+  function gMaxImg(){ var m=0; for(var i=0;i<GARDEN.length;i++){ if(GARDEN[i].img) m=i; } return m; }
+  function updateGDots(){ var t=document.getElementById('gTrack'); if(!t) return; var d=document.querySelectorAll('#gDots span'); var i=Math.round(t.scrollLeft/Math.max(1,t.clientWidth)); d.forEach(function(x,k){ x.classList.toggle('on',k===i); }); }
+  function renderGarden(totalMin, todayMin, week, streak){
+    var trk=document.getElementById('gTrack'); if(!trk) return;
+    var total=Math.max(0, totalMin||0); var th=total/60;
+    var cur=(total<=0)?0:1; for(var i=2;i<GARDEN.length;i++){ if(th>=GARDEN[i].h) cur=i; else break; }
+    var maxImg=gMaxImg(); var curImg=Math.min(cur, maxImg);
+    // 통계
+    setTxt('g-today', korDur(todayMin)); setTxt('g-week', korDur(week)); setTxt('g-streak', (streak||0)+'일');
+    // 슬라이드 (이미지 있는 레벨)
+    var slides=[]; if(cur===0){ slides=[0]; if(GARDEN[1]&&GARDEN[1].img) slides.push(1); }
+    else { for(var k=1;k<GARDEN.length;k++){ if(GARDEN[k].img) slides.push(k); } }
+    var hm=Math.floor(total/60), mm=total%60;
+    var html=slides.map(function(l){
+      var g=GARDEN[l], achieved=(l<=cur), isCur=(l===curImg);
+      var over='';
+      if(isCur && cur>0){
+        over='<div class="g-scrim"></div><div class="g-ov"><div class="g-arc"></div><div class="g-ovin"><div class="g-lab">누적 기도 시간</div><div class="g-num"><span class="d">'+hm+'</span><span class="u">시간</span> <span class="d">'+mm+'</span><span class="u">분</span></div><div class="g-vs">"쉬지 말고 기도하라"<span class="r">— 데살로니가전서 5:17</span></div></div></div>';
+      } else if(isCur && cur===0){
+        over='<div class="g-scrim"></div><div class="g-ov"><div class="g-ovin"><div class="g-lab">아직 비어 있는 정원</div><div class="g-num0">첫 기도를 드리면<br>첫 씨앗을 받아요</div><a class="g-cta" onclick="go(\'pray\')">기도 시작하기 →</a></div></div>';
+      }
+      var lock = (!achieved) ? '<div class="g-lock">'+G_LOCK+'<div class="g-lt">'+korDur(Math.max(0,Math.round(g.h*60-total)))+' 더</div><div class="g-ls">기도를 채우면 열려요</div></div>' : '';
+      var badge='<div class="g-badge">Lv.'+l+' · '+g.name+((achieved&&!isCur)?' ✓':'')+'</div>';
+      var media = g.img ? '<img src="'+g.img+'">' : '<div class="g-noimg"></div>';
+      return '<div class="g-slide">'+media+over+lock+badge+'</div>';
+    }).join('');
+    trk.innerHTML=html;
+    var ci=slides.indexOf(curImg); if(ci<0) ci=0;
+    document.getElementById('gDots').innerHTML=slides.map(function(_,k){ return '<span'+(k===ci?' class="on"':'')+'></span>'; }).join('');
+    var hint=document.getElementById('gHint'); if(hint) hint.style.display=(slides.length>1?'block':'none');
+    setTimeout(function(){ trk.scrollLeft=ci*trk.clientWidth; updateGDots(); }, 40);
+    // 진행바
+    var macro=GARDEN[cur].macro;
+    document.querySelectorAll('#gSteps .g-step').forEach(function(s){ var m=+s.getAttribute('data-m'); s.classList.toggle('done',m<macro); s.classList.toggle('cur',m===macro); });
+    var lf=document.getElementById('gLnF'); if(lf) lf.style.width=(macro/4*100)+'%';
+    var nx=document.getElementById('gNext');
+    if(nx){ if(cur>=GARDEN.length-1){ nx.innerHTML='가장 풍성한 정원을 이루었어요 🌳'; } else { var rem=Math.max(0,Math.round(GARDEN[cur+1].h*60-total)); nx.innerHTML='다음 정원 단계까지 <b>'+korDur(rem)+'</b>'; } }
+  }
+  (function(){ var t=document.getElementById('gTrack'); if(t){ t.addEventListener('scroll', updateGDots); try{ renderGarden(0,0,0,0); }catch(e){} } })();
   function fmtAmPm(d){ var h=d.getHours(),m=d.getMinutes(); var ap=h<12?'오전':'오후'; var hh=h%12; if(hh===0)hh=12; return ap+' '+hh+':'+String(m).padStart(2,'0'); }
   var CAL_PRAYED=new Set(); var CAL_Y=null, CAL_M=null;
   function renderCalendar(){
@@ -3243,6 +3349,7 @@
     rows.forEach(r=>{ const d=new Date(r.ended_at); if(lkey(d)===tk){ todayMin+=r.minutes; todayCnt++; if(!lastT||d>lastT) lastT=d; } });
     setTxt('rc-today', todayMin); setTxt('rc-todaycnt', todayCnt);
     const lastEl=document.getElementById('rc-last'); if(lastEl) lastEl.textContent = lastT? fmtAmPm(lastT) : '—';
+    try{ renderGarden(total, todayMin, week, streak); }catch(e){}
     // 이번 주 막대 (월~일)
     const mon=new Date(now.getFullYear(),now.getMonth(),now.getDate()); const dow=(mon.getDay()+6)%7; mon.setDate(mon.getDate()-dow);
     const buckets=[0,0,0,0,0,0,0];
