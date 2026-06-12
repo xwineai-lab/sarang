@@ -552,10 +552,12 @@
   .g-vs .r{display:block;font-style:normal;font-size:11px;color:#8a9483;margin-top:2px;}
   .g-cta{display:inline-block;margin-top:12px;background:#6f9a5a;color:#fff;font-size:13px;font-weight:700;padding:9px 20px;border-radius:22px;cursor:pointer;box-shadow:0 4px 12px rgba(111,154,90,.3);}
   .g-badge{position:absolute;left:12px;bottom:12px;background:rgba(255,255,255,.9);border-radius:999px;padding:5px 12px;font-size:12px;font-weight:700;color:#5e7d4f;box-shadow:0 2px 6px rgba(0,0,0,.08);}
-  .g-slide.locked img{filter:saturate(.92) brightness(.97);}
-  .g-lockchip{position:absolute;top:12px;right:12px;display:inline-flex;align-items:center;gap:5px;background:rgba(58,70,52,.6);color:#fff;border-radius:999px;padding:5px 11px;font-size:12px;font-weight:700;}
-  .g-lockchip svg{width:14px;height:14px;stroke:#fff;}
-  .g-peek{position:absolute;left:0;right:0;bottom:0;padding:26px 12px 12px;text-align:center;font-size:11.5px;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.4);background:linear-gradient(to top,rgba(48,58,42,.5),transparent);}
+  .g-slide{overflow:hidden;border-radius:18px;}
+  .g-slide.locked img{filter:blur(7px) brightness(.98) saturate(.9);transform:scale(1.06);}
+  .g-lock{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;background:rgba(245,241,232,.46);color:#5b6450;}
+  .g-lock svg{width:26px;height:26px;stroke:#6f7a64;}
+  .g-lt{font-size:13.5px;font-weight:700;color:#4f5a44;}
+  .g-ls{font-size:11px;color:#7a8470;}
   .g-dots{display:flex;justify-content:center;gap:6px;margin-top:9px;}
   .g-dots span{width:7px;height:7px;border-radius:50%;background:#cfd3c8;}
   .g-dots span.on{background:#7bbf63;width:18px;border-radius:4px;}
@@ -3295,7 +3297,7 @@
         over='<div class="g-scrim"></div><div class="g-ov"><div class="g-ovin"><div class="g-lab">아직 비어 있는 정원</div><div class="g-num0">첫 기도를 드리면<br>첫 씨앗을 받아요</div><a class="g-cta" onclick="go(\'pray\')">기도 시작하기 →</a></div></div>';
       }
       var rem=Math.max(0,Math.round(g.h*60-total));
-      var lock = (!achieved) ? '<div class="g-lockchip">'+G_LOCK+korDur(rem)+' 더</div>' : '';
+      var lock = (!achieved) ? '<div class="g-lock">'+G_LOCK+'<div class="g-lt">'+korDur(rem)+' 더</div><div class="g-ls">기도를 채우면 열려요</div></div>' : '';
       var badge = (l===0) ? '<div class="g-badge">처음 · 빈 화분</div>' : '<div class="g-badge">Lv.'+l+' · '+g.name+((achieved&&!isCur)?' ✓':'')+'</div>';
       var media = g.img ? '<img src="'+g.img+'">' : '<div class="g-noimg"></div>';
       return '<div class="g-slide'+(achieved?'':' locked')+'">'+media+over+lock+badge+'</div>';
