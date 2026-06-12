@@ -414,11 +414,11 @@
   .calcard .cal-legend .lg-p{background:#bcd592;} .calcard .cal-legend .lg-t{background:transparent;box-shadow:inset 0 0 0 1.6px var(--amber);}
   .ydaycard{background:var(--surface);border-radius:18px;padding:15px 14px;margin-top:12px;box-shadow:0 6px 16px rgba(150,120,60,.06);}
   .ydaycard .yd-head{display:flex;align-items:center;gap:7px;margin-bottom:12px;}
-  .ydaycard .yd-ic{font-size:15px;}
+  .ydaycard .yd-ic{display:inline-flex;align-items:center;} .ydaycard .yd-ic svg{width:17px;height:17px;}
   .ydaycard .yd-t{font-size:14px;font-weight:600;color:var(--ink);}
   .ydaycard .yd-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
   .ydaycard .yd-tile{background:var(--amber-tint);border-radius:13px;padding:11px 3px;text-align:center;}
-  .ydaycard .yd-emo{font-size:18px;line-height:1;}
+  .ydaycard .yd-emo{height:26px;display:flex;align-items:center;justify-content:center;} .ydaycard .yd-emo svg{width:23px;height:23px;}
   .ydaycard .yd-num{font-family:"Outfit";font-weight:700;font-size:20px;margin-top:3px;line-height:1.1;white-space:nowrap;}
   .ydaycard .yd-num .u{font-size:12px;font-weight:500;}
   .ydaycard .yd-lbl{font-size:11px;color:var(--soft);margin-top:2px;}
@@ -969,11 +969,11 @@
 
         <!-- 어제의 우리 -->
         <div class="ydaycard">
-          <div class="yd-head"><span class="yd-ic">🌿</span><span class="yd-t">어제, 우리의 기록</span></div>
+          <div class="yd-head"><span class="yd-ic"><svg viewBox="0 0 24 24"><path d="M12 21c-1-6 2-10 8-11-1 6-4 10-8 11z" fill="#9cc47a"/><path d="M12 21C8 20 5 16 4 10c6 1 9 5 8 11z" fill="#7fae5e"/></svg></span><span class="yd-t">어제, 우리의 기록</span></div>
           <div class="yd-grid">
-            <div class="yd-tile"><div class="yd-emo">🙏</div><div class="yd-num" id="ydPrayers" style="color:#3b6d11;">0</div><div class="yd-lbl">기도한 성도</div></div>
-            <div class="yd-tile"><div class="yd-emo">👀</div><div class="yd-num" id="ydVisits" style="color:#b5742a;">0</div><div class="yd-lbl">방문한 성도</div></div>
-            <div class="yd-tile"><div class="yd-emo">⏳</div><div class="yd-num" id="ydMin" style="color:#5d6f49;">0분</div><div class="yd-lbl">함께 드린 기도</div></div>
+            <div class="yd-tile"><div class="yd-emo"><svg viewBox="0 0 24 28"><path d="M12 4 C9 9 6.5 15 6 19 C5.7 22 8 25 12 25 Z" fill="#8fb85f"/><path d="M12 4 C15 9 17.5 15 18 19 C18.3 22 16 25 12 25 Z" fill="#a6cd72"/></svg></div><div class="yd-num" id="ydPrayers" style="color:#3b6d11;">0</div><div class="yd-lbl">기도한 성도</div></div>
+            <div class="yd-tile"><div class="yd-emo"><svg viewBox="0 0 24 24" fill="none" stroke="#c08a3e" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.3"/><path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5M15 19c0-2 1-3.4 3-3.4s3 1.4 3 3.4"/></svg></div><div class="yd-num" id="ydVisits" style="color:#b5742a;">0</div><div class="yd-lbl">방문한 성도</div></div>
+            <div class="yd-tile"><div class="yd-emo"><svg viewBox="0 0 24 24" fill="none" stroke="#7d8a5e" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5l3.2 2"/></svg></div><div class="yd-num" id="ydMin" style="color:#5d6f49;">0분</div><div class="yd-lbl">함께 드린 기도</div></div>
           </div>
         </div>
 
