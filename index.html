@@ -2312,7 +2312,7 @@
   var AMEN={};
   async function loadAmens(){ if(!SB) return; try{ var r=await SB.rpc('get_topic_amens'); (r.data||[]).forEach(function(x){ AMEN[Number(x.topic_key)]=Number(x.cnt)||0; }); setAmenDisplay(); }catch(e){} }
   function setAmenDisplay(){ var row=document.getElementById('topicAmen'); if(!row) return; if(prayMode==='mine'){ row.style.display='none'; return; } row.style.display='flex'; var el=document.getElementById('amenCnt'); if(el) el.textContent=(AMEN[ti]||0).toLocaleString('en-US'); }
-  function amenTopic(){ if(prayMode==='mine') return; var key=ti; AMEN[key]=(AMEN[key]||0)+1; var el=document.getElementById('amenCnt'); if(el){ el.textContent=(AMEN[key]).toLocaleString('en-US'); el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump'); } if(SB){ try{ SB.rpc('amen_topic',{p_key:key}); }catch(e){} } }
+  function amenTopic(){ if(prayMode==='mine') return; var key=ti; AMEN[key]=(AMEN[key]||0)+1; var el=document.getElementById('amenCnt'); if(el){ el.textContent=(AMEN[key]).toLocaleString('en-US'); el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump'); } if(SB){ try{ SB.rpc('amen_topic',{p_key:key}).then(function(){},function(){}); }catch(e){} } }
   function toggleAuto(){autoOn=!autoOn;const b=document.getElementById('autoBtn');if(b){b.classList.toggle('on',autoOn);b.textContent=autoOn?'자동 넘김 켜짐':'자동 넘김 꺼짐';}clearInterval(autoTk);if(autoOn){autoTk=setInterval(nextTopic,15000);}}
   function buildTopics(){
     function cardHTML(t,i,life){
