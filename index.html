@@ -337,13 +337,20 @@
   .ydbanner{background:rgba(250,238,216,.94);}
   .ydbanner .ps-ico{background:#f0dcab;color:#9a6a1e;}
   .ydbanner .ps-tx b{color:#b5742a;}
-  .topicamen{display:flex;flex-direction:column;align-items:center;gap:7px;margin:13px 0 2px;}
-  .amenbtn{display:inline-flex;align-items:center;gap:5px;border:none;cursor:pointer;background:linear-gradient(135deg,#9cb070,#7e9a54);color:#fff;font-family:"Gowun Dodum",sans-serif;font-size:13px;font-weight:600;padding:8px 20px;border-radius:999px;box-shadow:0 5px 12px rgba(120,150,80,.32);transition:transform .12s;}
-  .amenbtn:active{transform:scale(.94);}
-  .amencnt{font-size:12px;color:var(--soft);}
-  .amencnt b{display:inline-block;color:var(--amber-deep);font-weight:700;font-family:"Outfit";}
-  .amencnt b.bump{animation:amenBump .45s ease;}
-  @keyframes amenBump{0%{transform:scale(1)}40%{transform:scale(1.45);color:#6f9150}100%{transform:scale(1)}}
+  .topicamen{display:flex;flex-direction:row;align-items:center;justify-content:center;gap:12px;margin:14px 0 2px;}
+  .amenbtn{position:relative;display:inline-flex;align-items:center;gap:7px;border:none;cursor:pointer;background:linear-gradient(135deg,#eda79b,#e58a80);color:#fff;font-family:"Gowun Dodum",sans-serif;font-size:13.5px;font-weight:600;padding:9px 21px;border-radius:999px;box-shadow:0 6px 15px rgba(214,130,118,.34);transition:transform .12s,box-shadow .2s;overflow:visible;}
+  .amenbtn:hover{box-shadow:0 8px 19px rgba(214,130,118,.42);}
+  .amenbtn:active{transform:scale(.93);}
+  .amenbtn .amenheart{display:inline-flex;align-items:center;}
+  .amenbtn .amenheart svg{fill:#fff;}
+  .amenbtn.pop .amenheart svg{animation:heartPop .55s cubic-bezier(.2,1.4,.4,1);}
+  @keyframes heartPop{0%{transform:scale(1)}28%{transform:scale(1.6) rotate(-9deg)}52%{transform:scale(.86)}74%{transform:scale(1.12)}100%{transform:scale(1)}}
+  .amencnt{font-size:17px;font-family:"Outfit";font-weight:700;color:var(--amber-deep);min-width:18px;text-align:left;}
+  .amencnt b{display:inline-block;}
+  .amencnt b.bump{animation:amenBump .5s ease;}
+  @keyframes amenBump{0%{transform:scale(1)}35%{transform:scale(1.5);color:#e58a80}100%{transform:scale(1)}}
+  .fly-heart{position:absolute;top:2px;pointer-events:none;will-change:transform,opacity;animation:flyUp .95s ease-out forwards;}
+  @keyframes flyUp{0%{opacity:0;transform:translateY(0) scale(.4)}25%{opacity:1}100%{opacity:0;transform:translateY(-46px) scale(1.15)}}
   .praysame .ps-avas{display:flex;flex-shrink:0;}
   .praysame .ps-ar{color:var(--faint);font-size:18px;}
   .live-ava{flex-shrink:0;width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#eef6e9,#e1eed7);display:flex;align-items:center;justify-content:center;position:relative;}
@@ -1051,7 +1058,7 @@
             <div class="topictitle" id="topicTitle">교회와 목회자를 위해</div>
             <div class="topicdesc" id="topicDesc">담임목사님과 교회 공동체의 부흥을 위해</div>
             <div class="topicmeta" id="topicMeta" style="display:none;"></div>
-            <div class="topicamen" id="topicAmen"><button class="amenbtn" id="amenBtn" onclick="amenTopic()"><svg viewBox="0 0 24 28" width="15" height="17"><path d="M12 4 C9 9 6.5 15 6 19 C5.7 22 8 25 12 25 Z" fill="#fff" opacity=".95"/><path d="M12 4 C15 9 17.5 15 18 19 C18.3 22 16 25 12 25 Z" fill="#fff" opacity=".8"/></svg>기도했어요</button><span class="amencnt">지금까지 <b id="amenCnt">0</b>번 함께 기도했어요</span></div>
+            <div class="topicamen" id="topicAmen"><button class="amenbtn" id="amenBtn" onclick="amenTopic(event)"><span class="amenheart" id="amenHeart"><svg viewBox="0 0 24 24" width="17" height="17"><path d="M12 21s-7.4-4.55-9.9-9.2C.7 8.6 2.4 5.4 5.5 5.4c1.95 0 3.35 1.15 4.15 2.35l.35.55.35-.55C11.15 6.55 12.55 5.4 14.5 5.4c3.1 0 4.8 3.2 3.4 6.4C19.4 16.45 12 21 12 21z"/></svg></span><span class="amenlabel">기도했어요</span></button><span class="amencnt"><b id="amenCnt">0</b></span></div>
             <div class="topicdots" id="topicDots"></div>
             <div class="topicnav"><button onclick="prevTopic()">‹ 이전</button><button onclick="nextTopic()">다음 ›</button></div>
           </div>
@@ -2309,10 +2316,11 @@
   }
   function nextTopic(){ if(prayMode==='mine'){ if(MY_PRAYERS.length){ mti=(mti+1)%MY_PRAYERS.length; renderTopic(); } } else { ti=(ti+1)%TOPICS.length; renderTopic(); } }
   function prevTopic(){ if(prayMode==='mine'){ if(MY_PRAYERS.length){ mti=(mti-1+MY_PRAYERS.length)%MY_PRAYERS.length; renderTopic(); } } else { ti=(ti-1+TOPICS.length)%TOPICS.length; renderTopic(); } }
-  var AMEN={};
+  var AMEN={}, _amenAdvTk=null;
   async function loadAmens(){ if(!SB) return; try{ var r=await SB.rpc('get_topic_amens'); (r.data||[]).forEach(function(x){ AMEN[Number(x.topic_key)]=Number(x.cnt)||0; }); setAmenDisplay(); }catch(e){} }
   function setAmenDisplay(){ var row=document.getElementById('topicAmen'); if(!row) return; if(prayMode==='mine'){ row.style.display='none'; return; } row.style.display='flex'; var el=document.getElementById('amenCnt'); if(el) el.textContent=(AMEN[ti]||0).toLocaleString('en-US'); }
-  function amenTopic(){ if(prayMode==='mine') return; var key=ti; AMEN[key]=(AMEN[key]||0)+1; var el=document.getElementById('amenCnt'); if(el){ el.textContent=(AMEN[key]).toLocaleString('en-US'); el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump'); } if(SB){ try{ SB.rpc('amen_topic',{p_key:key}).then(function(){},function(){}); }catch(e){} } }
+  function amenTopic(ev){ if(ev&&ev.stopPropagation) ev.stopPropagation(); if(prayMode==='mine') return; var key=ti; AMEN[key]=(AMEN[key]||0)+1; var el=document.getElementById('amenCnt'); if(el){ el.textContent=(AMEN[key]).toLocaleString('en-US'); el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump'); } var btn=document.getElementById('amenBtn'); if(btn){ btn.classList.remove('pop'); void btn.offsetWidth; btn.classList.add('pop'); spawnHearts(btn); } if(SB){ try{ SB.rpc('amen_topic',{p_key:key}).then(function(){},function(){}); }catch(e){} } clearTimeout(_amenAdvTk); _amenAdvTk=setTimeout(function(){ if(prayMode!=='mine') nextTopic(); }, 1000); }
+  function spawnHearts(btn){ var cols=['#e58a80','#f0a98f','#e7b15a','#ec9a86']; for(var i=0;i<4;i++){ (function(i){ var h=document.createElement('span'); h.className='fly-heart'; h.textContent='♥'; h.style.left=(32+Math.random()*34)+'%'; h.style.color=cols[i%cols.length]; h.style.fontSize=(11+Math.random()*7)+'px'; h.style.animationDelay=(i*55)+'ms'; btn.appendChild(h); setTimeout(function(){ if(h.parentNode) h.parentNode.removeChild(h); }, 1150+i*55); })(i); } }
   function toggleAuto(){autoOn=!autoOn;const b=document.getElementById('autoBtn');if(b){b.classList.toggle('on',autoOn);b.textContent=autoOn?'자동 넘김 켜짐':'자동 넘김 꺼짐';}clearInterval(autoTk);if(autoOn){autoTk=setInterval(nextTopic,15000);}}
   function buildTopics(){
     function cardHTML(t,i,life){
