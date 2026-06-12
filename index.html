@@ -532,6 +532,20 @@
   .modalmask .modalbox{max-width:430px;}
   .modalmask.on{display:flex;}
   .modalbox{background:var(--surface);width:100%;border-radius:22px 22px 0 0;padding:20px 18px calc(18px + env(safe-area-inset-bottom));max-height:88%;overflow:auto;animation:tickin .25s ease;}
+  /* 기도문 전문: 돋보기 아이콘 + 모달 */
+  #topicMain{position:relative;}
+  .topicmag{position:absolute;top:24px;right:-2px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border:none;border-radius:50%;background:rgba(150,120,60,.10);color:var(--soft);cursor:pointer;padding:0;z-index:4;transition:background .15s,color .15s,transform .1s;}
+  .topicmag:hover{background:rgba(150,120,60,.20);color:var(--ink);}
+  .topicmag:active{transform:scale(.9);}
+  .tfm-box{position:relative;max-width:430px;}
+  .tfm-x{position:absolute;top:12px;right:14px;width:30px;height:30px;border:none;border-radius:50%;background:rgba(0,0,0,.05);color:var(--soft);font-size:20px;line-height:28px;cursor:pointer;padding:0;}
+  .tfm-cat{display:inline-block;font-size:11.5px;font-weight:700;color:#b07d20;background:#f6efe0;border-radius:999px;padding:4px 12px;}
+  .tfm-cat.life{color:#2f6f54;background:#e7f2ea;}
+  .tfm-title{font-family:"Gowun Dodum",sans-serif;font-size:19px;color:var(--ink);margin-top:12px;line-height:1.45;padding-right:30px;}
+  .tfm-body{font-size:14.5px;color:var(--ink);line-height:1.85;margin-top:14px;white-space:pre-line;}
+  .tfm-foot{font-size:11.5px;color:var(--soft);text-align:right;margin-top:16px;}
+  .tcard{position:relative;}
+  .tcard-more{font-size:11px;color:var(--soft);white-space:nowrap;flex:0 0 auto;opacity:.7;}
   .modalbox h3{font-family:"Gowun Dodum",sans-serif;font-size:18px;color:var(--ink);text-align:center;margin-bottom:14px;}
   .minput{width:100%;border:1.5px solid var(--line);border-radius:13px;background:#fff;color:var(--ink);font-size:15px;padding:12px 14px;outline:none;font-family:"Pretendard",sans-serif;margin-bottom:10px;}
   .minput:focus{border-color:var(--amber);}
@@ -1120,6 +1134,7 @@
             <div style="text-align:center;"><span class="topiccat" id="topicCat"></span></div>
             <div class="topictitle" id="topicTitle">교회와 목회자를 위해</div>
             <div class="topicdesc" id="topicDesc">담임목사님과 교회 공동체의 부흥을 위해</div>
+            <button class="topicmag" id="topicMore" style="display:none;" onclick="openTopicFull(ti)" title="기도문 전문 보기" aria-label="기도문 전문 보기"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M20.5 20.5l-4.4-4.4"/></svg></button>
             <div class="topicmeta" id="topicMeta" style="display:none;"></div>
             <div class="topicdots" id="topicDots"></div>
             <div class="topicnav"><button onclick="prevTopic()">‹ 이전</button><div class="topicamen" id="topicAmen"><button class="amenbtn" id="amenBtn" onclick="amenTopic(event)"><span class="amencnt"><b id="amenCnt">0</b></span><span class="amenheart" id="amenHeart"><svg viewBox="0 0 24 24" width="17" height="17"><path d="M12 21s-7.4-4.55-9.9-9.2C.7 8.6 2.4 5.4 5.5 5.4c1.95 0 3.35 1.15 4.15 2.35l.35.55.35-.55C11.15 6.55 12.55 5.4 14.5 5.4c3.1 0 4.8 3.2 3.4 6.4C19.4 16.45 12 21 12 21z"/></svg></span><span class="amenlabel">기도</span></button></div><button onclick="nextTopic()">다음 ›</button></div>
@@ -1302,6 +1317,17 @@
 
     <div class="modalmask" id="zoneModal" onclick="if(event.target===this)closeZoneDetail()">
       <div class="modalbox zdbox" id="zoneBox"></div>
+    </div>
+
+    <!-- 기도문 전문 모달 -->
+    <div class="modalmask" id="tfmWrap" style="display:none;" onclick="if(event.target===this)closeTopicFull()">
+      <div class="modalbox tfm-box" id="tfmBox">
+        <button class="tfm-x" id="tfmCloseBtn" onclick="closeTopicFull()" aria-label="닫기">×</button>
+        <div class="tfm-cat" id="tfmCat">교회 이전을 위한 기도</div>
+        <div class="tfm-title" id="tfmTitle"></div>
+        <div class="tfm-body" id="tfmBody"></div>
+        <div class="tfm-foot">― 담임목사 기도문</div>
+      </div>
     </div>
 
     <!-- ===== MORE ===== -->
@@ -2719,27 +2745,33 @@
     }catch(e){ el.innerHTML='<div style="width:100%;text-align:center;color:var(--faint);font-size:12px;padding:32px 0;">주간 기록 준비 중이에요</div>'; }
   }
   function closeZoneDetail(){ var m=document.getElementById('zoneModal'); if(m) m.classList.remove('on'); }
-  // 기도 제목 (교회를 위한 합심 기도제목 — 교회 이전 + 성도들의 모든 삶의 자리)
+  // 기도 제목 (교회 세우기 — 교회 이전 + 성도들의 삶의 자리). 형식: [제목, 요약, 전문(목사님 기도문), 분류 move/life]
+  // ※ 좋아요 개수는 배열 인덱스(topic_key)로 DB에 저장되므로, 기존 항목의 인덱스는 절대 바꾸지 않는다.
+  //   새 항목은 뒤(13~)에 추가하고, 화면 노출 순서는 ORDER 배열로 제어한다.
   const TOPICS=[
-    ['담임목사님과 말씀 선포를 위하여','교회 이전의 길을 이끄시는 목사님 위에 성령의 기름을 부어주시고, 선포되는 말씀이 살아있는 음성이 되게 하소서.'],
-    ['재정과 행정 절차의 순조로운 진행을 위하여','Evangelische Bank와의 협의와 집주인과의 협상이 지혜롭고 공정하게 이루어지도록.'],
-    ['교회이전 준비팀을 위하여','준비팀에게 지혜와 명철, 하나됨과 지치지 않는 건강을 허락하소서.'],
-    ["'50,000 시간 기도운동'을 위하여",'한 사람도 빠짐없이 모든 성도가 기쁨으로 동참하게 하소서.'],
-    ['교회의 하나됨을 위하여','이전의 과정이 연합의 여정이 되어 더 깊은 공동체를 이루게 하소서.'],
-    ['새 교회의 비전을 위하여','다음세대가 마음껏 예배하고, 이웃이 문을 두드리는 파송하는 교회가 되게 하소서.'],
-    ['구역 식구들을 위하여','매주 모여 삶을 나누는 구역 식구들 위에 사랑과 위로가 넘치고, 서로의 짐을 함께 지는 공동체가 되게 하소서.'],
-    ['다음 세대를 위하여','우리의 미래요 소망인 다음 세대가 믿음 안에서 자라며, 하나님을 마음껏 예배하는 세대가 되게 하소서.'],
-    ['전도회를 위하여','각 전도회가 사명을 따라 섬기며, 잃어버린 영혼을 향한 사랑으로 뜨겁게 타오르게 하소서.'],
-    ['환우들을 위하여','육신의 연약함으로 아파하는 환우들을 주님이 친히 어루만지시고, 치유와 회복의 은혜를 부어주소서.'],
-    ['전교인 수양회를 위하여','다가오는 전교인 수양회를 통해 성도들이 새 힘을 얻고, 공동체가 더욱 깊이 연합하게 하소서.'],
-    ['양육 프로그램을 위하여','다양한 양육 프로그램을 통해 성도들이 말씀 안에서 자라고, 제자의 삶으로 빚어지게 하소서.'],
-    ['성도들의 삶의 자리를 위하여','각 성도가 살아가는 모든 삶의 자리가 기도의 영역이 되어, 묶였던 매임이 풀리고 영적 지경이 넓어지게 하소서.']
+    [`담임목사님과 말씀 선포를 위하여`,`말씀과 기도에 더욱 집중하시고 성령의 기름 부으심이 넘쳐, 선포되는 말씀에 능력을 더하소서.`,`목사님이 말씀과 기도에 더욱 집중하게 하시고, 성령의 기름 부으심이 더욱 넘쳐서 하나님을 더 깊이 경험케 하옵소서.\n담임목사님께 하늘의 지혜를 주셔서 하나님의 뜻을 분별하게 하옵소서. 중요한 결정마다 성령께서 분명하게 인도하여 주시고, 더욱 겸손히 하나님만 의지하게 하옵소서.\n담임목사님이 선포하는 말씀에 능력을 더하셔서 성도들의 믿음이 세워지고, 교회가 한 방향을 바라보게 하시며 교회를 향해 주신 비전이 더욱 분명하게 선포되게 하옵소서.`,`move`],
+    [`Evangelische Bank와의 첫 미팅을 위하여`,`은행과의 첫 미팅을 주님께 올려드립니다. 가장 선하고 안전한 최상의 조건으로 대출이 성사되게 하소서.`,`앞으로 진행될 은행과의 첫 미팅을 주님 손에 올려드립니다. 교회의 형편과 사정을 가장 잘 아시는 주님께서 금융 감독자들의 마음을 주장하여 주시고, 우리 교회에 가장 선하고 안전하며 최상의 조건으로 대출 계약이 성사될 수 있도록 인도하여 주옵소서.`,`move`],
+    [`교회이전 준비팀을 위하여`,`이전 실무를 이끌 준비팀을 세워주시고, 자원하는 심령과 지혜·명철·하나됨·건강을 허락하소서.`,`교회 이전의 실무를 이끌어갈 구체적인 준비팀을 새롭게 구성하고자 합니다. 각 부서 부장님들과 건축, 법률, 재정, 행정 등 각 분야의 전문 성도님들의 마음을 성령으로 감동시켜 주옵소서. “내가 여기 있나이다, 나를 써 주소서” 하는 자원하는 심령을 부어주시고, 비전과 뜨거운 사명감을 공유하게 하옵소서.\n부담감이 아니라 영광스러운 교회의 기둥을 세우는 특권으로 이 사역을 기쁘게 받아들이게 하시고, 지혜와 명철 그리고 하나되게 하시고, 건강을 허락하소서.`,`move`],
+    [`'50,000시간 기도 운동'을 위하여`,`50,000시간은 목표이지만 하나님을 향한 '중심'으로 나아가게, 하루 30분이 사랑의 고백이 되게 하소서.`,`50,000시간이라는 숫자는 우리의 목표이지만, 하나님을 향한 마음 '중심'으로 나아가게 하옵소서. 하루 30분의 시간이 숙제가 아니라, “내 삶의 가장 귀한 시간을 구별하여 주님께 향유 옥합으로 드린다”는 사랑의 고백으로 무릎 꿇게 하옵소서.\n혹여나 교회 이전을 두고 가졌던 염려나 다른 의견들이 있었다면, 이 기도의 시간 동안 모든 생각의 차이가 녹아내리고 오직 예수 그리스도의 사랑 안에서 교회가 하나 되도록 하옵소서.`,`move`],
+    [`교회의 하나됨을 위하여`,`이전의 과정이 연합의 여정이 되어 더 깊은 공동체를 이루게 하소서.`,`이전의 과정이 분열이 아니라 연합의 여정이 되게 하시고, 서로 다른 생각과 마음이 그리스도 안에서 하나로 모여 더 깊은 공동체를 이루게 하옵소서.`,`move`],
+    [`새 교회의 비전을 위하여`,`다음세대가 마음껏 예배하고, 이웃이 문을 두드리는 파송하는 교회가 되게 하소서.`,`새 공간이 다음세대가 마음껏 예배하고, 이웃이 스스로 문을 두드리는 열린 공간이 되게 하옵소서. 머무는 교회가 아니라 세상으로 파송하는 교회가 되게 하옵소서.`,`move`],
+    [`구역 식구들을 위하여`,`매주 모여 삶을 나누는 구역 식구들 위에 사랑과 위로가 넘치고, 서로의 짐을 함께 지는 공동체가 되게 하소서.`,`매주 모여 삶을 나누는 구역 식구들 위에 사랑과 위로가 넘치게 하시고, 서로의 짐을 함께 지며 그리스도의 사랑을 실천하는 공동체가 되게 하옵소서.`,`life`],
+    [`다음세대를 위하여`,`새 공간에서 다음세대가 마음껏 예배하고, 온 성도가 선교사로 지역을 변화시키는 통로가 되게 하소서.`,`새로운 공간에서 다음세대가 마음껏 예배드리고, 아직 복음을 듣지 못한 주변 이웃들에게 복음을 전하는 교회가 되게 하옵소서. 새 땅에서 하나님의 나라가 더욱 확장되게 하시고, 우리가 하나님으로부터 파송받는 것임을 알고 온 성도가 선교사가 되어 지역 사회를 변화시키는 은혜의 통로가 되게 하옵소서.`,`move`],
+    [`전도회를 위하여`,`각 전도회가 사명을 따라 섬기며, 잃어버린 영혼을 향한 사랑으로 뜨겁게 타오르게 하소서.`,`각 전도회가 맡겨진 사명을 따라 충성스럽게 섬기게 하시고, 잃어버린 영혼을 향한 사랑으로 뜨겁게 타오르게 하옵소서.`,`life`],
+    [`환우들을 위하여`,`육신의 연약함으로 아파하는 환우들을 주님이 친히 어루만지시고, 치유와 회복의 은혜를 부어주소서.`,`육신의 연약함으로 아파하는 환우들을 주님이 친히 어루만져 주시고, 치유와 회복의 은혜를 부어주시며, 그 가정에 평안과 소망을 더하여 주옵소서.`,`life`],
+    [`전교인 수양회를 위하여`,`다가오는 전교인 수양회를 통해 성도들이 새 힘을 얻고, 공동체가 더욱 깊이 연합하게 하소서.`,`다가오는 전교인 수양회를 통해 성도들이 새 힘을 얻게 하시고, 말씀과 기도 안에서 공동체가 더욱 깊이 연합하게 하옵소서.`,`life`],
+    [`양육 프로그램을 위하여`,`다양한 양육 프로그램을 통해 성도들이 말씀 안에서 자라고, 제자의 삶으로 빚어지게 하소서.`,`다양한 양육 프로그램을 통해 성도들이 말씀 안에서 깊이 자라게 하시고, 배운 진리를 살아내는 제자의 삶으로 빚어지게 하옵소서.`,`life`],
+    [`성도들의 삶의 자리를 위하여`,`각 성도의 삶의 자리가 기도의 영역이 되어, 묶였던 매임이 풀리고 영적 지경이 넓어지게 하소서.`,`각 성도가 살아가는 모든 삶의 자리가 기도의 영역이 되게 하시고, 묶였던 매임이 풀리며 영적 지경이 넓어지게 하옵소서.`,`life`],
+    [`건물주와의 최종 가격 협상을 위하여`,`6월 17일 건물주 미팅의 최종 가격 협상을, 하나님의 주권으로 합리적이고 좋은 가격에 타결되게 하소서.`,`6월 17일에 건물주와의 미팅을 통해 최종 매매 가격 협상이 진행됩니다. 하나님의 주권으로 건물주의 마음을 움직여 주시고, 교회가 감당할 수 있는 가장 합리적이고 좋은 가격으로 협상이 타결되게 하옵소서. 밀고 당기는 인간의 계산을 넘어 하나님의 예비하신 은혜가 나타나게 하옵소서.`,`move`],
+    [`건물 용도 변경(Nutzungsänderung)을 위하여`,`사무실·창고 공간을 종교시설(Versammlungsstätte)로 변경하는 시청 허가가 막힘없이 속히 승인되게 하소서.`,`Höchst에 있는 '사무실(교육 공간)'과 '창고 건물(예배당)'로 되어 있는 공간을 종교 시설 'Versammlungsstätte(교회/집회장소)'로 변경해야 합니다. 시청에 신청하는 모든 행정 절차를 주님께 맡깁니다. 프랑크푸르트 시청의 허가 과정이 막힘 없이 순조롭게 진행되게 하시고, 어떠한 법적·행정적 걸림돌도 없이 속히 승인되게 하옵소서.`,`move`],
+    [`건물 정밀 진단(Baugutachten)을 위하여`,`건물 정밀 진단에서 구조·소방·숨은 결함까지 투명하게 드러나고, 정직하고 실력 있는 진단관을 만나게 하소서.`,`전문가를 통해 진행될 건물 정밀 진단 과정 위에 하나님 함께하여 주옵소서. 건물의 구조적 안전, 소방 시설, 그리고 보이지 않는 미세한 부분에 이르기까지 그 어떤 숨겨진 결함이나 위험 요소도 남김없이 투명하게 발견되게 하옵소서. 정직하고 실력 있는 진단관(Gutachter)을 만나 건물의 상태를 정확하게 파악할 수 있도록 인도하여 주옵소서.`,`move`]
   ];
-  let ti=0,autoOn=false,autoTk=null,_lastAdv=0;
-  var prayMode='together', mti=0;
-  const LIFE_START=6;                       // 0~5: 교회 이전 기도 / 6~: 삶의 자리 기도(담임목사 기도편지)
+  // 화면 표시 순서(인덱스 기준). 신규 건물 카드(13·14·15)를 앞쪽 교회이전 흐름에 배치.
+  const ORDER=[0,1,13,14,15,2,3,7,4,5,6,8,9,10,11,12];
+  let ti=ORDER[0],autoOn=false,autoTk=null,_lastAdv=0;
+  var prayMode='together', mti=0, dpos=0;
   const LIFE_DATE='6월 8일';                 // 목사님 기도편지 날짜
-  function isLife(i){ return i>=LIFE_START; }
+  function isLife(i){ return (TOPICS[i]&&TOPICS[i][3])==='life'; }
   async function ensureMyPrayers(){
     if(!SB || !myLoggedIn()) return;
     try{ var res=await SB.from('my_prayers').select('id,title,note,status,pray_count,last_prayed_at').eq('archived',false).order('created_at',{ascending:false}); MY_PRAYERS=res.data||[]; }catch(e){}
@@ -2795,6 +2827,7 @@
       document.getElementById('topicIdx').textContent=(mti+1)+' / '+MY_PRAYERS.length;
       document.getElementById('topicDots').innerHTML=MY_PRAYERS.map(function(_,i){return '<span class="'+(i===mti?'on':'')+'"></span>';}).join('');
       MY_PRAYER_ID=p.id; MY_PRAYER_TITLE=p.title||''; updateMyPrayTag();
+      var tmm=document.getElementById('topicMore'); if(tmm) tmm.style.display='none';
       setAmenDisplay();
       return;
     }
@@ -2809,12 +2842,14 @@
     }
     document.getElementById('topicTitle').textContent=TOPICS[ti][0];
     document.getElementById('topicDesc').textContent=TOPICS[ti][1];
-    document.getElementById('topicIdx').textContent=(ti+1)+' / '+TOPICS.length;
-    document.getElementById('topicDots').innerHTML=TOPICS.map(function(_,i){return '<span class="'+(i===ti?'on':'')+'"></span>';}).join('');
+    if(ORDER[dpos]!==ti){ var _p=ORDER.indexOf(ti); if(_p>=0) dpos=_p; }
+    document.getElementById('topicIdx').textContent=(dpos+1)+' / '+ORDER.length;
+    document.getElementById('topicDots').innerHTML=ORDER.map(function(idx){return '<span class="'+(idx===ti?'on':'')+'"></span>';}).join('');
+    var tmore=document.getElementById('topicMore'); if(tmore) tmore.style.display=(TOPICS[ti][2]?'block':'none');
     setAmenDisplay();
   }
-  function nextTopic(){ var _n=Date.now(); if(_n-_lastAdv<420) return; _lastAdv=_n; if(prayMode==='mine'){ if(MY_PRAYERS.length){ mti=(mti+1)%MY_PRAYERS.length; renderTopic(); } } else { ti=(ti+1)%TOPICS.length; renderTopic(); } }
-  function prevTopic(){ if(prayMode==='mine'){ if(MY_PRAYERS.length){ mti=(mti-1+MY_PRAYERS.length)%MY_PRAYERS.length; renderTopic(); } } else { ti=(ti-1+TOPICS.length)%TOPICS.length; renderTopic(); } }
+  function nextTopic(){ var _n=Date.now(); if(_n-_lastAdv<420) return; _lastAdv=_n; if(prayMode==='mine'){ if(MY_PRAYERS.length){ mti=(mti+1)%MY_PRAYERS.length; renderTopic(); } } else { dpos=(dpos+1)%ORDER.length; ti=ORDER[dpos]; renderTopic(); } }
+  function prevTopic(){ if(prayMode==='mine'){ if(MY_PRAYERS.length){ mti=(mti-1+MY_PRAYERS.length)%MY_PRAYERS.length; renderTopic(); } } else { dpos=(dpos-1+ORDER.length)%ORDER.length; ti=ORDER[dpos]; renderTopic(); } }
   var AMEN={}, _amenAdvTk=null;
   async function loadAmens(){ if(!SB) return; try{ var r=await SB.rpc('get_topic_amens'); (r.data||[]).forEach(function(x){ AMEN[Number(x.topic_key)]=Number(x.cnt)||0; }); setAmenDisplay(); }catch(e){} }
   function setAmenDisplay(){ var row=document.getElementById('topicAmen'); if(!row) return; row.style.display='flex'; var el=document.getElementById('amenCnt'); if(!el) return; var v; if(prayMode==='mine'){ var p=MY_PRAYERS[mti]; v=(p&&p.pray_count)||0; } else { v=AMEN[ti]||0; } el.textContent=v.toLocaleString('en-US'); }
@@ -2824,18 +2859,33 @@
   function spawnHearts(btn){ var cols=['#e58a80','#f0a98f','#e7b15a','#ec9a86']; for(var i=0;i<4;i++){ (function(i){ var h=document.createElement('span'); h.className='fly-heart'; h.textContent='♥'; h.style.left=(32+Math.random()*34)+'%'; h.style.color=cols[i%cols.length]; h.style.fontSize=(11+Math.random()*7)+'px'; h.style.animationDelay=(i*55)+'ms'; btn.appendChild(h); setTimeout(function(){ if(h.parentNode) h.parentNode.removeChild(h); }, 1150+i*55); })(i); } }
   function toggleAuto(){autoOn=!autoOn;const b=document.getElementById('autoBtn');if(b){b.classList.toggle('on',autoOn);b.textContent=autoOn?'자동 넘김 켜짐':'자동 넘김 꺼짐';}clearInterval(autoTk);if(autoOn){autoTk=setInterval(nextTopic,15000);}}
   function buildTopics(){
-    function cardHTML(t,i,life){
-      return '<div class="card'+(life?' tcard-life':'')+'" style="margin-top:10px;text-align:left;">'
-        +'<div style="font-family:\'Gowun Dodum\',sans-serif;font-size:16px;color:var(--ink);">'+(i+1)+'. '+t[0]+'</div>'
+    function cardHTML(idx,num,life){
+      var t=TOPICS[idx]; var hasFull=!!t[2];
+      return '<div class="card tcard'+(life?' tcard-life':'')+'" style="margin-top:10px;text-align:left;cursor:pointer;" onclick="openTopicFull('+idx+')">'
+        +'<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">'
+        +'<div style="font-family:\'Gowun Dodum\',sans-serif;font-size:16px;color:var(--ink);">'+num+'. '+t[0]+'</div>'
+        +(hasFull?'<span class="tcard-more">전문&nbsp;›</span>':'')+'</div>'
         +'<div style="font-size:12.5px;color:var(--soft);margin-top:6px;line-height:1.6;">'+t[1]+'</div></div>';
     }
     var html='<div class="versecard">"나의 눈물을 주의 병에 담으소서" — 시편 56:8</div>';
     html+='<div class="topsec">교회 이전을 위한 기도</div>';
-    TOPICS.forEach(function(t,i){ if(!isLife(i)) html+=cardHTML(t,i,false); });
+    var n=0;
+    ORDER.forEach(function(idx){ if(!isLife(idx)){ n++; html+=cardHTML(idx,n,false); } });
     html+='<div class="topsec life">성도들의 삶을 위한 기도<span class="dt">담임목사 기도편지 · '+LIFE_DATE+'</span></div>';
-    TOPICS.forEach(function(t,i){ if(isLife(i)) html+=cardHTML(t,i,true); });
+    ORDER.forEach(function(idx){ if(isLife(idx)){ n++; html+=cardHTML(idx,n,true); } });
     document.getElementById('topicsList').innerHTML=html;
   }
+  // 기도문 전문 모달
+  function openTopicFull(idx){ if(prayMode==='mine') return; var t=TOPICS[idx]; if(!t) return;
+    var box=document.getElementById('tfmBox'); if(!box) return;
+    var life=isLife(idx);
+    document.getElementById('tfmCat').textContent=life?('삶의 자리를 위한 기도'):'교회 이전을 위한 기도';
+    document.getElementById('tfmCat').className='tfm-cat '+(life?'life':'');
+    document.getElementById('tfmTitle').textContent=t[0];
+    document.getElementById('tfmBody').textContent=(t[2]||t[1]||'');
+    document.getElementById('tfmWrap').style.display='flex';
+  }
+  function closeTopicFull(){ var w=document.getElementById('tfmWrap'); if(w) w.style.display='none'; }
   renderTopic();
   (function(){var c=document.getElementById('topicCard');if(!c)return;var x0=null;
     c.addEventListener('touchstart',function(e){x0=e.touches[0].clientX;},{passive:true});
