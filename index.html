@@ -415,7 +415,10 @@
   .calcard .cal-legend{display:flex;gap:16px;justify-content:center;margin-top:11px;font-size:11px;color:var(--soft);}
   .calcard .cal-legend i{display:inline-block;width:9px;height:9px;border-radius:50%;vertical-align:0;margin-right:3px;}
   .calcard .cal-legend .lg-p{background:#bcd592;} .calcard .cal-legend .lg-t{background:transparent;box-shadow:inset 0 0 0 1.6px var(--amber);}
-  .ydaycard{background:var(--surface);border-radius:18px;padding:15px 14px;margin-top:12px;box-shadow:0 6px 16px rgba(150,120,60,.06);}
+  .ydaycard{position:relative;overflow:hidden;background:linear-gradient(135deg,#fdf6e9,#f7e8cd);border-radius:18px;padding:15px 14px;margin-top:12px;box-shadow:0 6px 16px rgba(150,120,60,.08);}
+  .ydaycard::after{content:"";position:absolute;top:0;left:0;width:55%;height:100%;background:linear-gradient(105deg,transparent,rgba(255,255,255,.45),transparent);transform:translateX(-120%);animation:ydShine 5s ease-in-out infinite;pointer-events:none;}
+  @keyframes ydShine{0%{transform:translateX(-120%)}55%{transform:translateX(235%)}100%{transform:translateX(235%)}}
+  @media (prefers-reduced-motion:reduce){.ydaycard::after{display:none;}}
   .ydaycard .yd-head{display:flex;align-items:center;gap:7px;margin-bottom:12px;}
   .ydaycard .yd-ic{display:inline-flex;align-items:center;} .ydaycard .yd-ic svg{width:17px;height:17px;}
   .ydaycard .yd-t{font-size:14px;font-weight:600;color:var(--ink);}
