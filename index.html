@@ -334,6 +334,9 @@
   .praysame .ps-tx b{color:#6f9150;}
   .praysame .ps-sub{display:block;font-size:11.5px;color:var(--soft);margin-top:3px;}
   .praysame .ps-sub b{color:#b58a4a;}
+  .ydbanner{background:rgba(250,238,216,.94);}
+  .ydbanner .ps-ico{background:#f0dcab;color:#9a6a1e;}
+  .ydbanner .ps-tx b{color:#b5742a;}
   .praysame .ps-avas{display:flex;flex-shrink:0;}
   .praysame .ps-ar{color:var(--faint);font-size:18px;}
   .live-ava{flex-shrink:0;width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#eef6e9,#e1eed7);display:flex;align-items:center;justify-content:center;position:relative;}
@@ -1047,7 +1050,7 @@
         <div class="praysame"><span class="ps-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.3"/><path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5M15 19c0-2 1-3.4 3-3.4s3 1.4 3 3.4"/></svg></span><span class="ps-tx" id="liveLinePray">지금 <b>0</b>명이 같은 기도제목으로 기도하고 있어요</span><span class="ps-avas" id="sameAva"><span class="wava" style="background:#cdb89a"><svg viewBox="0 0 36 36"><circle cx="18" cy="14" r="6.3" fill="#fff" opacity=".92"/><path d="M6 33c0-6.6 5.4-10 12-10s12 3.4 12 10" fill="#fff" opacity=".92"/></svg></span><span class="wava" style="background:#9aa6a0"><svg viewBox="0 0 36 36"><circle cx="18" cy="14" r="6.3" fill="#fff" opacity=".92"/><path d="M6 33c0-6.6 5.4-10 12-10s12 3.4 12 10" fill="#fff" opacity=".92"/></svg></span><span class="wava" style="background:#e3b86a"><svg viewBox="0 0 36 36"><circle cx="18" cy="14" r="6.3" fill="#fff" opacity=".92"/><path d="M6 33c0-6.6 5.4-10 12-10s12 3.4 12 10" fill="#fff" opacity=".92"/></svg></span></span><span class="ps-ar">›</span></div>
         <div class="praysame ydbanner">
           <span class="ps-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 12a8.5 8.5 0 1 1-2.6-6.1"/><path d="M20.5 4.2v4.3h-4.3"/><path d="M12 8v4.2l3 1.8"/></svg></span>
-          <span class="ps-tx">어제는 <b id="ydPrayersB">0</b>의 성도가 기도했고, <b id="ydVisitsB">0</b>이 다녀갔어요<span class="ps-sub">함께 드린 기도 <b id="ydMinB">0분</b></span></span>
+          <span class="ps-tx" id="ydBannerTx">어제, 우리의 기록</span>
         </div>
         <button id="finishBtn" onclick="togglePray()" style="display:none;">기도 시작</button>
       </div>
@@ -1682,10 +1685,13 @@
   }
   function renderLive(fade){
     var prep=Math.max(0,(connN||0)-(liveN||0));
+    var cnt = _livePhase===0 ? (liveN||0) : prep;
+    var yfb = YDAY_PRAYERS>0 ? '어제 <b>'+YDAY_PRAYERS+'</b>명의 성도가 기도를 했어요' : null;
+    var useY = (cnt===0 && yfb);
     var lines={
-      liveText: liveLineText(),
-      liveLineHome: _livePhase===0 ? '지금 <b>'+(liveN||0)+'</b>명이 함께 기도 중' : '지금 <b>'+prep+'</b>명이 함께 기도 준비중',
-      liveLinePray: _livePhase===0 ? '지금 <b>'+(liveN||0)+'</b>명이 같은 기도제목으로 기도하고 있어요' : '지금 <b>'+prep+'</b>명이 기도를 준비 중에 있어요'
+      liveText: useY ? yfb : (_livePhase===0 ? '지금 <b>'+(liveN||0)+'</b>명이 함께 기도하고 있어요' : '지금 <b>'+prep+'</b>명이 기도를 준비하고 있어요'),
+      liveLineHome: useY ? yfb : (_livePhase===0 ? '지금 <b>'+(liveN||0)+'</b>명이 함께 기도 중' : '지금 <b>'+prep+'</b>명이 함께 기도 준비중'),
+      liveLinePray: useY ? yfb : (_livePhase===0 ? '지금 <b>'+(liveN||0)+'</b>명이 같은 기도제목으로 기도하고 있어요' : '지금 <b>'+prep+'</b>명이 기도를 준비 중에 있어요')
     };
     Object.keys(lines).forEach(function(id){
       var e=document.getElementById(id); if(!e) return;
@@ -1802,6 +1808,13 @@
     var pc=document.getElementById('pct'); if(pc) pc.textContent=(p>=1?'100':(p*100).toFixed(2))+'%';
     _gaugeShown=mins;
   }
+  var YDAY_PRAYERS=0, YDAY_VISITS=0, YDAY_MIN=0, _ydTimer=null, _ydPhase=0;
+  function ydMinText(m){ var h=Math.floor(m/60), mm=m%60; return h>0?(h+'시간 '+mm+'분'):(mm+'분'); }
+  function ydBannerMsgs(){ return ['어제는 <b>'+YDAY_PRAYERS+'명</b>의 성도가 기도했어요','어제 <b>'+YDAY_VISITS+'명</b>이 다녀갔어요','어제 함께 드린 기도 <b>'+ydMinText(YDAY_MIN)+'</b>이에요']; }
+  function ydBannerStart(){ var el=document.getElementById('ydBannerTx'); if(!el || (!YDAY_PRAYERS && !YDAY_VISITS && !YDAY_MIN)) return;
+    _ydPhase=0; el.innerHTML=ydBannerMsgs()[0];
+    if(_ydTimer) clearInterval(_ydTimer);
+    _ydTimer=setInterval(function(){ var e2=document.getElementById('ydBannerTx'); if(!e2){clearInterval(_ydTimer);return;} _ydPhase=(_ydPhase+1)%3; e2.style.transition='opacity .35s'; e2.style.opacity='0'; setTimeout(function(){ e2.innerHTML=ydBannerMsgs()[_ydPhase]; e2.style.opacity='1'; },300); }, 3800); }
   function ydUp(id, target, unit){ var el=document.getElementById(id); if(!el) return; var t0=performance.now(), dur=900;
     function step(t){ var k=Math.min(1,(t-t0)/dur); var v=Math.round(target*(1-Math.pow(1-k,3))); el.innerHTML=v+(unit?'<span class="u">'+unit+'</span>':''); if(k<1) requestAnimationFrame(step); } requestAnimationFrame(step); }
   function ydUpMin(id, mins){ var el=document.getElementById(id); if(!el) return; var t0=performance.now(), dur=900;
@@ -1810,9 +1823,12 @@
     if(!SB) return;
     try{ var r=await SB.rpc('home_daily_stats'); var d=(r.data&&r.data[0])||{};
       var p=Number(d.y_prayers)||0, v=Number(d.y_visits)||0, m=Number(d.y_minutes)||0;
-      ydUp('ydPrayers', p, '명'); ydUp('ydPrayersB', p, '명');
-      ydUp('ydVisits', v, '명'); ydUp('ydVisitsB', v, '명');
-      ydUpMin('ydMin', m); ydUpMin('ydMinB', m);
+      YDAY_PRAYERS=p; YDAY_VISITS=v; YDAY_MIN=m;
+      ydUp('ydPrayers', p, '명');
+      ydUp('ydVisits', v, '명');
+      ydUpMin('ydMin', m);
+      ydBannerStart();
+      if(typeof renderLive==='function') renderLive(false);
     }catch(e){}
   }
   function renderGauge(){
