@@ -412,6 +412,16 @@
   .calcard .cal-legend{display:flex;gap:16px;justify-content:center;margin-top:11px;font-size:11px;color:var(--soft);}
   .calcard .cal-legend i{display:inline-block;width:9px;height:9px;border-radius:50%;vertical-align:0;margin-right:3px;}
   .calcard .cal-legend .lg-p{background:#bcd592;} .calcard .cal-legend .lg-t{background:transparent;box-shadow:inset 0 0 0 1.6px var(--amber);}
+  .ydaycard{background:var(--surface);border-radius:18px;padding:15px 14px;margin-top:12px;box-shadow:0 6px 16px rgba(150,120,60,.06);}
+  .ydaycard .yd-head{display:flex;align-items:center;gap:7px;margin-bottom:12px;}
+  .ydaycard .yd-ic{font-size:15px;}
+  .ydaycard .yd-t{font-size:14px;font-weight:600;color:var(--ink);}
+  .ydaycard .yd-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+  .ydaycard .yd-tile{background:var(--amber-tint);border-radius:13px;padding:11px 3px;text-align:center;}
+  .ydaycard .yd-emo{font-size:18px;line-height:1;}
+  .ydaycard .yd-num{font-family:"Outfit";font-weight:700;font-size:20px;margin-top:3px;line-height:1.1;white-space:nowrap;}
+  .ydaycard .yd-num .u{font-size:12px;font-weight:500;}
+  .ydaycard .yd-lbl{font-size:11px;color:var(--soft);margin-top:2px;}
   .wcbars{display:flex;align-items:flex-end;justify-content:space-between;gap:6px;}
   .wcbars .wcd{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;}
   .wcbars .wcv{font-size:10px;color:var(--faint);margin-bottom:5px;}
@@ -955,6 +965,16 @@
           <div class="pc2-goal">목표 <b>50,000</b>시간</div>
           <div class="pc2-bar"><i id="bar"></i></div>
           <div class="pc2-foot"><span>작은 기도가 모여 큰 변화를 만듭니다.</span><svg class="pc2-leaf" viewBox="0 0 24 24"><path d="M12 21c-1-6 2-10 8-11-1 6-4 10-8 11z" fill="#9cc47a"/><path d="M12 21C8 20 5 16 4 10c6 1 9 5 8 11z" fill="#7fae5e"/></svg></div>
+        </div>
+
+        <!-- 어제의 우리 -->
+        <div class="ydaycard">
+          <div class="yd-head"><span class="yd-ic">🌿</span><span class="yd-t">어제, 우리의 기록</span></div>
+          <div class="yd-grid">
+            <div class="yd-tile"><div class="yd-emo">🙏</div><div class="yd-num" id="ydPrayers" style="color:#3b6d11;">0</div><div class="yd-lbl">기도한 성도</div></div>
+            <div class="yd-tile"><div class="yd-emo">👀</div><div class="yd-num" id="ydVisits" style="color:#b5742a;">0</div><div class="yd-lbl">방문한 성도</div></div>
+            <div class="yd-tile"><div class="yd-emo">⏳</div><div class="yd-num" id="ydMin" style="color:#5d6f49;">0분</div><div class="yd-lbl">함께 드린 기도</div></div>
+          </div>
         </div>
 
         <!-- 오늘의 말씀 (리치 카드) -->
@@ -1507,6 +1527,7 @@
     if(id==='more' || id==='connect') syncAuthUI();
     if(id==='pray' || id==='more') syncBgmUI();
     if(id==='home' && typeof setTimeBanner==='function') setTimeBanner();
+    if(id==='home' && typeof loadHomeStats==='function') loadHomeStats();
   }
   /* 프로필 기억하기 + 익명 가상 닉네임 */
   const PKEY='omansigan_profile';
@@ -1776,6 +1797,18 @@
     var bar=document.getElementById('bar'); if(bar) bar.style.width=(p*100)+'%';
     var pc=document.getElementById('pct'); if(pc) pc.textContent=(p>=1?'100':(p*100).toFixed(2))+'%';
     _gaugeShown=mins;
+  }
+  function ydUp(id, target, unit){ var el=document.getElementById(id); if(!el) return; var t0=performance.now(), dur=900;
+    function step(t){ var k=Math.min(1,(t-t0)/dur); var v=Math.round(target*(1-Math.pow(1-k,3))); el.innerHTML=v+(unit?'<span class="u">'+unit+'</span>':''); if(k<1) requestAnimationFrame(step); } requestAnimationFrame(step); }
+  function ydUpMin(id, mins){ var el=document.getElementById(id); if(!el) return; var t0=performance.now(), dur=900;
+    function step(t){ var k=Math.min(1,(t-t0)/dur); var v=Math.round(mins*(1-Math.pow(1-k,3))); var h=Math.floor(v/60), m=v%60; el.innerHTML=(h>0? h+'<span class="u">시간 </span>'+m : m)+'<span class="u">분</span>'; if(k<1) requestAnimationFrame(step); } requestAnimationFrame(step); }
+  async function loadHomeStats(){
+    if(!SB) return;
+    try{ var r=await SB.rpc('home_daily_stats'); var d=(r.data&&r.data[0])||{};
+      ydUp('ydPrayers', Number(d.y_prayers)||0, '명');
+      ydUp('ydVisits', Number(d.y_visits)||0, '명');
+      ydUpMin('ydMin', Number(d.y_minutes)||0);
+    }catch(e){}
   }
   function renderGauge(){
     const totMin=Math.round((current||0)*60), goalMin=TOTAL*60, p=Math.min(totMin/goalMin,1);
@@ -2368,7 +2401,7 @@
         my_prayer_id: linkedId || null,
         started_at: new Date(Date.now()-mins*60000).toISOString() });
       if(linkedId){ try{ await SB.rpc('log_my_prayer', { p_id: linkedId, p_minutes: mins }); }catch(e){} }
-      await refreshProgress(); await loadRankings(); await loadMyRecord(); await loadDept();
+      await refreshProgress(); await loadRankings(); await loadMyRecord(); await loadDept(); loadHomeStats();
     }catch(e){ console.warn('기록 저장 실패:', e); }
     MY_PRAYER_ID=null; MY_PRAYER_TITLE='';
   }
@@ -2412,7 +2445,7 @@
     if(!SB) return;
     try{
       await SB.from('prayer_sessions').insert({ minutes: signed, group_id: MY_GROUP_ID, source:'manual', started_at: new Date().toISOString() });
-      await refreshProgress(); await loadRankings(); await loadMyRecord(); await loadDept();
+      await refreshProgress(); await loadRankings(); await loadMyRecord(); await loadDept(); loadHomeStats();
     }catch(e){ alert('기록 저장 실패: '+(e&&e.message||e)); }
   }
   /* ===== 나의 기도제목 (개인 저널) ===== */
