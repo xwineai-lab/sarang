@@ -2695,7 +2695,7 @@
     ['양육 프로그램을 위하여','다양한 양육 프로그램을 통해 성도들이 말씀 안에서 자라고, 제자의 삶으로 빚어지게 하소서.'],
     ['성도들의 삶의 자리를 위하여','각 성도가 살아가는 모든 삶의 자리가 기도의 영역이 되어, 묶였던 매임이 풀리고 영적 지경이 넓어지게 하소서.']
   ];
-  let ti=0,autoOn=false,autoTk=null;
+  let ti=0,autoOn=false,autoTk=null,_lastAdv=0;
   var prayMode='together', mti=0;
   const LIFE_START=6;                       // 0~5: 교회 이전 기도 / 6~: 삶의 자리 기도(담임목사 기도편지)
   const LIFE_DATE='6월 8일';                 // 목사님 기도편지 날짜
@@ -2773,12 +2773,12 @@
     document.getElementById('topicDots').innerHTML=TOPICS.map(function(_,i){return '<span class="'+(i===ti?'on':'')+'"></span>';}).join('');
     setAmenDisplay();
   }
-  function nextTopic(){ if(prayMode==='mine'){ if(MY_PRAYERS.length){ mti=(mti+1)%MY_PRAYERS.length; renderTopic(); } } else { ti=(ti+1)%TOPICS.length; renderTopic(); } }
+  function nextTopic(){ var _n=Date.now(); if(_n-_lastAdv<420) return; _lastAdv=_n; if(prayMode==='mine'){ if(MY_PRAYERS.length){ mti=(mti+1)%MY_PRAYERS.length; renderTopic(); } } else { ti=(ti+1)%TOPICS.length; renderTopic(); } }
   function prevTopic(){ if(prayMode==='mine'){ if(MY_PRAYERS.length){ mti=(mti-1+MY_PRAYERS.length)%MY_PRAYERS.length; renderTopic(); } } else { ti=(ti-1+TOPICS.length)%TOPICS.length; renderTopic(); } }
   var AMEN={}, _amenAdvTk=null;
   async function loadAmens(){ if(!SB) return; try{ var r=await SB.rpc('get_topic_amens'); (r.data||[]).forEach(function(x){ AMEN[Number(x.topic_key)]=Number(x.cnt)||0; }); setAmenDisplay(); }catch(e){} }
   function setAmenDisplay(){ var row=document.getElementById('topicAmen'); if(!row) return; row.style.display='flex'; var el=document.getElementById('amenCnt'); if(!el) return; var v; if(prayMode==='mine'){ var p=MY_PRAYERS[mti]; v=(p&&p.pray_count)||0; } else { v=AMEN[ti]||0; } el.textContent=v.toLocaleString('en-US'); }
-  function amenTopic(ev){ if(ev&&ev.stopPropagation) ev.stopPropagation(); var btn=document.getElementById('amenBtn'), el=document.getElementById('amenCnt');
+  function amenTopic(ev){ if(ev&&ev.stopPropagation) ev.stopPropagation(); var btn=document.getElementById('amenBtn'), el=document.getElementById('amenCnt'); if(autoOn){ clearInterval(autoTk); autoTk=setInterval(nextTopic,15000); }
     if(prayMode==='mine'){ var p=MY_PRAYERS[mti]; if(!p) return; p.pray_count=(p.pray_count||0)+1; p.last_prayed_at=new Date().toISOString(); if(el){ el.textContent=p.pray_count.toLocaleString('en-US'); el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump'); } var meta=document.getElementById('topicMeta'); if(meta){ meta.textContent='마지막 기도 '+mpRelDay(p.last_prayed_at)+' · 총 '+p.pray_count+'회'; } if(btn){ btn.classList.remove('pop'); void btn.offsetWidth; btn.classList.add('pop'); spawnHearts(btn); } if(SB){ try{ SB.from('my_prayers').update({pray_count:p.pray_count,last_prayed_at:p.last_prayed_at}).eq('id',p.id).then(function(){},function(){}); }catch(e){} } clearTimeout(_amenAdvTk); _amenAdvTk=setTimeout(function(){ if(prayMode==='mine') nextTopic(); }, 1000); return; }
     var key=ti; AMEN[key]=(AMEN[key]||0)+1; if(el){ el.textContent=(AMEN[key]).toLocaleString('en-US'); el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump'); } if(btn){ btn.classList.remove('pop'); void btn.offsetWidth; btn.classList.add('pop'); spawnHearts(btn); } if(SB){ try{ SB.rpc('amen_topic',{p_key:key}).then(function(){},function(){}); }catch(e){} } clearTimeout(_amenAdvTk); _amenAdvTk=setTimeout(function(){ if(prayMode!=='mine') nextTopic(); }, 1000); }
   function spawnHearts(btn){ var cols=['#e58a80','#f0a98f','#e7b15a','#ec9a86']; for(var i=0;i<4;i++){ (function(i){ var h=document.createElement('span'); h.className='fly-heart'; h.textContent='♥'; h.style.left=(32+Math.random()*34)+'%'; h.style.color=cols[i%cols.length]; h.style.fontSize=(11+Math.random()*7)+'px'; h.style.animationDelay=(i*55)+'ms'; btn.appendChild(h); setTimeout(function(){ if(h.parentNode) h.parentNode.removeChild(h); }, 1150+i*55); })(i); } }
