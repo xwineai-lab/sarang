@@ -355,6 +355,17 @@
   @keyframes flyUp{0%{opacity:0;transform:translateY(0) scale(.4)}25%{opacity:1}100%{opacity:0;transform:translateY(-46px) scale(1.15)}}
   .praysame .ps-avas{display:flex;flex-shrink:0;}
   .praysame .ps-ar{color:var(--faint);font-size:18px;}
+  .praysame.psclick{cursor:pointer;transition:transform .12s;}
+  .praysame.psclick:active{transform:scale(.99);}
+  .lpv-h{display:flex;align-items:center;justify-content:center;gap:8px;font-family:"Gowun Dodum",sans-serif;font-size:16px;color:var(--ink);margin-bottom:6px;}
+  .lpv-h .lpv-dot{width:8px;height:8px;border-radius:50%;background:#e8643c;flex-shrink:0;animation:zgheart 1.5s ease-in-out infinite;}
+  .lpv-sub{text-align:center;font-size:13px;color:var(--soft);margin-bottom:16px;}
+  .lpv-sub b{color:var(--amber-deep);font-weight:700;font-family:"Outfit";}
+  .lpv-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-bottom:12px;}
+  .lpv-av{width:48px;height:48px;border-radius:50%;overflow:hidden;background:#f0e7d4;box-shadow:0 3px 8px rgba(150,120,60,.13);}
+  .lpv-av img{width:100%;height:100%;object-fit:cover;display:block;}
+  .lpv-more{display:inline-flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:50%;background:var(--amber-tint);color:var(--amber-deep);font-family:"Outfit";font-weight:700;font-size:14px;}
+  .lpv-note{display:flex;align-items:center;justify-content:center;gap:5px;text-align:center;font-size:11.5px;color:var(--faint);margin-bottom:14px;}
   .live-ava{flex-shrink:0;width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#eef6e9,#e1eed7);display:flex;align-items:center;justify-content:center;position:relative;}
   .live-ava svg{width:19px;height:19px;stroke:var(--green);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;}
   .live-ava::after{content:"";position:absolute;inset:-3px;border-radius:50%;border:1.5px solid var(--green);opacity:.35;animation:livepulse 2s ease-out infinite;}
@@ -550,6 +561,12 @@
   .midcard .tx .s{font-size:11.5px;color:var(--soft);}
   .midcard .tx .m{font-size:14px;color:var(--ink);font-weight:600;margin-top:2px;}
   .midcard .ar{color:var(--faint);font-size:18px;}
+  .card.midcard{background:linear-gradient(120deg,#f1f6ea,#fbf1d6 58%,#f5e7cc);position:relative;overflow:hidden;box-shadow:0 7px 18px rgba(150,120,60,.10);}
+  .card.midcard::after{content:"";position:absolute;right:-16px;top:-22px;width:88px;height:88px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.55),rgba(255,255,255,0) 70%);pointer-events:none;}
+  .card.midcard .lf{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.62);box-shadow:0 2px 8px rgba(120,150,80,.16);position:relative;z-index:1;}
+  .card.midcard .lf svg{width:19px;height:19px;}
+  .card.midcard .tx{position:relative;z-index:1;}
+  .card.midcard .tx .s{color:#9c7d49;}
 
   /* active prayer ring */
   .center-col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;}
@@ -1107,7 +1124,7 @@
           <div id="mineGate" style="display:none;"></div>
         </div>
 
-        <div class="praysame"><span class="ps-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.3"/><path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5M15 19c0-2 1-3.4 3-3.4s3 1.4 3 3.4"/></svg></span><span class="ps-tx" id="liveLinePray">지금 <b>0</b>명이 같은 기도제목으로 기도하고 있어요</span><span class="ps-avas" id="sameAva"><span class="wava" style="background:#cdb89a"><svg viewBox="0 0 36 36"><circle cx="18" cy="14" r="6.3" fill="#fff" opacity=".92"/><path d="M6 33c0-6.6 5.4-10 12-10s12 3.4 12 10" fill="#fff" opacity=".92"/></svg></span><span class="wava" style="background:#9aa6a0"><svg viewBox="0 0 36 36"><circle cx="18" cy="14" r="6.3" fill="#fff" opacity=".92"/><path d="M6 33c0-6.6 5.4-10 12-10s12 3.4 12 10" fill="#fff" opacity=".92"/></svg></span><span class="wava" style="background:#e3b86a"><svg viewBox="0 0 36 36"><circle cx="18" cy="14" r="6.3" fill="#fff" opacity=".92"/><path d="M6 33c0-6.6 5.4-10 12-10s12 3.4 12 10" fill="#fff" opacity=".92"/></svg></span></span><span class="ps-ar">›</span></div>
+        <div class="praysame psclick" onclick="showLivePeople()"><span class="ps-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.3"/><path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5M15 19c0-2 1-3.4 3-3.4s3 1.4 3 3.4"/></svg></span><span class="ps-tx" id="liveLinePray">지금 <b>0</b>명이 같은 기도제목으로 기도하고 있어요</span><span class="ps-avas" id="sameAva"><span class="wava" style="background:#cdb89a"><svg viewBox="0 0 36 36"><circle cx="18" cy="14" r="6.3" fill="#fff" opacity=".92"/><path d="M6 33c0-6.6 5.4-10 12-10s12 3.4 12 10" fill="#fff" opacity=".92"/></svg></span><span class="wava" style="background:#9aa6a0"><svg viewBox="0 0 36 36"><circle cx="18" cy="14" r="6.3" fill="#fff" opacity=".92"/><path d="M6 33c0-6.6 5.4-10 12-10s12 3.4 12 10" fill="#fff" opacity=".92"/></svg></span><span class="wava" style="background:#e3b86a"><svg viewBox="0 0 36 36"><circle cx="18" cy="14" r="6.3" fill="#fff" opacity=".92"/><path d="M6 33c0-6.6 5.4-10 12-10s12 3.4 12 10" fill="#fff" opacity=".92"/></svg></span></span><span class="ps-ar">›</span></div>
         <div class="praysame ydbanner">
           <span class="ps-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 12a8.5 8.5 0 1 1-2.6-6.1"/><path d="M20.5 4.2v4.3h-4.3"/><path d="M12 8v4.2l3 1.8"/></svg></span>
           <span class="ps-tx" id="ydBannerTx">어제, 우리의 기록</span>
@@ -1790,6 +1807,25 @@
     renderLiveAvatars('prayAva', LIVE_USERS, 4, 22, '#fff');
     var praying=LIVE_USERS.filter(function(u){ return u.praying; });
     renderLiveAvatars('sameAva', (praying.length?praying:LIVE_USERS), 3, 22, '#fff');
+  }
+  /* ===== 라이브 배너 탭 → 지금 함께하는 분들(최대 9명, 익명 아이콘) ===== */
+  function closeLivePeople(){ var o=document.getElementById('livePeopleModal'); if(o) o.remove(); }
+  function showLivePeople(){
+    closeLivePeople();
+    var people=(LIVE_USERS&&LIVE_USERS.length)?LIVE_USERS.slice():[];
+    var total=people.length || (connN||liveN||0);
+    if(!people.length && total>0){ for(var k=0;k<Math.min(total,9);k++) people.push({key:'liv'+k}); }
+    var shown=people.slice(0,9);
+    var avs=shown.map(function(u,i){ var av=(u&&u.avatar&&AV_LIST.indexOf(u.avatar)>=0)?u.avatar:AV_LIST[_hashStr((u&&u.key)||('s'+i))%AV_LIST.length]; return '<span class="lpv-av"><img src="'+av+'.png" alt=""></span>'; }).join('');
+    var extra=Math.max(0,total-9); if(extra>0) avs+='<span class="lpv-more">+'+extra+'</span>';
+    var sub = total>0 ? ('지금 <b>'+total+'</b>명이 같은 마음으로 함께하고 있어요') : '곧 함께하는 분들이 모일 거예요';
+    var ov=document.createElement('div'); ov.className='gmodal'; ov.id='livePeopleModal'; ov.onclick=function(e){ if(e.target===ov) closeLivePeople(); };
+    ov.innerHTML='<div class="gmodal-box"><div class="lpv-h"><span class="lpv-dot"></span>지금 함께하는 분들</div>'
+      +'<div class="lpv-sub">'+sub+'</div>'
+      +(total>0?'<div class="lpv-grid">'+avs+'</div>':'')
+      +'<div class="lpv-note">🕊 익명으로 함께 기도하고 있어요</div>'
+      +'<div class="gmodal-btns"><button class="gm-close" onclick="closeLivePeople()">닫기</button></div></div>';
+    (document.querySelector('.phone')||document.body).appendChild(ov);
   }
   setInterval(function(){ _livePhase=_livePhase?0:1; renderLive(true); }, 4500);
   const PC=['#e0a93a','#6fa45c','#7aa7d8','#d98b5e','#b59ad8'];
