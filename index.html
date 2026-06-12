@@ -552,21 +552,21 @@
   .g-vs .r{display:block;font-style:normal;font-size:11px;color:#8a9483;margin-top:2px;}
   .g-cta{display:inline-block;margin-top:12px;background:#6f9a5a;color:#fff;font-size:13px;font-weight:700;padding:9px 20px;border-radius:22px;cursor:pointer;box-shadow:0 4px 12px rgba(111,154,90,.3);}
   .g-badge{position:absolute;left:12px;bottom:12px;background:rgba(255,255,255,.9);border-radius:999px;padding:5px 12px;font-size:12px;font-weight:700;color:#5e7d4f;box-shadow:0 2px 6px rgba(0,0,0,.08);}
-  .g-lock{position:absolute;inset:0;background:rgba(244,240,231,.6);backdrop-filter:blur(2px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;color:#5b6450;border-radius:18px;}
-  .g-lock svg{width:25px;height:25px;}
-  .g-lt{font-size:13.5px;font-weight:700;}
-  .g-ls{font-size:11px;color:#7a8470;}
+  .g-slide.locked img{filter:saturate(.92) brightness(.97);}
+  .g-lockchip{position:absolute;top:12px;right:12px;display:inline-flex;align-items:center;gap:5px;background:rgba(58,70,52,.6);color:#fff;border-radius:999px;padding:5px 11px;font-size:12px;font-weight:700;}
+  .g-lockchip svg{width:14px;height:14px;stroke:#fff;}
+  .g-peek{position:absolute;left:0;right:0;bottom:0;padding:26px 12px 12px;text-align:center;font-size:11.5px;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.4);background:linear-gradient(to top,rgba(48,58,42,.5),transparent);}
   .g-dots{display:flex;justify-content:center;gap:6px;margin-top:9px;}
   .g-dots span{width:7px;height:7px;border-radius:50%;background:#cfd3c8;}
   .g-dots span.on{background:#7bbf63;width:18px;border-radius:4px;}
   .g-hint{text-align:center;font-size:11.5px;color:#9aa48d;margin-top:6px;}
   .g-stats{display:flex;gap:9px;margin-top:14px;}
-  .g-sc{flex:1;background:var(--surface);border-radius:16px;padding:13px 6px;text-align:center;box-shadow:0 3px 10px rgba(60,70,50,.06);}
+  .g-sc{flex:1;background:#f7f1e3;border:1px solid rgba(160,140,100,.14);border-radius:16px;padding:13px 6px;text-align:center;box-shadow:0 2px 9px rgba(120,100,60,.05);}
   .g-ic{height:22px;display:flex;align-items:center;justify-content:center;}
   .g-ic svg{width:21px;height:21px;}
   .g-lb{font-size:12px;color:var(--soft);margin-top:6px;}
-  .g-vl{font-family:"Outfit",sans-serif;font-weight:700;font-size:22px;color:var(--ink);margin-top:3px;line-height:1;letter-spacing:-.4px;}
-  .g-grow{margin-top:14px;background:var(--surface);border-radius:18px;padding:15px 15px 13px;box-shadow:0 3px 10px rgba(60,70,50,.06);}
+  .g-vl{font-family:"Outfit",sans-serif;font-weight:600;font-size:18px;color:#5e7d4f;margin-top:4px;line-height:1.1;letter-spacing:-.3px;}
+  .g-grow{margin-top:14px;background:#f7f1e3;border:1px solid rgba(160,140,100,.14);border-radius:18px;padding:15px 15px 13px;box-shadow:0 2px 9px rgba(120,100,60,.05);}
   .g-grow-h{display:flex;align-items:center;gap:6px;font-size:11px;}
   .g-grow-h svg{width:17px;height:17px;}
   .g-grow-h b{font-size:15px;color:var(--ink);}
@@ -1256,7 +1256,7 @@
           <div class="garden">
             <div class="g-track" id="gTrack"></div>
             <div class="g-dots" id="gDots"></div>
-            <div class="g-hint" id="gHint" style="display:none;">← 옆으로 밀어 정원의 다음 이야기를 미리 봐요 →</div>
+            <div class="g-hint" id="gHint" style="display:none;">← 양옆으로 밀어 정원 이야기를 둘러봐요 →</div>
           </div>
           <div class="g-stats">
             <div class="g-sc"><div class="g-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#dca73b" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2.6v2.3M12 19.1v2.3M2.6 12h2.3M19.1 12h2.3M5.4 5.4l1.6 1.6M16.9 16.9l1.6 1.6M18.6 5.4l-1.6 1.6M6.9 16.9l-1.6 1.6"/></svg></div><div class="g-lb">오늘</div><div class="g-vl" id="g-today">0분</div></div>
@@ -3284,8 +3284,7 @@
     // 통계
     setTxt('g-today', korDur(todayMin)); setTxt('g-week', korDur(week)); setTxt('g-streak', (streak||0)+'일');
     // 슬라이드 (이미지 있는 레벨)
-    var slides=[]; if(cur===0){ slides=[0]; if(GARDEN[1]&&GARDEN[1].img) slides.push(1); }
-    else { for(var k=1;k<GARDEN.length;k++){ if(GARDEN[k].img) slides.push(k); } }
+    var slides=[]; for(var k=0;k<GARDEN.length;k++){ if(GARDEN[k].img) slides.push(k); } // 빈 화분(시작)부터 전부 포함
     var hm=Math.floor(total/60), mm=total%60;
     var html=slides.map(function(l){
       var g=GARDEN[l], achieved=(l<=cur), isCur=(l===curImg);
@@ -3295,10 +3294,11 @@
       } else if(isCur && cur===0){
         over='<div class="g-scrim"></div><div class="g-ov"><div class="g-ovin"><div class="g-lab">아직 비어 있는 정원</div><div class="g-num0">첫 기도를 드리면<br>첫 씨앗을 받아요</div><a class="g-cta" onclick="go(\'pray\')">기도 시작하기 →</a></div></div>';
       }
-      var lock = (!achieved) ? '<div class="g-lock">'+G_LOCK+'<div class="g-lt">'+korDur(Math.max(0,Math.round(g.h*60-total)))+' 더</div><div class="g-ls">기도를 채우면 열려요</div></div>' : '';
-      var badge='<div class="g-badge">Lv.'+l+' · '+g.name+((achieved&&!isCur)?' ✓':'')+'</div>';
+      var rem=Math.max(0,Math.round(g.h*60-total));
+      var lock = (!achieved) ? '<div class="g-lockchip">'+G_LOCK+korDur(rem)+' 더</div>' : '';
+      var badge = (l===0) ? '<div class="g-badge">처음 · 빈 화분</div>' : '<div class="g-badge">Lv.'+l+' · '+g.name+((achieved&&!isCur)?' ✓':'')+'</div>';
       var media = g.img ? '<img src="'+g.img+'">' : '<div class="g-noimg"></div>';
-      return '<div class="g-slide">'+media+over+lock+badge+'</div>';
+      return '<div class="g-slide'+(achieved?'':' locked')+'">'+media+over+lock+badge+'</div>';
     }).join('');
     trk.innerHTML=html;
     var ci=slides.indexOf(curImg); if(ci<0) ci=0;
