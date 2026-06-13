@@ -4018,24 +4018,32 @@
   body.solo #pray #prayHDesc{display:none!important;}
   body.solo #pray .praylivebar,
   body.solo #pray .praymode{display:none!important;}
+  /* 기록: 중보기도 나눔(공동체) 숨김 */
+  body.solo #record .ieentry{display:none!important;}
+  /* 더보기: 교회 전용 행 숨김 */
+  body.solo .solo-hide{display:none!important;}
   body.solo .solo-badge{position:fixed;top:6px;left:50%;transform:translateX(-50%);z-index:9999;background:rgba(94,125,79,.92);color:#fff;font-size:10px;padding:2px 10px;border-radius:999px;font-family:"Gowun Dodum",sans-serif;pointer-events:none;}
-  body.solo #home .wordmark .solomark{flex-shrink:0;height:36px;width:auto;}
-  body.solo #home .wordmark .nm{display:none!important;}
+  body.solo #home .wordmark .solomark{height:34px;width:34px;flex-shrink:0;}
+  body.solo #home .wordmark{gap:9px;}
+  body.solo #home .wordmark .nm{display:inline-block!important;font-size:23px;font-weight:700;}
 </style>
 <script>
 (function(){
-  var SOLO_LOGO='<svg class="solomark" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" fill="none">'
-    +'<path d="M75.7 103.2 A46 46 0 1 1 103.2 75.7" stroke="#2b2b33" stroke-width="6.4" stroke-linecap="round"/>'
-    +'<circle cx="96" cy="90" r="8.6" fill="#f5a623"/>'
-    +'<text x="59" y="73" text-anchor="middle" font-family="Gowun Dodum, sans-serif" font-size="34" fill="#2b2b33" letter-spacing="-1.5">만시간</text>'
+  var SOLO_MARK='<svg class="solomark" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">'
+    +'<path d="M63 86 A38 38 0 1 1 86 63" stroke="#2b2b33" stroke-width="6.6" stroke-linecap="round"/>'
+    +'<circle cx="78" cy="76" r="7.4" fill="#f5a623"/>'
     +'</svg>';
+  function hideByI18n(k){ var el=document.querySelector('[data-i18n="'+k+'"]'); if(!el) return; var row=el.closest('.mrow')||el; row.classList.add('solo-hide'); }
   function applySolo(){
     try{
       document.body.classList.add('solo');
       var wm=document.querySelector('#home .wordmark');
       if(wm && !wm.dataset.solomark){ wm.dataset.solomark='1';
-        var img=wm.querySelector('img'); if(img){ var span=document.createElement('span'); span.innerHTML=SOLO_LOGO; wm.replaceChild(span.firstChild, img); }
+        var img=wm.querySelector('img'); if(img){ var span=document.createElement('span'); span.innerHTML=SOLO_MARK; wm.replaceChild(span.firstChild, img); }
+        var nm=wm.querySelector('.nm'); if(nm) nm.textContent='만시간';
       }
+      hideByI18n('row.myzone'); hideByI18n('row.goal');
+      var camp=document.querySelector('[data-i18n="sec.campaign"]'); if(camp) camp.classList.add('solo-hide');
       if(!document.querySelector('.solo-badge')){ var b=document.createElement('div'); b.className='solo-badge'; b.textContent='SOLO 미리보기 (비공개)'; document.body.appendChild(b); }
     }catch(e){}
   }
@@ -4055,6 +4063,8 @@
   patchPray();
   setTimeout(function(){ applySolo(); patchPray(); }, 1200);
   setTimeout(function(){ applySolo(); patchPray(); }, 3000);
+  // 더보기 탭은 진입 시 렌더될 수 있어 클릭 후 한 번 더 적용
+  document.addEventListener('click', function(){ setTimeout(applySolo, 250); }, true);
 })();
 </script>
 </body>
