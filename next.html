@@ -4014,13 +4014,10 @@
   body.solo #home .ydaycard,
   body.solo #home .midcard,
   body.solo #home .liveticker{display:none!important;}
-  /* 기도하기: 공동체 요소 숨김 */
   body.solo #pray #prayHDesc{display:none!important;}
   body.solo #pray .praylivebar,
   body.solo #pray .praymode{display:none!important;}
-  /* 기록: 중보기도 나눔(공동체) 숨김 */
   body.solo #record .ieentry{display:none!important;}
-  /* 더보기: 교회 전용 행 숨김 (내 구역·캠페인·목표·중보기도 검수) */
   body.solo .solo-hide{display:none!important;}
   body.solo #adminMenuRow{display:none!important;}
   body.solo .solo-badge{position:fixed;top:6px;left:50%;transform:translateX(-50%);z-index:9999;background:rgba(94,125,79,.92);color:#fff;font-size:10px;padding:2px 10px;border-radius:999px;font-family:"Gowun Dodum",sans-serif;pointer-events:none;}
@@ -4034,11 +4031,23 @@
     +'<path d="M63 86 A38 38 0 1 1 86 63" stroke="#2b2b33" stroke-width="6.6" stroke-linecap="round"/>'
     +'<circle cx="78" cy="76" r="7.4" fill="#f5a623"/>'
     +'</svg>';
+  var SOLO_HEAD=[['잠시 멈추고, 기도해요','마음의 문을 열고 하나님께 나아가요'],
+    ['오늘도 주님과 함께','작은 기도가 하루를 바꿉니다'],
+    ['조용히 무릎 꿇는 시간','주님의 음성에 귀 기울여요'],
+    ['분주함을 잠시 내려놓고','주님 앞에 잠잠히 머물러요'],
+    ['깊은 숨을 들이쉬고','주님의 평안을 누려요'],
+    ['멈춘 그 자리에서','조용히 하나님을 바라봐요'],
+    ['기도는 가장 큰 힘','무릎 꿇을 때 하늘이 열려요'],
+    ['지치고 힘든 날에도','주님은 늘 우리 곁에 계세요'],
+    ['감사함으로 나아가요','오늘도 베풀어 주신 은혜를 기억하며']];
+  var sIdx=Math.floor(Math.random()*SOLO_HEAD.length);
+  function paintSoloHead(){ var t=document.getElementById('hhTitle'),d=document.getElementById('hhDesc'); if(!t||!d) return; var p=SOLO_HEAD[sIdx%SOLO_HEAD.length]; t.textContent=p[0]; d.textContent=p[1]; }
   function hideByI18n(k){ var el=document.querySelector('[data-i18n="'+k+'"]'); if(!el) return; var row=el.closest('.mrow')||el; row.classList.add('solo-hide'); }
   function stripZone(){ var rs=document.getElementById('recSub'); if(rs){ var t=rs.textContent||''; if(t.indexOf('구역')>=0 && t.indexOf(' · ')>=0){ rs.textContent=t.split(' · ')[0]; } } }
   function applySolo(){
     try{
       document.body.classList.add('solo');
+      document.title='만시간 · 나의 기도실';
       var wm=document.querySelector('#home .wordmark');
       if(wm && !wm.dataset.solomark){ wm.dataset.solomark='1';
         var img=wm.querySelector('img'); if(img){ var span=document.createElement('span'); span.innerHTML=SOLO_MARK; wm.replaceChild(span.firstChild, img); }
@@ -4046,10 +4055,12 @@
       }
       hideByI18n('row.myzone'); hideByI18n('row.goal');
       var camp=document.querySelector('[data-i18n="sec.campaign"]'); if(camp) camp.classList.add('solo-hide');
-      stripZone();
+      stripZone(); paintSoloHead();
       if(!document.querySelector('.solo-badge')){ var b=document.createElement('div'); b.className='solo-badge'; b.textContent='SOLO 미리보기 (비공개)'; document.body.appendChild(b); }
     }catch(e){}
   }
+  // 홈 헤드라인 회전을 솔로 문구로 교체 (공동체 슬로건 제거)
+  function patchHead(){ try{ if(window.paintHead && !window._soloHead){ window._soloHead=true; window.paintHead=function(){ sIdx++; paintSoloHead(); }; } }catch(e){} }
   function patchPray(){
     try{
       if(window.setPrayMode && !window._soloPatched){
@@ -4063,9 +4074,9 @@
     }catch(e){}
   }
   if(document.body) applySolo(); else document.addEventListener('DOMContentLoaded', applySolo);
-  patchPray();
-  setTimeout(function(){ applySolo(); patchPray(); }, 1200);
-  setTimeout(function(){ applySolo(); patchPray(); }, 3000);
+  patchPray(); patchHead();
+  setTimeout(function(){ applySolo(); patchPray(); patchHead(); }, 800);
+  setTimeout(function(){ applySolo(); patchPray(); patchHead(); }, 2500);
   document.addEventListener('click', function(){ setTimeout(function(){ applySolo(); stripZone(); }, 250); }, true);
 })();
 </script>
