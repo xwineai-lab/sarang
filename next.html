@@ -4014,19 +4014,47 @@
   body.solo #home .ydaycard,
   body.solo #home .midcard,
   body.solo #home .liveticker{display:none!important;}
+  /* 기도하기: 공동체 요소 숨김 */
+  body.solo #pray #prayHDesc{display:none!important;}
+  body.solo #pray .praylivebar,
+  body.solo #pray .praymode{display:none!important;}
   body.solo .solo-badge{position:fixed;top:6px;left:50%;transform:translateX(-50%);z-index:9999;background:rgba(94,125,79,.92);color:#fff;font-size:10px;padding:2px 10px;border-radius:999px;font-family:"Gowun Dodum",sans-serif;pointer-events:none;}
+  body.solo #home .wordmark .solomark{flex-shrink:0;height:36px;width:auto;}
+  body.solo #home .wordmark .nm{display:none!important;}
 </style>
 <script>
 (function(){
+  var SOLO_LOGO='<svg class="solomark" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" fill="none">'
+    +'<path d="M75.7 103.2 A46 46 0 1 1 103.2 75.7" stroke="#2b2b33" stroke-width="6.4" stroke-linecap="round"/>'
+    +'<circle cx="96" cy="90" r="8.6" fill="#f5a623"/>'
+    +'<text x="59" y="73" text-anchor="middle" font-family="Gowun Dodum, sans-serif" font-size="34" fill="#2b2b33" letter-spacing="-1.5">만시간</text>'
+    +'</svg>';
   function applySolo(){
     try{
       document.body.classList.add('solo');
-      var nm=document.querySelector('#home .wordmark .nm'); if(nm && nm.textContent.indexOf('만시간')>=0) nm.textContent='나의 기도실';
+      var wm=document.querySelector('#home .wordmark');
+      if(wm && !wm.dataset.solomark){ wm.dataset.solomark='1';
+        var img=wm.querySelector('img'); if(img){ var span=document.createElement('span'); span.innerHTML=SOLO_LOGO; wm.replaceChild(span.firstChild, img); }
+      }
       if(!document.querySelector('.solo-badge')){ var b=document.createElement('div'); b.className='solo-badge'; b.textContent='SOLO 미리보기 (비공개)'; document.body.appendChild(b); }
     }catch(e){}
   }
+  function patchPray(){
+    try{
+      if(window.setPrayMode && !window._soloPatched){
+        window._soloPatched=true;
+        var _sp=window.setPrayMode;
+        window.setPrayMode=function(m){
+          try{ _sp.call(this,'mine'); }catch(e){ try{_sp('mine');}catch(_){} }
+          var pt=document.getElementById('prayHTitle'); if(pt) pt.textContent='나의 기도실';
+        };
+      }
+    }catch(e){}
+  }
   if(document.body) applySolo(); else document.addEventListener('DOMContentLoaded', applySolo);
-  setTimeout(applySolo, 1200); setTimeout(applySolo, 3000);
+  patchPray();
+  setTimeout(function(){ applySolo(); patchPray(); }, 1200);
+  setTimeout(function(){ applySolo(); patchPray(); }, 3000);
 })();
 </script>
 </body>
