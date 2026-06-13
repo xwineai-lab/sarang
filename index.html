@@ -595,6 +595,7 @@
   .zrkchg.up{color:#3f9a5a;} .zrkchg.down{color:#cf8a52;} .zrkchg.same{color:#b4bca8;}
   .zmval{display:inline-block;font-family:"Outfit",sans-serif;font-weight:700;font-size:11px;color:var(--amber-deep);background:var(--amber-tint);border-radius:8px;padding:2px 7px;margin-left:6px;white-space:nowrap;vertical-align:middle;}
   .zmlbl{font-family:"Gowun Dodum",sans-serif;font-size:11px;font-weight:500;color:var(--soft);margin-right:3px;}
+  .zmnum{color:var(--amber-deep);font-weight:700;}
   @keyframes zReorder{0%{opacity:0;transform:translateY(11px) scale(.985);}100%{opacity:1;transform:none;}}
   .zcard.zanim{animation:zReorder .42s both;}
   /* 기도문 전문: 돋보기 아이콘 + 모달 */
@@ -2768,9 +2769,9 @@
       var _cr=cumRank[nm]||(i+1), _delta=_cr-(i+1);
       var _arrow=(zoneMetric==='cum')?'':(_delta>0?'<span class="zrkchg up">▲'+_delta+'</span>':(_delta<0?'<span class="zrkchg down">▼'+(-_delta)+'</span>':'<span class="zrkchg same">–</span>'));
       var _main;
-      if(zoneMetric==='today'){ _main='<span class="zmlbl">오늘</span>'+korDur(zToday(z)); }
-      else if(zoneMetric==='rate'){ var _m=zMembers(z); _main='<span class="zmlbl">참여</span>'+(_m>0?Math.round(zPrayedAll(z)/_m*100):0)+'%'; }
-      else if(zoneMetric==='avg'){ var _m2=zMembers(z); _main='<span class="zmlbl">1인</span>'+(_m2>0?(hours/_m2).toFixed(1):'0')+'시간'; }
+      if(zoneMetric==='today'){ _main='<span class="zmlbl">오늘</span><span class="zmnum">'+korDur(zToday(z))+'</span>'; }
+      else if(zoneMetric==='rate'){ var _m=zMembers(z); _main='<span class="zmlbl">참여</span><span class="zmnum">'+(_m>0?Math.round(zPrayedAll(z)/_m*100):0)+'%</span>'; }
+      else if(zoneMetric==='avg'){ var _m2=zMembers(z); _main='<span class="zmlbl">1인</span><span class="zmnum">'+(_m2>0?(hours/_m2).toFixed(1):'0')+'시간</span>'; }
       else { _main=fmtHM(hours*60)+(tdy>0?'<span class="ztoday">+'+tdy+'분</span>':''); }
       var _anim=_zReorder?' zanim':'', _animS=_zReorder?(' style="animation-delay:'+(i*0.04).toFixed(2)+'s"'):'';
       const rank = '<div class="zglow'+(pray>0?' live':'')+'" style="--g:'+inten.toFixed(2)+'"><span class="zg-core"></span></div>';
