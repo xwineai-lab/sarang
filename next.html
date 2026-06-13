@@ -4044,10 +4044,22 @@
   function paintSoloHead(){ var t=document.getElementById('hhTitle'),d=document.getElementById('hhDesc'); if(!t||!d) return; var p=SOLO_HEAD[sIdx%SOLO_HEAD.length]; t.textContent=p[0]; d.textContent=p[1]; }
   function hideByI18n(k){ var el=document.querySelector('[data-i18n="'+k+'"]'); if(!el) return; var row=el.closest('.mrow')||el; row.classList.add('solo-hide'); }
   function stripZone(){ var rs=document.getElementById('recSub'); if(rs){ var t=rs.textContent||''; if(t.indexOf('구역')>=0 && t.indexOf(' · ')>=0){ rs.textContent=t.split(' · ')[0]; } } }
+  function fixWelcome(){
+    var w=document.getElementById('welcome'); if(!w || w.dataset.solo) return; w.dataset.solo='1';
+    var em=w.querySelector('.bigemblem'); if(em){ em.innerHTML='<div style="width:82px;height:82px;display:flex;align-items:center;justify-content:center;">'+SOLO_MARK+'</div>'; var mk=em.querySelector('.solomark'); if(mk){ mk.style.width='70px'; mk.style.height='70px'; } }
+    var t=w.querySelector('.welcome-t'); if(t) t.textContent='만시간';
+    var d=w.querySelector('.welcome-d'); if(d) d.textContent='나만의 기도 시간을 쌓아가요';
+    var sl=w.querySelector('.welcome-slogan'); if(sl) sl.textContent='하루 한 걸음, 기도의 정원';
+    var card=w.querySelector('.welcome-card');
+    if(card){ card.innerHTML='<button class="primary" id="soloStart">나의 기도실 시작하기</button><div class="note">기록은 이 기기에 안전하게 저장돼요.<br>카카오·이메일을 연결하면 어디서나 이어볼 수 있어요.</div>';
+      var sb=document.getElementById('soloStart'); if(sb) sb.addEventListener('click', function(){ try{ if(window.enterApp){ enterApp(); } else { go('home'); } }catch(e){ try{go('home');}catch(_){}; } });
+    }
+  }
   function applySolo(){
     try{
       document.body.classList.add('solo');
       document.title='만시간 · 나의 기도실';
+      fixWelcome();
       var wm=document.querySelector('#home .wordmark');
       if(wm && !wm.dataset.solomark){ wm.dataset.solomark='1';
         var img=wm.querySelector('img'); if(img){ var span=document.createElement('span'); span.innerHTML=SOLO_MARK; wm.replaceChild(span.firstChild, img); }
@@ -4059,7 +4071,6 @@
       if(!document.querySelector('.solo-badge')){ var b=document.createElement('div'); b.className='solo-badge'; b.textContent='SOLO 미리보기 (비공개)'; document.body.appendChild(b); }
     }catch(e){}
   }
-  // 홈 헤드라인 회전을 솔로 문구로 교체 (공동체 슬로건 제거)
   function patchHead(){ try{ if(window.paintHead && !window._soloHead){ window._soloHead=true; window.paintHead=function(){ sIdx++; paintSoloHead(); }; } }catch(e){} }
   function patchPray(){
     try{
@@ -4075,8 +4086,8 @@
   }
   if(document.body) applySolo(); else document.addEventListener('DOMContentLoaded', applySolo);
   patchPray(); patchHead();
-  setTimeout(function(){ applySolo(); patchPray(); patchHead(); }, 800);
-  setTimeout(function(){ applySolo(); patchPray(); patchHead(); }, 2500);
+  setTimeout(function(){ applySolo(); patchPray(); patchHead(); }, 600);
+  setTimeout(function(){ applySolo(); patchPray(); patchHead(); }, 1800);
   document.addEventListener('click', function(){ setTimeout(function(){ applySolo(); stripZone(); }, 250); }, true);
 })();
 </script>
