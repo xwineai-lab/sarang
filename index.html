@@ -557,9 +557,9 @@
   .jcard .jlt{margin-top:14px;}
   .jcard .layer-tag{display:inline-block;font-size:10px;color:#fff;border-radius:999px;padding:2px 8px;}
   .layer-tag.lt-life{background:#9c8a63;} .layer-tag.lt-journey{background:#8a9a4e;} .layer-tag.lt-day{background:#e7a93c;}
-  .jlife{margin-top:9px;text-align:center;}
-  .jln{font-family:"Outfit",sans-serif;font-weight:800;font-size:30px;color:#5e6f49;line-height:1.05;}
-  .jlc{font-size:11.5px;color:var(--soft);margin-top:2px;}
+  .jlife{margin-top:13px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .jln{font-family:"Outfit",sans-serif;font-weight:700;font-size:16px;color:#5e6f49;}
+  .jlc{font-size:11px;color:var(--soft);}
   .journeyp{margin-top:9px;background:#fffdf8;border-radius:14px;padding:12px 13px;}
   .journeyp .jr{display:flex;justify-content:space-between;align-items:baseline;}
   .journeyp .jr .a{font-size:12.5px;color:#5d6a52;font-weight:700;}
@@ -1442,7 +1442,6 @@
             <div class="g-sc"><div class="g-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#7a9466" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.4" y="5" width="17.2" height="15" rx="2.6"/><path d="M3.4 9.4h17.2M8 3.4v3M16 3.4v3"/></svg></div><div class="g-lb">이번 주</div><div class="g-vl" id="g-week">0분</div></div>
             <div class="g-sc"><div class="g-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#6f9a5a" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21v-8"/><path d="M12 14c-.9-3.4-3.6-4.8-6.6-4.8C5.4 12.6 8.2 14 12 14z"/><path d="M12 12.5c.6-3 2.9-4.3 5.6-4.3C17.6 11 15.3 12.5 12 12.5z"/></svg></div><div class="g-lb">연속</div><div class="g-vl" id="g-streak">0일</div></div>
           </div>
-          <div id="journeyCard"></div>
           <div class="g-grow">
             <div class="g-grow-h"><svg viewBox="0 0 24 24" fill="none" stroke="#6f9a5a" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21v-8"/><path d="M12 14c-.9-3.4-3.6-4.8-6.6-4.8C5.4 12.6 8.2 14 12 14z"/><path d="M12 12.5c.6-3 2.9-4.3 5.6-4.3C17.6 11 15.3 12.5 12 12.5z"/></svg> <b>나의 기도 정원</b> <span>기도 시간이 쌓여 정원이 자랍니다</span></div>
             <div class="g-steps" id="gSteps">
@@ -1455,6 +1454,7 @@
             </div>
             <div class="g-next" id="gNext">다음 정원 단계까지 —</div>
           </div>
+          <div id="journeyCard"></div>
           <div class="weekchart">
             <div class="wcl">이번 주 기도 흐름</div>
             <div class="wcbars" id="rc-bars"></div>
@@ -3855,8 +3855,7 @@
     var dg=DAILY_GOAL_MIN||20, dpct=dg>0?Math.min(100,todayMin/dg*100):0, dDone=todayMin>=dg;
     el.innerHTML='<div class="jcard">'
       +'<div class="jhead"><div class="jt">'+mpEsc(pname)+'<small>여정 목표 '+jComma(goalH)+'시간</small></div><div class="jchg" onclick="openJourneyPicker()">목표 변경</div></div>'
-      +'<div class="jlt"><span class="layer-tag lt-life">평생 누적</span></div>'
-      +'<div class="jlife"><div class="jln">'+fmtHM(totalMin)+'</div><div class="jlc">하나님께 드린 시간 · 줄지 않고 평생 쌓여요</div></div>'
+      +'<div class="jlife"><span class="layer-tag lt-life">평생 누적</span><span class="jln">'+fmtHM(totalMin)+'</span><span class="jlc">줄지 않고 쌓여요</span></div>'
       +'<div class="jlt"><span class="layer-tag lt-journey">여정 목표</span></div>'
       +'<div class="journeyp"><div class="jr"><span class="a">'+jComma(goalH)+'시간을 향해</span><span class="b">'+pct.toFixed(1)+'%</span></div>'
       +'<div class="jtrack"><i style="width:'+pct.toFixed(2)+'%"></i></div>'
