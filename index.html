@@ -504,7 +504,10 @@
   .rectab{flex:1;border:none;background:none;padding:8px 3px;border-radius:11px;font-family:"Gowun Dodum",sans-serif;font-size:12.5px;white-space:nowrap;color:var(--soft);cursor:pointer;}
   .rectab.on{background:var(--surface);color:var(--amber-deep);box-shadow:0 2px 8px rgba(150,120,60,.1);}
   /* 감사노트 */
-  .thx-hero{position:relative;height:150px;border-radius:18px;overflow:hidden;background:#cdd0b8 center/cover no-repeat;box-shadow:0 8px 20px rgba(70,80,55,.12);margin-top:4px;}
+  .thx-hero{position:relative;height:200px;border-radius:18px;overflow:hidden;background:#cdd0b8 center/cover no-repeat;box-shadow:0 8px 20px rgba(70,80,55,.12);margin-top:4px;}
+  .thx-ov .thx-next{font-size:11px;opacity:.92;margin-top:4px;background:rgba(255,255,255,.22);display:inline-block;padding:2px 9px;border-radius:999px;backdrop-filter:blur(2px);}
+  .thx-stats .ts-ic{display:flex;justify-content:center;margin-bottom:3px;}
+  .thx-stats .ts-ic svg{width:18px;height:18px;}
   .thx-scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(60,70,40,0) 35%,rgba(50,60,35,.48));}
   .thx-ov{position:absolute;left:0;right:0;bottom:0;padding:12px 16px;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.3);}
   .thx-ov .thx-lab{font-size:12px;opacity:.92;}
@@ -1459,12 +1462,13 @@
                 <div class="thx-lab">감사의 열매</div>
                 <div class="thx-num"><span class="num" id="thx-count">0</span><span class="u">개</span></div>
                 <div class="thx-verse">"범사에 감사하라" · 살전 5:18</div>
+                <div class="thx-next" id="thx-next" style="display:none;"></div>
               </div>
             </div>
             <div class="thx-stats">
-              <div class="ts"><div class="tv num" id="thx-streak">0</div><div class="tl">감사 연속(일)</div></div>
-              <div class="ts"><div class="tv num" id="thx-month">0</div><div class="tl">이번 달</div></div>
-              <div class="ts"><div class="tv num" id="thx-answer">0</div><div class="tl">기도 응답</div></div>
+              <div class="ts"><div class="ts-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#7e9a54" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21v-7"/><path d="M12 15c-1.2-3.6-4-5-7-5 0 3.8 2.8 5 7 5z"/><path d="M12 13c.7-3 3-4.2 6-4.2 0 3.2-2.4 4.2-6 4.2z"/></svg></div><div class="tv num" id="thx-streak">0</div><div class="tl">감사 연속(일)</div></div>
+              <div class="ts"><div class="ts-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#7e9a54" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="2.4"/><path d="M3.5 9.4h17M8 3.4v3M16 3.4v3"/></svg></div><div class="tv num" id="thx-month">0</div><div class="tl">이번 달</div></div>
+              <div class="ts"><div class="ts-ic"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="13" rx="6" ry="7.5" fill="#e7b53c"/><path d="M12 6c1-3 4-3 4-3" stroke="#7faa63" stroke-width="1.8" fill="none" stroke-linecap="round"/><ellipse cx="10" cy="10.5" rx="1.6" ry="2.2" fill="#fff" opacity=".45"/></svg></div><div class="tv num" id="thx-answer">0</div><div class="tl">기도 응답</div></div>
             </div>
             <div class="thx-add">
               <div class="thx-add-h">오늘의 감사</div>
@@ -3519,6 +3523,7 @@
     var total=GRATITUDE.length;
     var cEl=document.getElementById('thx-count'); if(cEl) cEl.textContent=total;
     var hero=document.getElementById('thxHero'); if(hero){ var _tw=total>=15?'thanks-tree-3.jpg':(total>=3?'thanks-tree-2.jpg':'thanks-tree-1.jpg'); hero.style.backgroundImage="url('"+_tw+"')"; }
+    var nx=document.getElementById('thx-next'); if(nx){ var _n=total<3?3:(total<15?15:null); nx.style.display='inline-block'; nx.textContent=_n?('다음 나무 단계까지 '+(_n-total)+'개'):'풍성한 올리브나무를 이뤘어요'; }
     var now=new Date(), mc=0; GRATITUDE.forEach(function(g){ var d=new Date(g.created_at); if(d.getFullYear()===now.getFullYear()&&d.getMonth()===now.getMonth()) mc++; });
     var ac=GRATITUDE.filter(function(g){return g.kind==='answer';}).length;
     var e;
