@@ -532,8 +532,14 @@
   .thx-ans{background:linear-gradient(180deg,#fff5ec,#fdeede);border:1px solid #f3d4bf;border-radius:16px;padding:13px 14px;margin-bottom:9px;box-shadow:0 6px 16px rgba(214,104,74,.1);}
   .thx-rib{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:#fff;background:linear-gradient(135deg,#e88a5a,#d6685a);border-radius:999px;padding:4px 10px;}
   .thx-rib svg{width:12px;height:12px;}
+  .thx-ans{position:relative;padding-right:54px;}
   .thx-ans-b{font-size:14px;color:#9c4a2c;margin-top:9px;line-height:1.55;font-weight:600;white-space:pre-wrap;}
   .thx-ans-m{font-size:11px;color:#bb8a72;margin-top:7px;}
+  .thx-gold{position:absolute;top:11px;right:11px;width:38px;height:38px;object-fit:contain;filter:drop-shadow(0 2px 5px rgba(214,160,40,.4));}
+  .thx-empty{text-align:center;padding:14px 12px 24px;color:var(--soft);}
+  .thx-empty img{width:120px;height:auto;opacity:.92;margin-bottom:6px;}
+  .thx-empty .te-t{font-size:14px;font-weight:700;color:#5e7d4f;}
+  .thx-empty .te-d{font-size:12.5px;color:var(--soft);margin-top:5px;line-height:1.6;}
   .mystats{display:flex;gap:9px;background:linear-gradient(135deg,#fffdf8,#fbf1da 55%,#f7e4be);border-radius:18px;padding:16px 12px;margin-top:14px;box-shadow:0 8px 22px rgba(150,120,60,.08);}
   .mystats .ms{flex:1;text-align:center;}
   .mystats .ms .v{font-family:"Outfit",sans-serif;font-size:22px;font-weight:600;color:var(--ink);}
@@ -3512,7 +3518,7 @@
   function renderGratitude(){
     var total=GRATITUDE.length;
     var cEl=document.getElementById('thx-count'); if(cEl) cEl.textContent=total;
-    var hero=document.getElementById('thxHero'); if(hero){ hero.style.backgroundImage="url('"+(total>=12?'thanks-tree-2.jpg':'thanks-tree-1.jpg')+"')"; }
+    var hero=document.getElementById('thxHero'); if(hero){ var _tw=total>=15?'thanks-tree-3.jpg':(total>=3?'thanks-tree-2.jpg':'thanks-tree-1.jpg'); hero.style.backgroundImage="url('"+_tw+"')"; }
     var now=new Date(), mc=0; GRATITUDE.forEach(function(g){ var d=new Date(g.created_at); if(d.getFullYear()===now.getFullYear()&&d.getMonth()===now.getMonth()) mc++; });
     var ac=GRATITUDE.filter(function(g){return g.kind==='answer';}).length;
     var e;
@@ -3520,13 +3526,13 @@
     e=document.getElementById('thx-month'); if(e) e.textContent=mc;
     e=document.getElementById('thx-answer'); if(e) e.textContent=ac;
     var list=document.getElementById('thxList'); if(!list) return;
-    if(!total){ list.innerHTML='<div class="myempty">아직 감사 열매가 없어요.<br>오늘의 감사를 한 줄 적어보세요.</div>'; return; }
+    if(!total){ list.innerHTML='<div class="thx-empty"><img src="olive-branch.png" alt=""><div class="te-t">아직 감사 열매가 없어요</div><div class="te-d">오늘의 감사를 한 줄 적어보세요.<br>감사가 쌓이면 올리브나무에 열매가 맺혀요.</div></div>'; return; }
     var tk=thxDayKey(now);
     list.innerHTML=GRATITUDE.map(function(g){
       var d=new Date(g.created_at), isToday=thxDayKey(d)===tk;
       var when=mpRelDay(g.created_at)+' '+('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2);
       if(g.kind==='answer'){
-        return '<div class="thx-ans"><span class="thx-rib"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>기도 응답</span>'
+        return '<div class="thx-ans"><img class="thx-gold" src="gold-olive.png" alt=""><span class="thx-rib">기도 응답의 열매</span>'
           +'<div class="thx-ans-b">'+mpEsc(g.body)+'</div>'
           +'<div class="thx-ans-m">'+(g.prayer_days?('↳ '+g.prayer_days+'일간 드린 기도 · '):'↳ ')+'나의 기도제목에서 기록됨 · '+when+'</div></div>';
       }
