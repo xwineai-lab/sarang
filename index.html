@@ -501,8 +501,39 @@
   #manZoneNote{width:100%;}
   /* 나의 기도제목 (개인 저널) */
   .rectabs{display:flex;background:var(--amber-tint);border-radius:14px;padding:4px;margin:14px 0 2px;}
-  .rectab{flex:1;border:none;background:none;padding:9px;border-radius:11px;font-family:"Gowun Dodum",sans-serif;font-size:14px;color:var(--soft);cursor:pointer;}
+  .rectab{flex:1;border:none;background:none;padding:8px 3px;border-radius:11px;font-family:"Gowun Dodum",sans-serif;font-size:12.5px;white-space:nowrap;color:var(--soft);cursor:pointer;}
   .rectab.on{background:var(--surface);color:var(--amber-deep);box-shadow:0 2px 8px rgba(150,120,60,.1);}
+  /* 감사노트 */
+  .thx-hero{position:relative;height:150px;border-radius:18px;overflow:hidden;background:#cdd0b8 center/cover no-repeat;box-shadow:0 8px 20px rgba(70,80,55,.12);margin-top:4px;}
+  .thx-scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(60,70,40,0) 35%,rgba(50,60,35,.48));}
+  .thx-ov{position:absolute;left:0;right:0;bottom:0;padding:12px 16px;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.3);}
+  .thx-ov .thx-lab{font-size:12px;opacity:.92;}
+  .thx-ov .thx-num{font-family:"Outfit",sans-serif;font-weight:800;font-size:30px;line-height:1.12;}
+  .thx-ov .thx-num .u{font-size:15px;font-family:"Gowun Dodum",sans-serif;font-weight:400;margin-left:2px;}
+  .thx-ov .thx-verse{font-size:11.5px;opacity:.9;margin-top:1px;}
+  .thx-stats{display:flex;gap:9px;margin-top:12px;}
+  .thx-stats .ts{flex:1;background:var(--surface);border-radius:14px;padding:11px 6px;text-align:center;box-shadow:0 3px 9px rgba(150,120,60,.05);}
+  .thx-stats .tv{font-family:"Outfit",sans-serif;font-weight:700;font-size:18px;color:#5e7d4f;}
+  .thx-stats .tl{font-size:11px;color:var(--soft);margin-top:2px;}
+  .thx-add{margin-top:14px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:0 4px 12px rgba(150,120,60,.05);}
+  .thx-add-h{font-size:14px;font-weight:700;color:#46523f;}
+  .thx-add-p{font-size:12px;color:var(--amber-deep);margin-top:3px;}
+  .thx-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+  .thx-chip{font-size:11.5px;border-radius:999px;padding:5px 11px;background:#f0ece0;color:#857b62;cursor:pointer;}
+  .thx-chip.on{background:#e7f2ea;color:#5e7d4f;}
+  .thx-add-btn{margin-top:12px;width:100%;border:none;border-radius:12px;padding:11px;background:linear-gradient(135deg,#9cb070,#7e9a54);color:#fff;font-family:"Gowun Dodum",sans-serif;font-size:14px;cursor:pointer;}
+  .thx-card{background:var(--surface);border-radius:14px;padding:12px 13px;margin-bottom:9px;box-shadow:0 3px 10px rgba(150,120,60,.05);display:flex;gap:10px;}
+  .thx-fr{width:24px;height:24px;flex-shrink:0;margin-top:1px;}
+  .thx-cb{flex:1;min-width:0;}
+  .thx-tx{font-size:13.5px;color:#3f4a3a;line-height:1.55;white-space:pre-wrap;}
+  .thx-mt{font-size:11px;color:var(--faint);margin-top:5px;}
+  .thx-tag{display:inline-block;font-size:10.5px;border-radius:999px;padding:2px 8px;background:#e7f2ea;color:#5e7d4f;margin-right:6px;}
+  .thx-pray{margin-top:8px;background:none;border:none;color:#7e9a54;font-family:"Gowun Dodum",sans-serif;font-size:12px;cursor:pointer;padding:0;}
+  .thx-ans{background:linear-gradient(180deg,#fff5ec,#fdeede);border:1px solid #f3d4bf;border-radius:16px;padding:13px 14px;margin-bottom:9px;box-shadow:0 6px 16px rgba(214,104,74,.1);}
+  .thx-rib{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:#fff;background:linear-gradient(135deg,#e88a5a,#d6685a);border-radius:999px;padding:4px 10px;}
+  .thx-rib svg{width:12px;height:12px;}
+  .thx-ans-b{font-size:14px;color:#9c4a2c;margin-top:9px;line-height:1.55;font-weight:600;white-space:pre-wrap;}
+  .thx-ans-m{font-size:11px;color:#bb8a72;margin-top:7px;}
   .mystats{display:flex;gap:9px;background:linear-gradient(135deg,#fffdf8,#fbf1da 55%,#f7e4be);border-radius:18px;padding:16px 12px;margin-top:14px;box-shadow:0 8px 22px rgba(150,120,60,.08);}
   .mystats .ms{flex:1;text-align:center;}
   .mystats .ms .v{font-family:"Outfit",sans-serif;font-size:22px;font-weight:600;color:var(--ink);}
@@ -1335,6 +1366,7 @@
         <div class="rectabs">
           <button class="rectab on" id="rt-log" onclick="recTab('log')" data-i18n="rec.tab.log">기도 기록</button>
           <button class="rectab" id="rt-my" onclick="recTab('my')" data-i18n="rec.tab.my">나의 기도제목</button>
+          <button class="rectab" id="rt-thanks" onclick="recTab('thanks')">감사노트</button>
         </div>
         <div id="recPaneLog">
           <!-- ===== 나의 기도 정원 ===== -->
@@ -1406,6 +1438,37 @@
             </div>
             <div class="myreclbl">나의 기도제목 목록</div>
             <div id="myPrayList"></div>
+          </div>
+        </div>
+        <div id="recPaneThanks" style="display:none;">
+          <div id="thxGate" class="gatecard" style="display:none;">
+            <div class="gt">나의 감사노트</div>
+            <div class="gd">로그인하면 매일의 감사와 기도 응답 간증을<br>안전하게 보관할 수 있어요.<br>(내 기록은 나만 봅니다)</div>
+            <button class="primary" onclick="go('connect')">로그인하고 시작하기</button>
+          </div>
+          <div id="thxWrap" style="display:none;">
+            <div class="thx-hero" id="thxHero">
+              <div class="thx-scrim"></div>
+              <div class="thx-ov">
+                <div class="thx-lab">감사의 열매</div>
+                <div class="thx-num"><span class="num" id="thx-count">0</span><span class="u">개</span></div>
+                <div class="thx-verse">"범사에 감사하라" · 살전 5:18</div>
+              </div>
+            </div>
+            <div class="thx-stats">
+              <div class="ts"><div class="tv num" id="thx-streak">0</div><div class="tl">감사 연속(일)</div></div>
+              <div class="ts"><div class="tv num" id="thx-month">0</div><div class="tl">이번 달</div></div>
+              <div class="ts"><div class="tv num" id="thx-answer">0</div><div class="tl">기도 응답</div></div>
+            </div>
+            <div class="thx-add">
+              <div class="thx-add-h">오늘의 감사</div>
+              <div class="thx-add-p" id="thxPrompt">오늘 감사한 일은 무엇인가요?</div>
+              <textarea class="minput" id="thxBody" maxlength="300" placeholder="감사한 일을 적어보세요…" style="min-height:64px;"></textarea>
+              <div class="thx-chips" id="thxCats"></div>
+              <button class="thx-add-btn" onclick="submitGratitude()">감사 열매 맺기</button>
+            </div>
+            <div class="myreclbl">감사의 기록</div>
+            <div id="thxList"></div>
           </div>
         </div>
       </div>
@@ -3318,12 +3381,14 @@
   var REC_ICON_PRAY='<svg viewBox="0 0 24 24"><path d="M12 3 C9.5 7.5 7.5 10.5 7.5 14 7.5 16.5 9.5 18.5 12 18.5 14.5 18.5 16.5 16.5 16.5 14 16.5 10.5 14.5 7.5 12 3z"/></svg>';
   function recTab(which){
     window._recTab=which;
-    var l=document.getElementById('rt-log'), m=document.getElementById('rt-my');
-    if(l) l.classList.toggle('on',which==='log'); if(m) m.classList.toggle('on',which==='my');
-    var pl=document.getElementById('recPaneLog'), pm=document.getElementById('recPaneMy');
+    var l=document.getElementById('rt-log'), m=document.getElementById('rt-my'), th=document.getElementById('rt-thanks');
+    if(l) l.classList.toggle('on',which==='log'); if(m) m.classList.toggle('on',which==='my'); if(th) th.classList.toggle('on',which==='thanks');
+    var pl=document.getElementById('recPaneLog'), pm=document.getElementById('recPaneMy'), pt=document.getElementById('recPaneThanks');
     if(pl) pl.style.display=which==='log'?'block':'none';
     if(pm) pm.style.display=which==='my'?'block':'none';
+    if(pt) pt.style.display=which==='thanks'?'block':'none';
     if(which==='my'){ loadMyPrayers(); } else { var f=document.getElementById('myFab'); if(f) f.style.display='none'; }
+    if(which==='thanks'){ loadGratitude(); }
   }
   function myLoggedIn(){ return (!!authProvider || !!myEmail || isAnon===false); }
   async function loadMyPrayers(){
@@ -3383,10 +3448,18 @@
     if(!SB){ closeMyModal(); return; }
     try{
       if(myEditId){
+        var _old=(MY_PRAYERS.find(function(x){return x.id===myEditId;})||{});
         var ans=document.getElementById('mpAnswer').value.trim();
         var patch={ title:title, note:note, status:modalStatus, answered_note: ans||null };
         if(modalStatus!=='praying') patch.answered_at=new Date().toISOString();
         await SB.from('my_prayers').update(patch).eq('id', myEditId);
+        try{
+          if((modalStatus==='answered'||modalStatus==='thanks') && _old.status==='praying'){
+            var _days=null; if(_old.created_at){ _days=Math.max(1,Math.round((Date.now()-new Date(_old.created_at).getTime())/86400000)); }
+            var _tb = ans ? ans : ('"'+title+'" 기도에 응답하셨어요. 감사합니다.');
+            await SB.from('gratitude_notes').insert({ body:_tb, category:'믿음', kind:'answer', prayer_id:myEditId, prayer_days:_days });
+          }
+        }catch(e){}
       } else {
         await SB.from('my_prayers').insert({ title:title, note:note, status:'praying' });
       }
@@ -3412,6 +3485,71 @@
     else { t.style.display='none'; t.innerHTML=''; }
   }
   function clearMyPrayLink(e){ if(e){e.stopPropagation();} MY_PRAYER_ID=null; MY_PRAYER_TITLE=''; updateMyPrayTag(); }
+  /* ===== 감사노트 ===== */
+  var GRATITUDE=[];
+  var THX_CATS=['믿음','가정','일·학업','건강','관계','일상'];
+  var thxCat='믿음';
+  var THX_PROMPTS=['오늘 감사한 일은 무엇인가요?','당연하게 여겼지만 감사한 것은?','오늘 누군가에게 감사한 일은?','오늘 하나님께 감사한 것은?','작지만 마음에 남은 감사는?'];
+  function thxFillCats(){ var w=document.getElementById('thxCats'); if(!w) return; w.innerHTML=THX_CATS.map(function(c){ return '<span class="thx-chip'+(c===thxCat?' on':'')+'" onclick="setThxCat(\''+c+'\')">'+mpEsc(c)+'</span>'; }).join(''); }
+  function setThxCat(c){ thxCat=c; thxFillCats(); }
+  function thxNewPrompt(){ var p=document.getElementById('thxPrompt'); if(p) p.textContent=THX_PROMPTS[Math.floor(Math.random()*THX_PROMPTS.length)]; }
+  async function loadGratitude(){
+    var gate=document.getElementById('thxGate'), wrap=document.getElementById('thxWrap');
+    if(!SB || !myLoggedIn()){ if(gate)gate.style.display='block'; if(wrap)wrap.style.display='none'; return; }
+    if(gate)gate.style.display='none'; if(wrap)wrap.style.display='block';
+    thxFillCats(); thxNewPrompt();
+    try{ var res=await SB.from('gratitude_notes').select('id,body,category,kind,prayer_id,prayer_days,created_at').order('created_at',{ascending:false}); GRATITUDE=res.data||[]; }catch(e){ GRATITUDE=[]; }
+    renderGratitude();
+  }
+  function thxDayKey(dt){ return dt.getFullYear()+'-'+dt.getMonth()+'-'+dt.getDate(); }
+  function thxStreak(){
+    var days={}; GRATITUDE.forEach(function(g){ days[thxDayKey(new Date(g.created_at))]=1; });
+    var t=new Date(), s=0;
+    if(!days[thxDayKey(t)]){ t.setDate(t.getDate()-1); if(!days[thxDayKey(t)]) return 0; }
+    while(days[thxDayKey(t)]){ s++; t.setDate(t.getDate()-1); }
+    return s;
+  }
+  function renderGratitude(){
+    var total=GRATITUDE.length;
+    var cEl=document.getElementById('thx-count'); if(cEl) cEl.textContent=total;
+    var hero=document.getElementById('thxHero'); if(hero){ hero.style.backgroundImage="url('"+(total>=12?'thanks-tree-2.jpg':'thanks-tree-1.jpg')+"')"; }
+    var now=new Date(), mc=0; GRATITUDE.forEach(function(g){ var d=new Date(g.created_at); if(d.getFullYear()===now.getFullYear()&&d.getMonth()===now.getMonth()) mc++; });
+    var ac=GRATITUDE.filter(function(g){return g.kind==='answer';}).length;
+    var e;
+    e=document.getElementById('thx-streak'); if(e) e.textContent=thxStreak();
+    e=document.getElementById('thx-month'); if(e) e.textContent=mc;
+    e=document.getElementById('thx-answer'); if(e) e.textContent=ac;
+    var list=document.getElementById('thxList'); if(!list) return;
+    if(!total){ list.innerHTML='<div class="myempty">아직 감사 열매가 없어요.<br>오늘의 감사를 한 줄 적어보세요.</div>'; return; }
+    var tk=thxDayKey(now);
+    list.innerHTML=GRATITUDE.map(function(g){
+      var d=new Date(g.created_at), isToday=thxDayKey(d)===tk;
+      var when=mpRelDay(g.created_at)+' '+('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2);
+      if(g.kind==='answer'){
+        return '<div class="thx-ans"><span class="thx-rib"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>기도 응답</span>'
+          +'<div class="thx-ans-b">'+mpEsc(g.body)+'</div>'
+          +'<div class="thx-ans-m">'+(g.prayer_days?('↳ '+g.prayer_days+'일간 드린 기도 · '):'↳ ')+'나의 기도제목에서 기록됨 · '+when+'</div></div>';
+      }
+      var olive='<svg class="thx-fr" viewBox="0 0 24 24"><ellipse cx="12" cy="14" rx="6" ry="7.5" fill="'+(isToday?'#cdd98a':'#8a9a4e')+'"/><path d="M12 7c1-3 4-3 4-3" stroke="#7faa63" stroke-width="2" fill="none" stroke-linecap="round"/></svg>';
+      var cat=g.category?('<span class="thx-tag">'+mpEsc(g.category)+'</span>'):'';
+      return '<div class="thx-card">'+olive+'<div class="thx-cb"><div class="thx-tx">'+mpEsc(g.body)+'</div><div class="thx-mt">'+cat+when+'</div>'
+        +'<button class="thx-pray" onclick="prayFromGratitude('+g.id+')">이 감사로 기도하기 ›</button></div></div>';
+    }).join('');
+  }
+  async function submitGratitude(){
+    if(!SB || !myLoggedIn()){ alert('로그인 후 감사를 기록할 수 있어요.'); return; }
+    var t=document.getElementById('thxBody'), body=(t.value||'').trim();
+    if(!body){ alert('감사한 일을 적어주세요.'); return; }
+    try{ await SB.from('gratitude_notes').insert({ body:body, category:thxCat, kind:'daily' }); }catch(e){ alert('저장에 실패했어요.'); return; }
+    t.value=''; thxNewPrompt(); showToast('감사 열매가 맺혔어요','오늘도 범사에 감사'); loadGratitude();
+  }
+  async function prayFromGratitude(id){
+    var g=GRATITUDE.find(function(x){return x.id===id;}); if(!g) return;
+    if(!confirm('이 감사를 기도제목으로 옮겨 기도를 시작할까요?\n\n"'+g.body.slice(0,40)+'"')) return;
+    try{ var ins=await SB.from('my_prayers').insert({ title:g.body.slice(0,100), note:'감사에서 시작된 기도', status:'praying' }).select('id,title').single();
+      if(ins.data){ MY_PRAYER_ID=ins.data.id; MY_PRAYER_TITLE=ins.data.title; } }catch(e){}
+    go('pray');
+  }
   /* ===== 중보기도 나눔 ===== */
   function showToast(big, sub){ var to=document.getElementById('toast'); if(!to) return; var b=document.getElementById('toastB'), s=to.querySelector('.s'); if(b)b.textContent=big; if(s)s.textContent=sub; to.classList.add('show'); setTimeout(function(){to.classList.remove('show');},2400); }
   function openReqCompose(){ document.getElementById('reqCompose').style.display='block'; var ob=document.getElementById('reqOpenBtn'); if(ob)ob.style.display='none'; setTimeout(function(){try{document.getElementById('reqBody').focus();}catch(e){}},50); }
