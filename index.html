@@ -585,6 +585,16 @@
   .g-step.cur .g-nm{color:var(--ink);font-weight:700;}
   .g-next{margin-top:13px;background:#eef2e6;border-radius:12px;padding:11px;text-align:center;font-size:13px;color:#5e6b50;}
   .g-next b{font-family:"Outfit",sans-serif;color:#4f6a43;}
+  /* 구역 순위 지표 필터 */
+  .zmetric{display:flex;gap:6px;margin-top:14px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px;}
+  .zmetric::-webkit-scrollbar{display:none;}
+  .zmtab{flex:0 0 auto;border:1px solid var(--line);background:var(--surface);color:var(--soft);font-family:"Gowun Dodum",sans-serif;font-size:12.5px;padding:7px 14px;border-radius:999px;cursor:pointer;transition:all .15s;}
+  .zmtab.on{background:var(--amber);border-color:var(--amber);color:#fff;font-weight:600;box-shadow:0 3px 9px rgba(224,169,58,.28);}
+  .zrkchg{display:inline-flex;align-items:center;font-family:"Outfit",sans-serif;font-size:11px;font-weight:700;margin-left:5px;vertical-align:middle;}
+  .zrkchg.up{color:#3f9a5a;} .zrkchg.down{color:#cf8a52;} .zrkchg.same{color:#b4bca8;}
+  .zmval{display:inline-block;font-family:"Outfit",sans-serif;font-weight:700;font-size:11.5px;color:var(--amber-deep);background:var(--amber-tint);border-radius:8px;padding:2px 7px;margin-left:6px;white-space:nowrap;vertical-align:middle;}
+  @keyframes zReorder{0%{opacity:0;transform:translateY(11px) scale(.985);}100%{opacity:1;transform:none;}}
+  .zcard.zanim{animation:zReorder .42s both;}
   /* 기도문 전문: 돋보기 아이콘 + 모달 */
   #topicMain{position:relative;}
   .topicmag{position:absolute;top:24px;right:-2px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border:none;border-radius:50%;background:rgba(150,120,60,.10);color:var(--soft);cursor:pointer;padding:0;z-index:4;transition:background .15s,color .15s,transform .1s;}
@@ -1235,7 +1245,13 @@
           <button class="zdtab" id="zdt-young" onclick="zoneTab('청년부')"><span data-i18n="dept.young">청년부</span><small id="dept-young">0분</small></button>
           <button class="zdtab" id="zdt-youth" onclick="zoneTab('청소년부')"><span data-i18n="dept.youth">청소년부</span><small id="dept-youth">0분</small></button>
         </div>
-        <div class="subglabel" id="zoneSubLabel" style="margin:16px 2px 6px;">전체 · 모든 구역 순위</div>
+        <div class="zmetric" id="zMetric">
+          <button class="zmtab on" data-m="cum" onclick="setZoneMetric('cum')">누적</button>
+          <button class="zmtab" data-m="today" onclick="setZoneMetric('today')">오늘 🔥</button>
+          <button class="zmtab" data-m="rate" onclick="setZoneMetric('rate')">참여율 💯</button>
+          <button class="zmtab" data-m="avg" onclick="setZoneMetric('avg')">1인당 평균</button>
+        </div>
+        <div class="subglabel" id="zoneSubLabel" style="margin:14px 2px 6px;">전체 · 누적 순위</div>
         <div id="zoneList"></div>
       </div>
     </div>
@@ -2681,8 +2697,10 @@
   function zonePrefix(dept){ return dept==='청년부'?'청년부 ':(dept==='청소년부'?'청소년부 ':''); }
   // 교역자·청년부·청소년부는 그대로, 나머지 구역은 '구역' 접미사 (이미 포함된 경우 제외)
   function zoneDisplayName(nm){ if(nm==='교역자'||nm==='청년부'||nm==='청소년부') return nm; if(/구역/.test(nm)||/마을$/.test(nm)||/반$/.test(nm)) return nm; return nm+' 구역'; }
+  var zoneMetric='cum', _zReorder=false;
+  function setZoneMetric(m){ zoneMetric=m; var r=document.getElementById('zMetric'); if(r){ r.querySelectorAll('.zmtab').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-m')===m); }); } _zReorder=true; buildZones(); }
   function zoneTab(d){
-    zoneDept=d;
+    zoneDept=d; _zReorder=true;
     var map={'전체':'zdt-all','장년부':'zdt-jang','청년부':'zdt-young','청소년부':'zdt-youth'};
     ['전체','장년부','청년부','청소년부'].forEach(function(x){ var b=document.getElementById(map[x]); if(b) b.classList.toggle('on', x===d); });
     var lbl={'전체':'전체 · 모든 구역 순위','장년부':'장년부 · 선교지 구역','청년부':'청년부 · 마을','청소년부':'청소년부 · 반'};
@@ -2717,11 +2735,20 @@
     if(zoneDept==='전체'){ Z = disp.slice(); }
     else if(zoneDept==='청년부'||zoneDept==='청소년부'){ Z = all.filter(function(z){ return (z[4]||'장년부')===zoneDept; }); }   // 부서 선택 시 마을/반별로 펼침
     else { Z = disp.filter(function(z){ return (z[4]||'장년부')===zoneDept; }); }
-    Z.sort(function(a,b){ return b[1]-a[1]; });
+    // 누적(시간) 기준 순위 — 변동 화살표 기준점
+    var _cumOrder=Z.slice().sort(function(a,b){return b[1]-a[1];}); var cumRank={}; _cumOrder.forEach(function(z,i){ cumRank[z[0]]=i+1; });
+    function zToday(z){ var n=z[0]; return (n==='청년부'||n==='청소년부')?(aggToday[n]||0):(TODAY_ZONE[n]||0); }
+    function zMembers(z){ var ids=zoneGroupIds(z[0],z[4]); var s=0; ids.forEach(function(id){ if(ZONE_PEOPLE[id]) s+=(ZONE_PEOPLE[id].members||0); }); return s; }
+    function zPrayedAll(z){ var ids=zoneGroupIds(z[0],z[4]); var s=0; ids.forEach(function(id){ if(ZONE_PEOPLE[id]) s+=(ZONE_PEOPLE[id].prayed||0); }); return s; }
+    function metricVal(z){ var h=z[1]; if(zoneMetric==='today') return zToday(z); if(zoneMetric==='rate'){ var m=zMembers(z); return m>0?(zPrayedAll(z)/m):0; } if(zoneMetric==='avg'){ var m=zMembers(z); return m>0?(h/m):0; } return h; }
+    Z.sort(function(a,b){ var d=metricVal(b)-metricVal(a); return d!==0?d:(b[1]-a[1]); });
+    var metricLbl={cum:'누적 순위',today:'오늘 가장 뜨거운 구역 🔥',rate:'참여율 순위 💯',avg:'1인당 평균 순위'};
+    var _dl=({'전체':'전체','장년부':'장년부','청년부':'청년부','청소년부':'청소년부'})[zoneDept]||'전체';
+    var _sl=document.getElementById('zoneSubLabel'); if(_sl) _sl.textContent=_dl+' · '+(metricLbl[zoneMetric]||'누적 순위');
     const medal=['gold','silver','bronze'];
     const list=document.getElementById('zoneList');
     if(!Z.length){ list.innerHTML='<div class="myempty">아직 구역 정보가 없어요.</div>'; return; }
-    var maxH=Z[0][1]||0;
+    var maxH=_cumOrder.length?(_cumOrder[0][1]||0):0;
     list.innerHTML=Z.map(function(z,i){
       var nm=z[0]; const hours=z[1], me=z[3]===true;
       const pray=zPray(nm), conn=zConn(nm), prep=Math.max(0,conn-pray);
@@ -2736,13 +2763,18 @@
       var tdy = (nm==='청년부'||nm==='청소년부') ? (aggToday[nm]||0) : (TODAY_ZONE[nm]||0);
       var _ix=zoneLvIdx(hours), _nx=PLEVELS[_ix+1], nextRemain=_nx?Math.max(0,_nx[0]-hours):null;
       ZONE_INFO[nm]={nm:nm,dept:z[4]||'장년부',hours:hours,pray:pray,conn:conn,today:tdy,lvNum:lvNum,lvPct:lvPct,rank:(rankMap[nm]||0),total:totalZones,nextRemain:nextRemain,groupIds:zoneGroupIds(nm,z[4])};
+      var _cr=cumRank[nm]||(i+1), _delta=_cr-(i+1);
+      var _arrow=(zoneMetric==='cum')?'':(_delta>0?'<span class="zrkchg up">▲'+_delta+'</span>':(_delta<0?'<span class="zrkchg down">▼'+(-_delta)+'</span>':'<span class="zrkchg same">–</span>'));
+      var _chip=''; if(zoneMetric==='today'){ _chip='<span class="zmval">오늘 '+zToday(z)+'분</span>'; } else if(zoneMetric==='rate'){ var _m=zMembers(z); _chip='<span class="zmval">참여 '+(_m>0?Math.round(zPrayedAll(z)/_m*100):0)+'%</span>'; } else if(zoneMetric==='avg'){ var _m2=zMembers(z); _chip='<span class="zmval">1인 '+(_m2>0?(hours/_m2).toFixed(1):'0')+'h</span>'; }
+      var _anim=_zReorder?' zanim':'', _animS=_zReorder?(' style="animation-delay:'+(i*0.04).toFixed(2)+'s"'):'';
       const rank = '<div class="zglow'+(pray>0?' live':'')+'" style="--g:'+inten.toFixed(2)+'"><span class="zg-core"></span></div>';
-      return '<div class="zcard zd-cur'+(i===0?' top':'')+(me?' me':'')+'" onclick="openZoneDetail(\''+String(nm).replace(/\\/g,"\\\\").replace(/'/g,"\\'")+'\')">'+rank+
+      return '<div class="zcard zd-cur'+(i===0?' top':'')+(me?' me':'')+_anim+'"'+_animS+' onclick="openZoneDetail(\''+String(nm).replace(/\\/g,"\\\\").replace(/'/g,"\\'")+'\')">'+rank+
         '<div class="zic '+zicClass(nm,z[4])+'">'+zoneSymbol(nm,z[4])+'</div>'+
-        '<div class="zmid"><div class="zrow1"><span class="znm">'+pfx+zoneDisplayName(nm)+'</span><span class="zh num">'+fmtHM(hours*60)+(tdy>0?'<span class="ztoday">+'+tdy+'분</span>':'')+'</span></div>'+
+        '<div class="zmid"><div class="zrow1"><span class="znm">'+pfx+zoneDisplayName(nm)+_arrow+'</span><span class="zh num">'+fmtHM(hours*60)+(tdy>0?'<span class="ztoday">+'+tdy+'분</span>':'')+_chip+'</span></div>'+
         '<div class="zbarrow"><div class="ztrack"><i style="width:'+lvPct+'%"></i></div><span class="zlvsym" title="'+PLEVELS[lvNum-1][1]+' 단계">'+flowerSVG(lvNum)+'</span><span class="zlvtxt">Lv.'+lvNum+'</span></div>'+
         botRow+'</div><div class="ar">›</div></div>';
     }).join('');
+    _zReorder=false;
   }
   /* ===== 구역 상세 (클릭 시 모달: 핵심 숫자판 + 최근 7일 그래프) ===== */
   var ZONE_INFO={}, ZONE_PEOPLE={}, _peopleLoaded=false;
@@ -3408,6 +3440,7 @@
       var r2=await SB.rpc('group_today_minutes',{p_from:from,p_to:to}); TODAY_ZONE={};
       (r2.data||[]).forEach(function(x){ TODAY_ZONE[x.group_name]=Number(x.mins)||0; });
     }catch(e){}
+    try{ await loadPeopleCounts(); }catch(e){}
     if(document.getElementById('zone').classList.contains('on')) buildZones();
   }
   function setupPresence(){
