@@ -596,6 +596,34 @@
   .zmval{display:inline-block;font-family:"Outfit",sans-serif;font-weight:700;font-size:11px;color:var(--amber-deep);background:var(--amber-tint);border-radius:8px;padding:2px 7px;margin-left:6px;white-space:nowrap;vertical-align:middle;}
   .zmlbl{font-family:"Gowun Dodum",sans-serif;font-size:11px;font-weight:500;color:var(--soft);margin-right:3px;}
   .zmnum{color:var(--amber-deep);font-weight:700;}
+  .zmnum.live{color:#e0594a;}
+  .livedot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#e0594a;margin-right:5px;vertical-align:middle;animation:livePulse 1.25s infinite;}
+  @keyframes livePulse{0%{box-shadow:0 0 0 0 rgba(224,89,74,.55)}70%{box-shadow:0 0 0 6px rgba(224,89,74,0)}100%{box-shadow:0 0 0 0 rgba(224,89,74,0)}}
+  /* 아이디어 보드 */
+  .idea-cat{display:flex;gap:6px;margin-bottom:10px;}
+  .idea-cat button{flex:1;border:1px solid var(--line);background:var(--surface);color:var(--soft);font-family:"Gowun Dodum",sans-serif;font-size:12px;padding:7px 4px;border-radius:10px;cursor:pointer;}
+  .idea-cat button.on{background:var(--amber);border-color:var(--amber);color:#fff;font-weight:600;}
+  .icard{background:var(--surface);border-radius:16px;padding:14px 15px;margin-bottom:8px;box-shadow:0 4px 12px rgba(150,120,60,.06);}
+  .ic-top{display:flex;align-items:center;gap:6px;margin-bottom:8px;}
+  .ic-chip{font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;}
+  .ic-chip.c1{background:#e7f2ea;color:#2f6f54;}
+  .ic-chip.c2{background:#fbe6e0;color:#b5503a;}
+  .ic-chip.c3{background:#e9e6f5;color:#6a55a0;}
+  .ic-chip.c4{background:#eef0e7;color:#7a8470;}
+  .ic-badge{margin-left:auto;font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;}
+  .ic-badge.s1{background:#eef0e7;color:#8a948c;}
+  .ic-badge.s2{background:#fdf0d8;color:#b07d20;}
+  .ic-badge.s3{background:#e2f0e6;color:#2f6f54;}
+  .ic-body{font-size:14px;color:var(--ink);line-height:1.6;white-space:pre-wrap;word-break:break-word;}
+  .ic-foot{display:flex;align-items:center;gap:8px;margin-top:10px;}
+  .ic-meta{font-size:11.5px;color:var(--soft);}
+  .ic-vote{margin-left:auto;display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);background:var(--surface);color:var(--soft);border-radius:999px;padding:5px 12px;font-family:"Outfit",sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:all .15s;}
+  .ic-vote svg{width:15px;height:15px;}
+  .ic-vote.on{background:#fdecea;border-color:#f3b8ad;color:#d6685a;}
+  .ic-vote.on svg{fill:#d6685a;stroke:#d6685a;}
+  .ic-admin{display:flex;gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid var(--line);}
+  .ic-admin button{flex:1;border:1px solid var(--line);background:var(--surface);color:var(--soft);font-size:11.5px;padding:6px 4px;border-radius:8px;cursor:pointer;font-family:"Gowun Dodum",sans-serif;}
+  .ic-admin button.cur{background:var(--amber-tint);border-color:var(--amber);color:var(--amber-deep);font-weight:700;}
   @keyframes zReorder{0%{opacity:0;transform:translateY(11px) scale(.985);}100%{opacity:1;transform:none;}}
   .zcard.zanim{animation:zReorder .42s both;}
   /* 기도문 전문: 돋보기 아이콘 + 모달 */
@@ -1253,6 +1281,7 @@
           <button class="zmtab" data-m="today" onclick="setZoneMetric('today')">오늘</button>
           <button class="zmtab" data-m="rate" onclick="setZoneMetric('rate')">참여율</button>
           <button class="zmtab" data-m="avg" onclick="setZoneMetric('avg')">1인당</button>
+          <button class="zmtab zmtab-live" data-m="live" onclick="setZoneMetric('live')"><i class="livedot"></i>기도중</button>
         </div>
         <div class="subglabel" id="zoneSubLabel" style="margin:14px 2px 6px;">전체 · 누적 순위</div>
         <div id="zoneList"></div>
@@ -1408,6 +1437,7 @@
         <div class="statusbar"><span>9:41</span><span class="r">5G &nbsp; 87%</span></div>
         <div class="h-title" style="margin-top:6px;" data-i18n="more.title">더보기</div>
         <div class="helpentry" onclick="go('help')"><span class="he-ic">📖</span><span class="he-tx"><span class="he-t" data-i18n="more.help">처음 오셨나요?</span><span class="he-d">5만시간 기도 사용 설명서 · 빠른 시작</span></span><span class="he-ar">›</span></div>
+        <div class="helpentry" onclick="go('ideas')" style="background:linear-gradient(110deg,#eef6ee,#e3f0e6 60%,#eef6ee);box-shadow:0 6px 18px rgba(80,140,90,.12);"><span class="he-ic">💡</span><span class="he-tx"><span class="he-t">아이디어 보드</span><span class="he-d" style="color:#3f8a5a;">기능 아이디어·개선 의견을 남기고 공감해요</span></span><span class="he-ar" style="color:#3f8a5a;">›</span></div>
         <div class="seclbl" data-i18n="sec.lang">언어</div>
         <div class="langsel">
           <button class="langbtn" id="lang-ko" onclick="setLang('ko')">한국어</button>
@@ -1539,6 +1569,29 @@
       </div>
     </div>
 
+    <!-- ===== 아이디어 보드 ===== -->
+    <div class="screen" id="ideas">
+      <div class="pad">
+        <div class="subhead"><span class="bk" onclick="go('more')">‹</span><span class="ttl">아이디어 보드</span></div>
+        <div class="h-desc" style="text-align:center;margin-top:6px;">기능 아이디어·개선 의견을 남기고, 공감을 눌러주세요</div>
+        <button class="primary" style="margin-top:14px;" id="ideaOpenBtn" onclick="openIdeaCompose()">＋ 의견·아이디어 보내기</button>
+        <div id="ideaCompose" style="display:none;margin-top:12px;">
+          <div class="idea-cat" id="ideaCatSel">
+            <button class="on" data-c="기능 제안" onclick="setIdeaCat('기능 제안')">기능 제안</button>
+            <button data-c="불편·버그" onclick="setIdeaCat('불편·버그')">불편·버그</button>
+            <button data-c="디자인" onclick="setIdeaCat('디자인')">디자인</button>
+            <button data-c="기타" onclick="setIdeaCat('기타')">기타</button>
+          </div>
+          <textarea class="minput" id="ideaBody" maxlength="600" placeholder="이런 기능이 있으면 좋겠어요 / 이 부분이 불편해요 등 자유롭게 남겨주세요."></textarea>
+          <input class="minput" id="ideaNick" maxlength="20" placeholder="별명 (선택 · 비우면 익명)">
+          <div class="mbtns"><button class="cancel" onclick="closeIdeaCompose()">취소</button><button class="save" onclick="submitIdea()">보내기</button></div>
+          <div class="reqhint">※ 익명으로도 보낼 수 있어요. 모두에게 공개되며 공감을 받을 수 있어요.</div>
+        </div>
+        <div class="reclbl" style="margin-top:20px;">아이디어 · 의견 <span style="font-size:11px;color:var(--soft);font-weight:400;">공감순</span></div>
+        <div id="ideaList"><div class="myempty">불러오는 중…</div></div>
+      </div>
+    </div>
+
     <div class="tabbar">
       <div class="tab active" data-s="home" onclick="go('home')"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v9a1 1 0 001 1h12a1 1 0 001-1v-9"/></svg><span data-i18n="nav.home">홈</span></div>
       <div class="tab" data-s="pray" onclick="go('pray')"><svg viewBox="0 0 24 28" fill="none"><path d="M12 4 C9 9 6.5 15 6 19 C5.7 22 8 25 12 25 Z"/><path d="M12 4 C15 9 17.5 15 18 19 C18.3 22 16 25 12 25 Z"/></svg><span data-i18n="nav.pray">기도하기</span></div>
@@ -1639,7 +1692,7 @@
     el.innerHTML='<span class="d"></span><span>방금 <b>'+zone+'</b> 구역이 함께 기도에 참여했어요</span>';
     el.classList.add('on'); clearTimeout(tickerTk); tickerTk=setTimeout(function(){ el.classList.remove('on'); }, 4500);
   }
-  const APP=['home','pray','zone','record','more','connect','topics','intercede','admin'];
+  const APP=['home','pray','zone','record','more','connect','topics','intercede','admin','ideas'];
   // ===== 다국어(메뉴·버튼 전용) — 한국어/English/Deutsch =====
   var LANG=(function(){ try{ return localStorage.getItem('omansigan_lang')||'ko'; }catch(e){ return 'ko'; } })();
   var I18N={
@@ -1713,6 +1766,7 @@
     if(id==='record'){ loadMyRecord(); recTab(window._recTab||'log'); loadGraceCards(); }
     if(id==='intercede') loadRequests();
     if(id==='admin') loadAdminReview();
+    if(id==='ideas') loadIdeas();
     if(id==='more' || id==='connect') syncAuthUI();
     if(id==='pray' || id==='more') syncBgmUI();
     if(id==='home' && typeof setTimeBanner==='function') setTimeBanner();
@@ -2743,15 +2797,16 @@
     function zToday(z){ var n=z[0]; return (n==='청년부'||n==='청소년부')?(aggToday[n]||0):(TODAY_ZONE[n]||0); }
     function zMembers(z){ var ids=zoneGroupIds(z[0],z[4]); var s=0; ids.forEach(function(id){ if(ZONE_PEOPLE[id]) s+=(ZONE_PEOPLE[id].members||0); }); return s; }
     function zPrayedAll(z){ var ids=zoneGroupIds(z[0],z[4]); var s=0; ids.forEach(function(id){ if(ZONE_PEOPLE[id]) s+=(ZONE_PEOPLE[id].prayed||0); }); return s; }
-    function metricVal(z){ var h=z[1]; if(zoneMetric==='today') return zToday(z); if(zoneMetric==='rate'){ var m=zMembers(z); return m>0?(zPrayedAll(z)/m):0; } if(zoneMetric==='avg'){ var m=zMembers(z); return m>0?(h/m):0; } return h; }
+    function metricVal(z){ var h=z[1]; if(zoneMetric==='live') return zPray(z[0]); if(zoneMetric==='today') return zToday(z); if(zoneMetric==='rate'){ var m=zMembers(z); return m>0?(zPrayedAll(z)/m):0; } if(zoneMetric==='avg'){ var m=zMembers(z); return m>0?(h/m):0; } return h; }
     Z.sort(function(a,b){ var d=metricVal(b)-metricVal(a); return d!==0?d:(b[1]-a[1]); });
-    var metricLbl={cum:'누적 기도시간 순위',today:'오늘 기도시간 순위',rate:'참여율 순위 · 멤버 중 기도 참여 비율',avg:'1인당 평균 기도시간 순위'};
+    var metricLbl={cum:'누적 기도시간 순위',today:'오늘 기도시간 순위',rate:'참여율 순위 · 멤버 중 기도 참여 비율',avg:'1인당 평균 기도시간 순위',live:'지금 기도 중인 구역 · LIVE'};
     var _dl=({'전체':'전체','장년부':'장년부','청년부':'청년부','청소년부':'청소년부'})[zoneDept]||'전체';
     var _sl=document.getElementById('zoneSubLabel'); if(_sl) _sl.textContent=_dl+' · '+(metricLbl[zoneMetric]||'누적 순위');
     const medal=['gold','silver','bronze'];
     const list=document.getElementById('zoneList');
     if(!Z.length){ list.innerHTML='<div class="myempty">아직 구역 정보가 없어요.</div>'; return; }
     var maxH=_cumOrder.length?(_cumOrder[0][1]||0):0;
+    var _flipPrev=null; if(_zReorder){ _flipPrev={}; list.querySelectorAll('.zcard[data-zn]').forEach(function(c){ _flipPrev[c.getAttribute('data-zn')]=c.getBoundingClientRect().top; }); }
     list.innerHTML=Z.map(function(z,i){
       var nm=z[0]; const hours=z[1], me=z[3]===true;
       const pray=zPray(nm), conn=zConn(nm), prep=Math.max(0,conn-pray);
@@ -2769,18 +2824,24 @@
       var _cr=cumRank[nm]||(i+1), _delta=_cr-(i+1);
       var _arrow=(zoneMetric==='cum')?'':(_delta>0?'<span class="zrkchg up">▲'+_delta+'</span>':(_delta<0?'<span class="zrkchg down">▼'+(-_delta)+'</span>':'<span class="zrkchg same">–</span>'));
       var _main;
-      if(zoneMetric==='today'){ _main='<span class="zmlbl">오늘</span><span class="zmnum">'+korDur(zToday(z))+'</span>'; }
+      if(zoneMetric==='live'){ var _lv=zPray(z[0]); _main = _lv>0 ? ('<i class="livedot"></i><span class="zmlbl">기도중</span><span class="zmnum live">'+_lv+'명</span>') : '<span class="zmlbl">지금 없음</span>'; }
+      else if(zoneMetric==='today'){ _main='<span class="zmlbl">오늘</span><span class="zmnum">'+korDur(zToday(z))+'</span>'; }
       else if(zoneMetric==='rate'){ var _m=zMembers(z); _main='<span class="zmlbl">참여</span><span class="zmnum">'+(_m>0?Math.round(zPrayedAll(z)/_m*100):0)+'%</span>'; }
       else if(zoneMetric==='avg'){ var _m2=zMembers(z); _main='<span class="zmlbl">1인</span><span class="zmnum">'+(_m2>0?(hours/_m2).toFixed(1):'0')+'시간</span>'; }
       else { _main=fmtHM(hours*60)+(tdy>0?'<span class="ztoday">+'+tdy+'분</span>':''); }
       var _anim=_zReorder?' zanim':'', _animS=_zReorder?(' style="animation-delay:'+(i*0.04).toFixed(2)+'s"'):'';
       const rank = '<div class="zglow'+(pray>0?' live':'')+'" style="--g:'+inten.toFixed(2)+'"><span class="zg-core"></span></div>';
-      return '<div class="zcard zd-cur'+(i===0?' top':'')+(me?' me':'')+_anim+'"'+_animS+' onclick="openZoneDetail(\''+String(nm).replace(/\\/g,"\\\\").replace(/'/g,"\\'")+'\')">'+rank+
+      return '<div class="zcard zd-cur'+(i===0?' top':'')+(me?' me':'')+'" data-zn="'+mpEsc(nm)+'" onclick="openZoneDetail(\''+String(nm).replace(/\\/g,"\\\\").replace(/'/g,"\\'")+'\')">'+rank+
         '<div class="zic '+zicClass(nm,z[4])+'">'+zoneSymbol(nm,z[4])+'</div>'+
         '<div class="zmid"><div class="zrow1"><span class="znm">'+pfx+zoneDisplayName(nm)+'</span><span class="zh num">'+_arrow+_main+'</span></div>'+
         '<div class="zbarrow"><div class="ztrack"><i style="width:'+lvPct+'%"></i></div><span class="zlvsym" title="'+PLEVELS[lvNum-1][1]+' 단계">'+flowerSVG(lvNum)+'</span><span class="zlvtxt">Lv.'+lvNum+'</span></div>'+
         botRow+'</div><div class="ar">›</div></div>';
     }).join('');
+    if(_zReorder && _flipPrev){ var _cs=list.querySelectorAll('.zcard[data-zn]');
+      _cs.forEach(function(c){ var zn=c.getAttribute('data-zn'); if(_flipPrev[zn]!=null){ var dy=_flipPrev[zn]-c.getBoundingClientRect().top; if(dy){ c.style.transform='translateY('+dy+'px)'; } } });
+      void list.offsetWidth;
+      _cs.forEach(function(c){ c.style.transition='transform .5s cubic-bezier(.2,.7,.3,1)'; c.style.transform=''; });
+    }
     _zReorder=false;
   }
   /* ===== 구역 상세 (클릭 시 모달: 핵심 숫자판 + 최근 7일 그래프) ===== */
@@ -3297,6 +3358,37 @@
     try{ await SB.rpc('admin_set_status_v2',{ p_id: id, p_status: status }); }catch(e){ alert('처리에 실패했어요.'); return; }
     try{ var res=await SB.rpc('admin_pending_v2'); renderAdmin(res.data||[]); }catch(e){}
   }
+  /* ===== 아이디어 보드 ===== */
+  var ideaCat='기능 제안';
+  function setIdeaCat(c){ ideaCat=c; document.querySelectorAll('#ideaCatSel button').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-c')===c); }); }
+  function openIdeaCompose(){ var c=document.getElementById('ideaCompose'),b=document.getElementById('ideaOpenBtn'); if(c)c.style.display='block'; if(b)b.style.display='none'; }
+  function closeIdeaCompose(){ var c=document.getElementById('ideaCompose'),b=document.getElementById('ideaOpenBtn'); if(c)c.style.display='none'; if(b)b.style.display='block'; var t=document.getElementById('ideaBody'); if(t)t.value=''; var n=document.getElementById('ideaNick'); if(n)n.value=''; }
+  async function submitIdea(){ var body=(document.getElementById('ideaBody').value||'').trim(); if(!body){ alert('내용을 입력해주세요.'); return; } if(!SB){ alert('연결이 필요합니다.'); return; } var nick=(document.getElementById('ideaNick').value||'').trim();
+    try{ await SB.rpc('submit_idea',{p_category:ideaCat,p_body:body,p_nickname:nick}); }catch(e){ alert('전송에 실패했어요. 잠시 후 다시 시도해주세요.'); return; }
+    closeIdeaCompose(); showToast('의견이 등록됐어요','감사합니다! 공감을 받을 수 있어요'); loadIdeas(); }
+  function ideaCatClass(c){ return c==='기능 제안'?'c1':(c==='불편·버그'?'c2':(c==='디자인'?'c3':'c4')); }
+  function ideaStatusClass(s){ return s==='반영됨'?'s3':(s==='검토중'?'s2':'s1'); }
+  async function loadIdeas(){ var list=document.getElementById('ideaList'); if(!list) return; if(!SB){ list.innerHTML='<div class="myempty">연결이 필요합니다.</div>'; return; }
+    var rows=[]; try{ var res=await SB.rpc('list_ideas'); rows=res.data||[]; }catch(e){ rows=[]; } renderIdeas(rows); }
+  function renderIdeas(rows){
+    var list=document.getElementById('ideaList'); if(!list) return;
+    if(!rows.length){ list.innerHTML='<div class="myempty">아직 등록된 아이디어가 없어요.<br>첫 의견을 남겨보세요.</div>'; return; }
+    var heart='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 21C5 16 3 12 3 8.5 3 6 5 4 7.5 4 9.5 4 11 5.2 12 6.7 13 5.2 14.5 4 16.5 4 19 4 21 6 21 8.5 21 12 19 16 12 21z"/></svg>';
+    var clergy=isClergy();
+    list.innerHTML=rows.map(function(r){
+      var who=r.nickname?mpEsc(r.nickname):'익명';
+      var admin='';
+      if(clergy){ admin='<div class="ic-admin">'+['접수됨','검토중','반영됨'].map(function(s){ return '<button class="'+(r.status===s?'cur':'')+'" onclick="ideaSetStatus('+r.id+',&quot;'+s+'&quot;)">'+s+'</button>'; }).join('')+'</div>'; }
+      return '<div class="icard">'
+        +'<div class="ic-top"><span class="ic-chip '+ideaCatClass(r.category)+'">'+mpEsc(r.category)+'</span><span class="ic-badge '+ideaStatusClass(r.status)+'">'+mpEsc(r.status)+'</span></div>'
+        +'<div class="ic-body">'+mpEsc(r.body)+'</div>'
+        +'<div class="ic-foot"><span class="ic-meta">'+who+' · '+mpRelDay(r.created_at)+'</span>'
+        +'<button class="ic-vote'+(r.voted?' on':'')+'" onclick="toggleIdeaVote('+r.id+',this)">'+heart+'<span>공감</span> <b data-c>'+(r.vote_count||0)+'</b></button></div>'
+        +admin+'</div>';
+    }).join('');
+  }
+  async function toggleIdeaVote(id, btn){ if(!SB) return; btn.classList.toggle('on'); var c=btn.querySelector('[data-c]'); try{ var res=await SB.rpc('toggle_idea_vote',{p_id:id}); if(c && typeof res.data==='number') c.textContent=res.data; }catch(e){ btn.classList.toggle('on'); } }
+  async function ideaSetStatus(id, status){ if(!SB) return; try{ await SB.rpc('admin_set_idea_status_v2',{p_id:id,p_status:status}); }catch(e){ alert('처리에 실패했어요.'); return; } loadIdeas(); }
   function korDur(m){ m=Math.round(m||0); if(m<=0) return '0분'; const h=Math.floor(m/60), r=m%60; return h?(h+'시간'+(r?' '+r+'분':'')):(r+'분'); }
   function setTxt(id,v){ var e=document.getElementById(id); if(e) e.textContent=v; }
   // ===== 나의 기도 정원 (개인 누적시간 기반 레벨) =====
