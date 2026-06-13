@@ -343,6 +343,9 @@
   .ydbanner{background:rgba(250,238,216,.94);}
   .ydbanner .ps-ico{background:#f0dcab;color:#9a6a1e;}
   .ydbanner .ps-tx b{color:#b5742a;}
+  .ydbanner{position:relative;}
+  .yd-x{margin-left:auto;flex-shrink:0;width:24px;height:24px;border:none;background:rgba(120,95,40,.10);color:#9a8a66;border-radius:50%;font-size:16px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;}
+  .yd-x:hover{background:rgba(120,95,40,.2);color:#6f5e3a;}
   .topicamen{display:flex;flex-direction:row;align-items:center;justify-content:center;gap:12px;margin:0;}
   .topicamen .amenbtn{position:relative;display:inline-flex;align-items:center;gap:7px;border:none;cursor:pointer;background:linear-gradient(135deg,#eda79b,#e58a80);color:#fff;font-family:"Gowun Dodum",sans-serif;font-size:13.5px;font-weight:600;padding:9px 18px;border-radius:999px;box-shadow:0 6px 15px rgba(214,130,118,.34);transition:transform .12s,box-shadow .2s;overflow:visible;}
   .topicamen .amenbtn:hover{box-shadow:0 8px 19px rgba(214,130,118,.42);}
@@ -1375,9 +1378,10 @@
         </div>
 
         <div class="praysame psclick" onclick="showLivePeople()"><span class="ps-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.3"/><path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5M15 19c0-2 1-3.4 3-3.4s3 1.4 3 3.4"/></svg></span><span class="ps-tx" id="liveLinePray">지금 <b>0</b>명이 같은 기도제목으로 기도하고 있어요</span><span class="ps-avas" id="sameAva"><span class="wava" style="background:#cdb89a"><svg viewBox="0 0 36 36"><circle cx="18" cy="14" r="6.3" fill="#fff" opacity=".92"/><path d="M6 33c0-6.6 5.4-10 12-10s12 3.4 12 10" fill="#fff" opacity=".92"/></svg></span><span class="wava" style="background:#9aa6a0"><svg viewBox="0 0 36 36"><circle cx="18" cy="14" r="6.3" fill="#fff" opacity=".92"/><path d="M6 33c0-6.6 5.4-10 12-10s12 3.4 12 10" fill="#fff" opacity=".92"/></svg></span><span class="wava" style="background:#e3b86a"><svg viewBox="0 0 36 36"><circle cx="18" cy="14" r="6.3" fill="#fff" opacity=".92"/><path d="M6 33c0-6.6 5.4-10 12-10s12 3.4 12 10" fill="#fff" opacity=".92"/></svg></span></span><span class="ps-ar">›</span></div>
-        <div class="praysame ydbanner">
+        <div class="praysame ydbanner" id="ydBanner">
           <span class="ps-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 12a8.5 8.5 0 1 1-2.6-6.1"/><path d="M20.5 4.2v4.3h-4.3"/><path d="M12 8v4.2l3 1.8"/></svg></span>
           <span class="ps-tx" id="ydBannerTx">어제, 우리의 기록</span>
+          <button type="button" class="yd-x" onclick="dismissYd(event)" title="오늘은 그만 보기" aria-label="오늘은 그만 보기">×</button>
         </div>
         <button id="finishBtn" onclick="togglePray()" style="display:none;">기도 시작</button>
       </div>
@@ -2267,7 +2271,10 @@
   var YDAY_PRAYERS=0, YDAY_VISITS=0, YDAY_MIN=0, _ydTimer=null, _ydPhase=0;
   function ydMinText(m){ var h=Math.floor(m/60), mm=m%60; return h>0?(h+'시간 '+mm+'분'):(mm+'분'); }
   function ydBannerMsgs(){ return ['어제는 <b>'+YDAY_PRAYERS+'명</b>의 성도가 기도했어요','어제 <b>'+YDAY_VISITS+'명</b>이 다녀갔어요','어제 함께 드린 기도 <b>'+ydMinText(YDAY_MIN)+'</b>이에요']; }
-  function ydBannerStart(){ var el=document.getElementById('ydBannerTx'); if(!el || (!YDAY_PRAYERS && !YDAY_VISITS && !YDAY_MIN)) return;
+  function ydDayKey(){ var d=new Date(); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
+  function ydDismissed(){ try{ return localStorage.getItem('ydDismiss')===ydDayKey(); }catch(e){ return false; } }
+  function dismissYd(ev){ if(ev){ ev.stopPropagation(); ev.preventDefault(); } try{ localStorage.setItem('ydDismiss', ydDayKey()); }catch(e){} var b=document.getElementById('ydBanner'); if(b) b.style.display='none'; try{ if(_ydTimer) clearInterval(_ydTimer); }catch(e){} }
+  function ydBannerStart(){ var _yb=document.getElementById('ydBanner'); if(ydDismissed()){ if(_yb) _yb.style.display='none'; return; } if(_yb) _yb.style.display=''; var el=document.getElementById('ydBannerTx'); if(!el || (!YDAY_PRAYERS && !YDAY_VISITS && !YDAY_MIN)) return;
     _ydPhase=0; el.innerHTML=ydBannerMsgs()[0];
     if(_ydTimer) clearInterval(_ydTimer);
     _ydTimer=setInterval(function(){ var e2=document.getElementById('ydBannerTx'); if(!e2){clearInterval(_ydTimer);return;} _ydPhase=(_ydPhase+1)%3; e2.style.transition='opacity .35s'; e2.style.opacity='0'; setTimeout(function(){ e2.innerHTML=ydBannerMsgs()[_ydPhase]; e2.style.opacity='1'; },300); }, 3800); }

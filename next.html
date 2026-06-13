@@ -343,6 +343,9 @@
   .ydbanner{background:rgba(250,238,216,.94);}
   .ydbanner .ps-ico{background:#f0dcab;color:#9a6a1e;}
   .ydbanner .ps-tx b{color:#b5742a;}
+  .ydbanner{position:relative;}
+  .yd-x{margin-left:auto;flex-shrink:0;width:24px;height:24px;border:none;background:rgba(120,95,40,.10);color:#9a8a66;border-radius:50%;font-size:16px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;}
+  .yd-x:hover{background:rgba(120,95,40,.2);color:#6f5e3a;}
   .topicamen{display:flex;flex-direction:row;align-items:center;justify-content:center;gap:12px;margin:0;}
   .topicamen .amenbtn{position:relative;display:inline-flex;align-items:center;gap:7px;border:none;cursor:pointer;background:linear-gradient(135deg,#eda79b,#e58a80);color:#fff;font-family:"Gowun Dodum",sans-serif;font-size:13.5px;font-weight:600;padding:9px 18px;border-radius:999px;box-shadow:0 6px 15px rgba(214,130,118,.34);transition:transform .12s,box-shadow .2s;overflow:visible;}
   .topicamen .amenbtn:hover{box-shadow:0 8px 19px rgba(214,130,118,.42);}
@@ -505,6 +508,16 @@
   .rectab.on{background:var(--surface);color:var(--amber-deep);box-shadow:0 2px 8px rgba(150,120,60,.1);}
   /* 감사노트 */
   .thx-hero{position:relative;height:290px;border-radius:18px;overflow:hidden;background:#cdd0b8 center/cover no-repeat;box-shadow:0 8px 20px rgba(70,80,55,.12);margin-top:14px;}
+  #thxHero .thx-fruits{position:absolute;inset:0;pointer-events:none;z-index:2;}
+  #thxHero .thx-ov{z-index:3;}
+  .thx-fruit{position:absolute;width:10px;height:13px;border-radius:50% 50% 48% 48%;transform-origin:50% -5px;animation:fruitSway var(--d,4s) ease-in-out var(--dl,0s) infinite;}
+  .thx-fruit::before{content:"";position:absolute;top:-4px;left:50%;width:1.1px;height:4px;background:#6b7a3e;transform:translateX(-50%);}
+  .thx-fruit.green{background:radial-gradient(circle at 35% 28%, #c2cf78, #6f8a3e 72%);box-shadow:0 1px 2px rgba(50,60,25,.3);}
+  .thx-fruit.dark{background:radial-gradient(circle at 35% 28%, #86934f, #3f4a24 72%);box-shadow:0 1px 2px rgba(40,48,20,.35);}
+  .thx-fruit.gold{background:radial-gradient(circle at 35% 28%, #ffe9a8, #e0a92e 66%);animation:fruitSway var(--d,4s) ease-in-out var(--dl,0s) infinite, goldGlow 2.6s ease-in-out infinite;}
+  @keyframes fruitSway{0%,100%{transform:rotate(-5deg) scale(var(--sc,1))}50%{transform:rotate(5deg) scale(var(--sc,1))}}
+  #thx-next{display:none!important;}
+  @keyframes goldGlow{0%,100%{box-shadow:0 0 5px 1px rgba(240,196,80,.5)}50%{box-shadow:0 0 10px 3px rgba(240,196,80,.95)}}
   .thx-ov .thx-next{font-size:11px;opacity:.92;margin-top:4px;background:rgba(255,255,255,.22);display:inline-block;padding:2px 9px;border-radius:999px;backdrop-filter:blur(2px);}
   .thx-stats .ts-ic{display:flex;justify-content:center;margin-bottom:3px;}
   .thx-stats .ts-ic svg{width:18px;height:18px;}
@@ -1365,9 +1378,10 @@
         </div>
 
         <div class="praysame psclick" onclick="showLivePeople()"><span class="ps-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.3"/><path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5M15 19c0-2 1-3.4 3-3.4s3 1.4 3 3.4"/></svg></span><span class="ps-tx" id="liveLinePray">지금 <b>0</b>명이 같은 기도제목으로 기도하고 있어요</span><span class="ps-avas" id="sameAva"><span class="wava" style="background:#cdb89a"><svg viewBox="0 0 36 36"><circle cx="18" cy="14" r="6.3" fill="#fff" opacity=".92"/><path d="M6 33c0-6.6 5.4-10 12-10s12 3.4 12 10" fill="#fff" opacity=".92"/></svg></span><span class="wava" style="background:#9aa6a0"><svg viewBox="0 0 36 36"><circle cx="18" cy="14" r="6.3" fill="#fff" opacity=".92"/><path d="M6 33c0-6.6 5.4-10 12-10s12 3.4 12 10" fill="#fff" opacity=".92"/></svg></span><span class="wava" style="background:#e3b86a"><svg viewBox="0 0 36 36"><circle cx="18" cy="14" r="6.3" fill="#fff" opacity=".92"/><path d="M6 33c0-6.6 5.4-10 12-10s12 3.4 12 10" fill="#fff" opacity=".92"/></svg></span></span><span class="ps-ar">›</span></div>
-        <div class="praysame ydbanner">
+        <div class="praysame ydbanner" id="ydBanner">
           <span class="ps-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 12a8.5 8.5 0 1 1-2.6-6.1"/><path d="M20.5 4.2v4.3h-4.3"/><path d="M12 8v4.2l3 1.8"/></svg></span>
           <span class="ps-tx" id="ydBannerTx">어제, 우리의 기록</span>
+          <button type="button" class="yd-x" onclick="dismissYd(event)" title="오늘은 그만 보기" aria-label="오늘은 그만 보기">×</button>
         </div>
         <button id="finishBtn" onclick="togglePray()" style="display:none;">기도 시작</button>
       </div>
@@ -2257,7 +2271,10 @@
   var YDAY_PRAYERS=0, YDAY_VISITS=0, YDAY_MIN=0, _ydTimer=null, _ydPhase=0;
   function ydMinText(m){ var h=Math.floor(m/60), mm=m%60; return h>0?(h+'시간 '+mm+'분'):(mm+'분'); }
   function ydBannerMsgs(){ return ['어제는 <b>'+YDAY_PRAYERS+'명</b>의 성도가 기도했어요','어제 <b>'+YDAY_VISITS+'명</b>이 다녀갔어요','어제 함께 드린 기도 <b>'+ydMinText(YDAY_MIN)+'</b>이에요']; }
-  function ydBannerStart(){ var el=document.getElementById('ydBannerTx'); if(!el || (!YDAY_PRAYERS && !YDAY_VISITS && !YDAY_MIN)) return;
+  function ydDayKey(){ var d=new Date(); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
+  function ydDismissed(){ try{ return localStorage.getItem('ydDismiss')===ydDayKey(); }catch(e){ return false; } }
+  function dismissYd(ev){ if(ev){ ev.stopPropagation(); ev.preventDefault(); } try{ localStorage.setItem('ydDismiss', ydDayKey()); }catch(e){} var b=document.getElementById('ydBanner'); if(b) b.style.display='none'; try{ if(_ydTimer) clearInterval(_ydTimer); }catch(e){} }
+  function ydBannerStart(){ var _yb=document.getElementById('ydBanner'); if(ydDismissed()){ if(_yb) _yb.style.display='none'; return; } if(_yb) _yb.style.display=''; var el=document.getElementById('ydBannerTx'); if(!el || (!YDAY_PRAYERS && !YDAY_VISITS && !YDAY_MIN)) return;
     _ydPhase=0; el.innerHTML=ydBannerMsgs()[0];
     if(_ydTimer) clearInterval(_ydTimer);
     _ydTimer=setInterval(function(){ var e2=document.getElementById('ydBannerTx'); if(!e2){clearInterval(_ydTimer);return;} _ydPhase=(_ydPhase+1)%3; e2.style.transition='opacity .35s'; e2.style.opacity='0'; setTimeout(function(){ e2.innerHTML=ydBannerMsgs()[_ydPhase]; e2.style.opacity='1'; },300); }, 3800); }
@@ -3586,6 +3603,28 @@
     while(days[thxDayKey(t)]){ s++; t.setDate(t.getDate()-1); }
     return s;
   }
+  var GFPOS=[[31,18],[40,14],[49,16],[58,14],[66,20],[24,24],[34,22],[44,21],[53,22],[62,24],[71,29],[21,32],[30,30],[40,29],[50,28],[59,29],[68,33],[75,38],[25,40],[34,38],[44,37],[53,37],[62,40],[70,44],[28,48],[37,46],[47,45],[56,46],[65,49],[33,54],[43,52],[52,52],[60,54],[38,60],[48,58],[56,59],[45,24],[55,32],[36,50],[50,42]];
+  function injectGratFruit(){
+    try{
+      var hero=document.getElementById('thxHero'); if(!hero) return;
+      var total=parseInt((document.getElementById('thx-count')||{}).textContent||'0',10)||0;
+      var gold=parseInt((document.getElementById('thx-answer')||{}).textContent||'0',10)||0;
+      var old=hero.querySelector('.thx-fruits'); if(old) old.remove();
+      if(total<=0) return;
+      var n=Math.min(total, GFPOS.length), goldN=Math.min(gold, n);
+      var layer=document.createElement('div'); layer.className='thx-fruits';
+      var goldSet={}; if(goldN>0){ var step=n/goldN; for(var g=0;g<goldN;g++){ goldSet[Math.floor(g*step)]=1; } }
+      for(var i=0;i<n;i++){
+        var fr=document.createElement('span');
+        fr.className='thx-fruit '+(goldSet[i]?'gold':(i%3===0?'dark':'green'));
+        fr.style.left=GFPOS[i][0]+'%'; fr.style.top=GFPOS[i][1]+'%';
+        var sc=(0.82+((i*7)%5)*0.08).toFixed(2); fr.style.setProperty('--sc',sc);
+        fr.style.setProperty('--d',(3+Math.random()*3.5).toFixed(2)+'s'); fr.style.setProperty('--dl',(-Math.random()*5).toFixed(2)+'s');
+        layer.appendChild(fr);
+      }
+      hero.appendChild(layer);
+    }catch(e){}
+  }
   function renderGratitude(){
     var total=GRATITUDE.length;
     var cEl=document.getElementById('thx-count'); if(cEl) cEl.textContent=total;
@@ -3597,6 +3636,7 @@
     e=document.getElementById('thx-streak'); if(e) e.textContent=thxStreak();
     e=document.getElementById('thx-month'); if(e) e.textContent=mc;
     e=document.getElementById('thx-answer'); if(e) e.textContent=ac;
+    try{ injectGratFruit(); }catch(_e){}
     var list=document.getElementById('thxList'); if(!list) return;
     if(!total){ list.innerHTML='<div class="thx-empty"><img src="olive-branch.png" alt=""><div class="te-t">아직 감사 열매가 없어요</div><div class="te-d">오늘의 감사를 한 줄 적어보세요.<br>감사가 쌓이면 올리브나무에 열매가 맺혀요.</div></div>'; return; }
     var tk=thxDayKey(now);
@@ -4006,7 +4046,7 @@
   if(window.caches && caches.keys){ caches.keys().then(function(ks){ ks.forEach(function(k){ caches.delete(k); }); }).catch(function(){}); }
 </script>
 <style id="soloStyle">
-  /* ===== SOLO(개인) 오버레이 — next.html 전용. index.html 미변경 ===== */
+  /* ===== SOLO(개인) 오버레이 — next.html 전용 ===== */
   body.solo .tab[data-s="zone"]{display:none!important;}
   body.solo #home .sloganstrip,
   body.solo #home .livecard2,
@@ -4024,43 +4064,21 @@
   body.solo #home .wordmark .solomark{height:30px;width:30px;flex-shrink:0;}
   body.solo #home .wordmark{gap:9px;}
   body.solo #home .wordmark .nm{display:inline-block!important;font-size:19px;font-weight:700;}
-  /* 솔로 인트로(welcome) */
-  body.solo #welcome{position:relative;background:url('solo-bg.jpg') center/cover no-repeat, linear-gradient(160deg,#cfe0e8 0%,#f3e2c4 52%,#e8b888 100%) !important;overflow-y:auto;}
-  body.solo #welcome::after{content:'';position:absolute;left:0;right:0;bottom:0;height:330px;background:linear-gradient(to top, rgba(55,44,30,.34), rgba(55,44,30,0));pointer-events:none;z-index:0;}
+  /* 솔로 인트로(welcome) — 풀 배경 스플래시 */
+  body.solo #welcome{position:relative;background:url('solo-bg.jpg') center/cover no-repeat, linear-gradient(170deg,#cfe0e8,#f3e2c4 55%,#e8b888) !important;overflow:hidden;}
   body.solo #welcome .statusbar{display:none!important;}
-  body.solo .sw-wrap{position:relative;z-index:1;display:flex;flex-direction:column;min-height:100%;box-sizing:border-box;}
-  body.solo .sw-top{padding:34px 24px 0;text-align:center;}
-  body.solo .sw-logo{animation:swFade .8s ease both;}
-  body.solo .sw-logo svg{width:50px;height:50px;}
-  body.solo .sw-title{font-family:"Gowun Dodum",sans-serif;font-size:30px;font-weight:700;color:#2e2a22;letter-spacing:2px;margin-top:8px;text-shadow:0 1px 12px rgba(255,251,244,.85);animation:swTitleIn 1s ease both, swBreath 4.6s ease-in-out 1.1s infinite;}
-  body.solo .sw-desc{font-size:14px;color:#5d5446;margin-top:8px;text-shadow:0 1px 10px rgba(255,251,244,.8);animation:swFade .8s ease .25s both;}
-  body.solo .sw-div{width:1px;height:34px;background:rgba(90,80,64,.4);margin:16px auto;animation:swGrow .9s ease .4s both;transform-origin:top;}
-  body.solo .sw-slogan{font-size:14px;line-height:1.7;color:#4c4538;text-shadow:0 1px 10px rgba(255,251,244,.8);animation:swFade .8s ease .55s both;}
-  body.solo .sw-card{margin:auto 16px 18px;background:rgba(255,255,255,.98);border:1px solid rgba(255,255,255,.65);border-radius:24px;padding:16px 20px 20px;box-shadow:0 20px 48px rgba(55,42,22,.34);animation:swPop .75s cubic-bezier(.2,.85,.25,1) .35s both;}
-  body.solo .sw-feat{display:flex;align-items:flex-start;gap:13px;text-align:left;padding:12px 2px;}
-  body.solo .sw-feat + .sw-feat{border-top:1px solid rgba(0,0,0,.055);}
-  body.solo .sw-ic{width:40px;height:40px;border-radius:50%;background:#f6ead1;color:#d99a3a;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-  body.solo .sw-ic svg{width:20px;height:20px;}
-  body.solo .sw-ft{font-size:14.5px;font-weight:700;color:#2f2a21;}
-  body.solo .sw-fd{font-size:12px;color:#8b8270;margin-top:3px;line-height:1.5;}
-  body.solo .sw-btn{width:100%;margin-top:14px;height:50px;font-size:15.5px;}
-  body.solo .sw-foot{font-size:11px;color:#9c937f;margin-top:11px;line-height:1.6;text-align:center;}
-  @keyframes swFade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-  @keyframes swGrow{from{opacity:0;transform:scaleY(0)}to{opacity:1;transform:scaleY(1)}}
-  @keyframes swTitleIn{0%{opacity:0;transform:translateY(14px);letter-spacing:9px}100%{opacity:1;transform:translateY(0);letter-spacing:2px}}
-  @keyframes swBreath{0%,100%{transform:translateY(0);text-shadow:0 1px 12px rgba(255,251,244,.85)}50%{transform:translateY(-3px);text-shadow:0 3px 22px rgba(245,182,92,.55)}}
-  @keyframes swPop{0%{opacity:0;transform:translateY(44px) scale(.96)}100%{opacity:1;transform:translateY(0) scale(1)}}
-  /* 감사노트 나무 열매 (솔로) */
-  #thxHero .thx-fruits{position:absolute;inset:0;pointer-events:none;z-index:2;}
-  #thxHero .thx-ov{z-index:3;}
-  .thx-fruit{position:absolute;width:10px;height:13px;border-radius:50% 50% 48% 48%;transform-origin:50% -5px;animation:fruitSway var(--d,4s) ease-in-out var(--dl,0s) infinite;}
-  .thx-fruit::before{content:"";position:absolute;top:-4px;left:50%;width:1.1px;height:4px;background:#6b7a3e;transform:translateX(-50%);}
-  .thx-fruit.green{background:radial-gradient(circle at 35% 28%, #c2cf78, #6f8a3e 72%);box-shadow:0 1px 2px rgba(50,60,25,.3);}
-  .thx-fruit.dark{background:radial-gradient(circle at 35% 28%, #86934f, #3f4a24 72%);box-shadow:0 1px 2px rgba(40,48,20,.35);}
-  .thx-fruit.gold{background:radial-gradient(circle at 35% 28%, #ffe9a8, #e0a92e 66%);animation:fruitSway var(--d,4s) ease-in-out var(--dl,0s) infinite, goldGlow 2.6s ease-in-out infinite;}
-  @keyframes fruitSway{0%,100%{transform:rotate(-5deg) scale(var(--sc,1))}50%{transform:rotate(5deg) scale(var(--sc,1))}}
-  #thx-next{display:none!important;}
-  @keyframes goldGlow{0%,100%{box-shadow:0 0 5px 1px rgba(240,196,80,.5)}50%{box-shadow:0 0 10px 3px rgba(240,196,80,.95)}}
+  body.solo #welcome::before{content:'';position:absolute;inset:0;z-index:0;pointer-events:none;background:linear-gradient(to bottom, rgba(255,251,243,.30) 0%, rgba(255,251,243,0) 24%, rgba(55,44,28,0) 50%, rgba(50,40,26,.62) 100%);}
+  body.solo .sw-wrap{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:space-between;height:100%;min-height:100%;box-sizing:border-box;padding:66px 28px 30px;text-align:center;}
+  body.solo .sw-logo{margin-bottom:13px;}
+  body.solo .sw-logo svg{width:46px;height:46px;animation:swFloat 5s ease-in-out infinite;}
+  body.solo .sw-title{font-size:38px;font-weight:700;color:#2c281f;letter-spacing:3px;text-shadow:0 1px 2px rgba(255,253,247,.7);animation:swIn .9s ease both;}
+  body.solo .sw-tag{font-size:14.5px;color:#544a3a;margin-top:9px;letter-spacing:.5px;text-shadow:0 1px 2px rgba(255,253,247,.6);animation:swIn .9s ease .15s both;}
+  body.solo .sw-quote{font-size:15px;line-height:1.75;color:#fff;text-shadow:0 1px 7px rgba(35,26,14,.6);margin-bottom:18px;animation:swIn .9s ease .3s both;}
+  body.solo .sw-btn{width:100%;height:54px;border:none;border-radius:16px;background:linear-gradient(135deg,#e6ad4c,#ce8c30);color:#fff;font-family:inherit;font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 12px 28px rgba(150,100,30,.45);animation:swIn .9s ease .42s both;}
+  body.solo .sw-btn:active{transform:translateY(1px);}
+  body.solo .sw-foot{font-size:11.5px;color:rgba(255,255,255,.9);margin-top:12px;text-shadow:0 1px 5px rgba(35,26,14,.6);}
+  @keyframes swFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+  @keyframes swIn{from{opacity:0;transform:translateY(13px)}to{opacity:1;transform:translateY(0)}}
 </style>
 <script>
 (function(){
@@ -4082,54 +4100,21 @@
   function hideByI18n(k){ var el=document.querySelector('[data-i18n="'+k+'"]'); if(!el) return; var row=el.closest('.mrow')||el; row.classList.add('solo-hide'); }
   function stripZone(){ var rs=document.getElementById('recSub'); if(rs){ var t=rs.textContent||''; if(t.indexOf('구역')>=0 && t.indexOf(' · ')>=0){ rs.textContent=t.split(' · ')[0]; } } }
   function fixWelcome(){
-    var w=document.getElementById('welcome'); if(!w || w.dataset.solo3) return; w.dataset.solo3='1';
-    var CLK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 1.8"/></svg>';
-    var SPR='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20v-7"/><path d="M12 13C12 9.7 9.8 7.5 6.5 7.5 6.5 10.8 8.7 13 12 13z"/><path d="M12 13c0-3.3 2.2-5.5 5.5-5.5C17.5 10.8 15.3 13 12 13z"/></svg>';
-    var BAR='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 20v-7"/><path d="M12 20V5"/><path d="M18 20v-10"/></svg>';
+    var w=document.getElementById('welcome'); if(!w || w.dataset.solo4) return; w.dataset.solo4='1';
     w.innerHTML='<div class="sw-wrap">'
-      +'<div class="sw-top">'
+      +'<div class="sw-hero">'
         +'<div class="sw-logo">'+SOLO_MARK+'</div>'
         +'<div class="sw-title">만시간</div>'
-        +'<div class="sw-desc">나만의 기도 시간을 쌓아가요</div>'
-        +'<div class="sw-div"></div>'
-        +'<div class="sw-slogan">작은 기도의 순간이 모여<br>삶을 바꾸는 큰 변화가 됩니다</div>'
+        +'<div class="sw-tag">나만의 기도 시간을 쌓아가요</div>'
       +'</div>'
-      +'<div class="sw-card">'
-        +'<div class="sw-feat"><span class="sw-ic">'+CLK+'</span><div class="sw-tx"><div class="sw-ft">기도 시간을 기록하고</div><div class="sw-fd">하루의 기도 시간을 간편하게 기록하세요.</div></div></div>'
-        +'<div class="sw-feat"><span class="sw-ic">'+SPR+'</span><div class="sw-tx"><div class="sw-ft">기도 제목을 관리하고</div><div class="sw-fd">나의 기도 제목을 정리하고 함께 기도해요.</div></div></div>'
-        +'<div class="sw-feat"><span class="sw-ic">'+BAR+'</span><div class="sw-tx"><div class="sw-ft">기도의 여정을 확인하고</div><div class="sw-fd">나의 기도 여정을 돌아보고 감사함을 나눠요.</div></div></div>'
-        +'<button class="primary sw-btn" id="soloStart">나의 기도시간 시작하기</button>'
-        +'<div class="sw-foot">기록은 이 기기에 안전하게 저장돼요.<br>카카오·이메일을 연결하면 어디서나 이어볼 수 있어요.</div>'
+      +'<div class="sw-bottom">'
+        +'<div class="sw-quote">작은 기도의 순간이 모여<br>삶을 바꾸는 큰 변화가 됩니다</div>'
+        +'<button class="sw-btn" id="soloStart">나의 기도시간 시작하기</button>'
+        +'<div class="sw-foot">기록은 이 기기에 안전하게 저장돼요</div>'
       +'</div>'
     +'</div>';
     var sb=document.getElementById('soloStart'); if(sb) sb.addEventListener('click', function(){ try{ if(window.enterApp){ enterApp(); } else { go('home'); } }catch(e){ try{go('home');}catch(_){}; } });
   }
-  // 감사노트 나무 열매 주입
-  var FPOS=[[31,18],[40,14],[49,16],[58,14],[66,20],[24,24],[34,22],[44,21],[53,22],[62,24],[71,29],[21,32],[30,30],[40,29],[50,28],[59,29],[68,33],[75,38],[25,40],[34,38],[44,37],[53,37],[62,40],[70,44],[28,48],[37,46],[47,45],[56,46],[65,49],[33,54],[43,52],[52,52],[60,54],[38,60],[48,58],[56,59],[45,24],[55,32],[36,50],[50,42]];
-  function injectFruit(){
-    try{
-      var hero=document.getElementById('thxHero'); if(!hero) return;
-      var total=parseInt((document.getElementById('thx-count')||{}).textContent||'0',10)||0;
-      var gold=parseInt((document.getElementById('thx-answer')||{}).textContent||'0',10)||0;
-      var old=hero.querySelector('.thx-fruits'); if(old) old.remove();
-      if(total<=0) return;
-      var n=Math.min(total, FPOS.length); var goldN=Math.min(gold, n);
-      var layer=document.createElement('div'); layer.className='thx-fruits';
-      // 황금 열매를 캐노피 전반에 고르게 배치
-      var goldSet={}; if(goldN>0){ var step=n/goldN; for(var g=0;g<goldN;g++){ goldSet[Math.floor(g*step)]=1; } }
-      for(var i=0;i<n;i++){
-        var f=document.createElement('span');
-        var cls= goldSet[i] ? 'gold' : (i%3===0?'dark':'green');
-        f.className='thx-fruit '+cls;
-        f.style.left=FPOS[i][0]+'%'; f.style.top=FPOS[i][1]+'%';
-        var sc=(0.82+((i*7)%5)*0.08).toFixed(2); f.style.setProperty('--sc',sc);
-        f.style.setProperty('--d',(3+Math.random()*3.5).toFixed(2)+'s'); f.style.setProperty('--dl',(-Math.random()*5).toFixed(2)+'s');
-        layer.appendChild(f);
-      }
-      hero.appendChild(layer);
-    }catch(e){}
-  }
-  function patchGratitude(){ try{ if(window.renderGratitude && !window._soloFruit){ window._soloFruit=true; var _rg=window.renderGratitude; window.renderGratitude=function(){ var r=_rg.apply(this,arguments); setTimeout(injectFruit,30); return r; }; } }catch(e){} }
   function applySolo(){
     try{
       document.body.classList.add('solo');
@@ -4142,7 +4127,7 @@
       }
       hideByI18n('row.myzone'); hideByI18n('row.goal');
       var camp=document.querySelector('[data-i18n="sec.campaign"]'); if(camp) camp.classList.add('solo-hide');
-      stripZone(); paintSoloHead(); injectFruit();
+      stripZone(); paintSoloHead();
       if(!document.querySelector('.solo-badge')){ var b=document.createElement('div'); b.className='solo-badge'; b.textContent='SOLO 미리보기 (비공개)'; document.body.appendChild(b); }
     }catch(e){}
   }
@@ -4160,10 +4145,10 @@
     }catch(e){}
   }
   if(document.body) applySolo(); else document.addEventListener('DOMContentLoaded', applySolo);
-  patchPray(); patchHead(); patchGratitude();
-  setTimeout(function(){ applySolo(); patchPray(); patchHead(); patchGratitude(); }, 600);
-  setTimeout(function(){ applySolo(); patchPray(); patchHead(); patchGratitude(); }, 1800);
-  document.addEventListener('click', function(){ setTimeout(function(){ applySolo(); stripZone(); injectFruit(); }, 300); }, true);
+  patchPray(); patchHead();
+  setTimeout(function(){ applySolo(); patchPray(); patchHead(); }, 600);
+  setTimeout(function(){ applySolo(); patchPray(); patchHead(); }, 1800);
+  document.addEventListener('click', function(){ setTimeout(function(){ applySolo(); stripZone(); }, 250); }, true);
 })();
 </script>
 </body>
