@@ -505,6 +505,15 @@
   .rectab.on{background:var(--surface);color:var(--amber-deep);box-shadow:0 2px 8px rgba(150,120,60,.1);}
   /* 감사노트 */
   .thx-hero{position:relative;height:290px;border-radius:18px;overflow:hidden;background:#cdd0b8 center/cover no-repeat;box-shadow:0 8px 20px rgba(70,80,55,.12);margin-top:14px;}
+  #thxHero .thx-fruits{position:absolute;inset:0;pointer-events:none;z-index:2;}
+  #thxHero .thx-ov{z-index:3;}
+  .thx-fruit{position:absolute;width:10px;height:13px;border-radius:50% 50% 48% 48%;transform-origin:50% -5px;animation:fruitSway 4s ease-in-out infinite;}
+  .thx-fruit::before{content:"";position:absolute;top:-4px;left:50%;width:1.1px;height:4px;background:#6b7a3e;transform:translateX(-50%);}
+  .thx-fruit.green{background:radial-gradient(circle at 35% 28%, #c2cf78, #6f8a3e 72%);box-shadow:0 1px 2px rgba(50,60,25,.3);}
+  .thx-fruit.dark{background:radial-gradient(circle at 35% 28%, #86934f, #3f4a24 72%);box-shadow:0 1px 2px rgba(40,48,20,.35);}
+  .thx-fruit.gold{background:radial-gradient(circle at 35% 28%, #ffe9a8, #e0a92e 66%);animation:fruitSway 4s ease-in-out infinite, goldGlow 2.6s ease-in-out infinite;}
+  @keyframes fruitSway{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg)}}
+  @keyframes goldGlow{0%,100%{box-shadow:0 0 5px 1px rgba(240,196,80,.5)}50%{box-shadow:0 0 10px 3px rgba(240,196,80,.95)}}
   .thx-ov .thx-next{font-size:11px;opacity:.92;margin-top:4px;background:rgba(255,255,255,.22);display:inline-block;padding:2px 9px;border-radius:999px;backdrop-filter:blur(2px);}
   .thx-stats .ts-ic{display:flex;justify-content:center;margin-bottom:3px;}
   .thx-stats .ts-ic svg{width:18px;height:18px;}
@@ -3586,6 +3595,28 @@
     while(days[thxDayKey(t)]){ s++; t.setDate(t.getDate()-1); }
     return s;
   }
+  var GFPOS=[[31,20],[43,15],[55,18],[66,24],[25,30],[37,28],[50,26],[61,31],[71,37],[28,42],[40,40],[52,38],[63,44],[34,50],[46,48],[58,50],[45,22],[57,29],[38,36],[50,34],[68,50],[30,52]];
+  function injectGratFruit(){
+    try{
+      var hero=document.getElementById('thxHero'); if(!hero) return;
+      var total=parseInt((document.getElementById('thx-count')||{}).textContent||'0',10)||0;
+      var gold=parseInt((document.getElementById('thx-answer')||{}).textContent||'0',10)||0;
+      var old=hero.querySelector('.thx-fruits'); if(old) old.remove();
+      if(total<=0) return;
+      var n=Math.min(total, GFPOS.length), goldN=Math.min(gold, n);
+      var layer=document.createElement('div'); layer.className='thx-fruits';
+      var goldSet={}; if(goldN>0){ var step=n/goldN; for(var g=0;g<goldN;g++){ goldSet[Math.floor(g*step)]=1; } }
+      for(var i=0;i<n;i++){
+        var fr=document.createElement('span');
+        fr.className='thx-fruit '+(goldSet[i]?'gold':(i%3===0?'dark':'green'));
+        fr.style.left=GFPOS[i][0]+'%'; fr.style.top=GFPOS[i][1]+'%';
+        fr.style.animationDelay=((i*0.21)%2.4).toFixed(2)+'s';
+        var sc=(0.85+((i*7)%5)*0.07).toFixed(2); fr.style.transform='scale('+sc+')';
+        layer.appendChild(fr);
+      }
+      hero.appendChild(layer);
+    }catch(e){}
+  }
   function renderGratitude(){
     var total=GRATITUDE.length;
     var cEl=document.getElementById('thx-count'); if(cEl) cEl.textContent=total;
@@ -3597,6 +3628,7 @@
     e=document.getElementById('thx-streak'); if(e) e.textContent=thxStreak();
     e=document.getElementById('thx-month'); if(e) e.textContent=mc;
     e=document.getElementById('thx-answer'); if(e) e.textContent=ac;
+    try{ injectGratFruit(); }catch(_e){}
     var list=document.getElementById('thxList'); if(!list) return;
     if(!total){ list.innerHTML='<div class="thx-empty"><img src="olive-branch.png" alt=""><div class="te-t">아직 감사 열매가 없어요</div><div class="te-d">오늘의 감사를 한 줄 적어보세요.<br>감사가 쌓이면 올리브나무에 열매가 맺혀요.</div></div>'; return; }
     var tk=thxDayKey(now);
