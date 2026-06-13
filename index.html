@@ -404,6 +404,13 @@
   .admincard .aa button{flex:1;padding:9px;border-radius:10px;border:none;font-size:13px;font-family:"Gowun Dodum",sans-serif;cursor:pointer;}
   .admincard .aa .ok{background:var(--amber);color:#fff;}
   .admincard .aa .no{background:#fff;border:1.5px solid #e6b9b9;color:#c4503c;}
+  .admincard .zr-meta{font-size:14px;color:var(--ink);font-weight:600;}
+  .zr-row{display:flex;align-items:center;gap:9px;background:var(--surface);border-radius:12px;padding:10px 12px;margin-top:8px;box-shadow:0 4px 12px rgba(150,120,60,.05);}
+  .zr-badge{flex-shrink:0;font-size:11px;font-weight:700;border-radius:999px;padding:3px 9px;}
+  .zr-badge.ok{background:#e7f2ea;color:#2f6f54;}
+  .zr-badge.no{background:#fbecec;color:#c4503c;}
+  .zr-tx{flex:1;min-width:0;font-size:12.5px;color:var(--soft);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .zr-del{flex-shrink:0;background:none;border:none;color:#bb9; font-size:12px;cursor:pointer;text-decoration:underline;}
   /* 기도 기록 — 목업 */
   #record{background:url('bg-record.png') top center/cover no-repeat, #f4ecdb;}
   #zone{background:url('bg-zone.png') top center/cover no-repeat, #f6efe2;}
@@ -482,6 +489,12 @@
   .mannote{font-size:12.5px;color:var(--soft);text-align:center;line-height:1.55;margin-bottom:14px;background:rgba(240,235,222,.6);padding:10px 12px;border-radius:12px;}
   #manualModal .manmode button.on{background:var(--amber);color:#fff;}
   #manualModal.sub .manmode button#man-sub.on{background:#c9714e;}
+  #manualModal.zone .manmode button#man-zone.on{background:#5a8f6a;color:#fff;}
+  .manmode button{font-size:12.5px;padding:9px 4px;}
+  .manzone{margin:0 0 12px;}
+  .manzlbl{font-size:12px;color:var(--soft);margin-bottom:6px;}
+  #manZoneSel{width:100%;font-size:15px;padding:11px 10px;}
+  #manZoneNote{width:100%;}
   /* 나의 기도제목 (개인 저널) */
   .rectabs{display:flex;background:var(--amber-tint);border-radius:14px;padding:4px;margin:14px 0 2px;}
   .rectab{flex:1;border:none;background:none;padding:9px;border-radius:11px;font-family:"Gowun Dodum",sans-serif;font-size:14px;color:var(--soft);cursor:pointer;}
@@ -774,6 +787,8 @@
   .zd-lv .zd-next{font-size:10.5px;color:var(--soft);text-align:right;line-height:1.4;flex-shrink:0;white-space:nowrap;}
   .zd-lv .zd-next b{color:var(--amber-deep);font-weight:600;}
   .zd-rank{display:flex;align-items:center;justify-content:center;gap:7px;background:#fcf0d6;border-radius:999px;padding:7px 0;margin-bottom:12px;font-size:13px;color:#9a6a1e;}
+  .zd-coop{text-align:center;background:#e9f2e6;border-radius:999px;padding:6px 0;margin:-4px 0 12px;font-size:12.5px;color:#4f7d4a;}
+  .zd-coop b{color:#3f6a3a;}
   .zd-rank b{font-weight:700;}
   .zd-tiles{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:13px;}
   .zd-tile{background:var(--surface);border-radius:14px;padding:13px 14px;box-shadow:0 4px 11px rgba(150,120,60,.05);}
@@ -1387,11 +1402,14 @@
           <div class="mseg manmode">
             <button id="man-add" class="on" onclick="setManualMode('add')">시간 추가</button>
             <button id="man-sub" onclick="setManualMode('sub')">시간 차감</button>
+            <button id="man-zone" onclick="setManualMode('zone')">구역시간 추가</button>
           </div>
+          <div class="manzone" id="manZoneRow" style="display:none;"><div class="manzlbl">구역 선택</div><select class="minput" id="manZoneSel"></select></div>
           <div class="mantime">
             <input class="minput mant" id="manH" type="number" min="0" max="24" inputmode="numeric" placeholder="0"><span class="manu">시간</span>
             <input class="minput mant" id="manM" type="number" min="0" max="59" inputmode="numeric" placeholder="0"><span class="manu">분</span>
           </div>
+          <div class="manzone" id="manNoteRow" style="display:none;"><input class="minput" id="manZoneNote" maxlength="100" placeholder="사유 (선택) · 예: 6/14 새벽기도회"></div>
           <div class="mannote" id="manNote">하나님 앞에서 정직하게 드린 기도 시간을 기록해 주세요.</div>
           <div class="mbtns">
             <button class="cancel" onclick="closeManual()">취소</button>
@@ -1572,6 +1590,10 @@
         <div id="adminWrap" style="display:none;">
           <div class="reclbl">검수 대기 중인 요청</div>
           <div id="adminList"></div>
+          <div class="reclbl" style="margin-top:24px;">구역시간 추가 신청</div>
+          <div id="zoneReqList"></div>
+          <div class="reclbl" style="margin-top:24px;">최근 구역시간 내역</div>
+          <div id="zoneRecentList"></div>
         </div>
       </div>
     </div>
@@ -2776,16 +2798,16 @@
     const all = SERVER_ZONES || ZONES.map(function(z){ return [z[0],z[1],z[2],z[3],'장년부']; });
     // 청년부·청소년부는 마을/반 구분 없이 부서 단위 한 줄로 합산
     var aggLive={'청년부':0,'청소년부':0}, aggConn={'청년부':0,'청소년부':0}, aggToday={'청년부':0,'청소년부':0};
-    var jang=[], yH=0,yMe=false, sH=0,sMe=false;
+    var jang=[], yH=0,yMe=false,yB=0, sH=0,sMe=false,sB=0;
     all.forEach(function(z){
       var d=z[4]||'장년부';
-      if(d==='청년부'){ yH+=z[1]; if(z[3]===true)yMe=true; aggLive['청년부']+=(ZONE_LIVE[z[0]]||0); aggConn['청년부']+=(ZONE_CONN[z[0]]||0); aggToday['청년부']+=(TODAY_ZONE[z[0]]||0); }
-      else if(d==='청소년부'){ sH+=z[1]; if(z[3]===true)sMe=true; aggLive['청소년부']+=(ZONE_LIVE[z[0]]||0); aggConn['청소년부']+=(ZONE_CONN[z[0]]||0); aggToday['청소년부']+=(TODAY_ZONE[z[0]]||0); }
+      if(d==='청년부'){ yH+=z[1]; yB+=(z[5]||0); if(z[3]===true)yMe=true; aggLive['청년부']+=(ZONE_LIVE[z[0]]||0); aggConn['청년부']+=(ZONE_CONN[z[0]]||0); aggToday['청년부']+=(TODAY_ZONE[z[0]]||0); }
+      else if(d==='청소년부'){ sH+=z[1]; sB+=(z[5]||0); if(z[3]===true)sMe=true; aggLive['청소년부']+=(ZONE_LIVE[z[0]]||0); aggConn['청소년부']+=(ZONE_CONN[z[0]]||0); aggToday['청소년부']+=(TODAY_ZONE[z[0]]||0); }
       else jang.push(z);
     });
     var disp=jang.slice();
-    disp.push(['청년부', yH, 'people', yMe, '청년부']);
-    disp.push(['청소년부', sH, 'people', sMe, '청소년부']);
+    disp.push(['청년부', yH, 'people', yMe, '청년부', yB]);
+    disp.push(['청소년부', sH, 'people', sMe, '청소년부', sB]);
     var _dr=disp.slice().sort(function(a,b){return b[1]-a[1];}); var rankMap={}; _dr.forEach(function(z,i){ rankMap[z[0]]=i+1; }); var totalZones=disp.length;
     ZONE_INFO={};
     function zPray(nm){ return (nm==='청년부'||nm==='청소년부')?(aggLive[nm]||0):(ZONE_LIVE[nm]||0); }
@@ -2805,7 +2827,7 @@
     function zToday(z){ var n=z[0]; return (n==='청년부'||n==='청소년부')?(aggToday[n]||0):(TODAY_ZONE[n]||0); }
     function zMembers(z){ var ids=zoneGroupIds(z[0],z[4]); var s=0; ids.forEach(function(id){ if(ZONE_PEOPLE[id]) s+=(ZONE_PEOPLE[id].members||0); }); return s; }
     function zPrayedAll(z){ var ids=zoneGroupIds(z[0],z[4]); var s=0; ids.forEach(function(id){ if(ZONE_PEOPLE[id]) s+=(ZONE_PEOPLE[id].prayed||0); }); return s; }
-    function metricVal(z){ var h=z[1]; if(zoneMetric==='live') return zPray(z[0]); if(zoneMetric==='today') return zToday(z); if(zoneMetric==='rate'){ var m=zMembers(z); return m>0?(zPrayedAll(z)/m):0; } if(zoneMetric==='avg'){ var m=zMembers(z); return m>0?(h/m):0; } return h; }
+    function metricVal(z){ var h=z[1]; if(zoneMetric==='live') return zPray(z[0]); if(zoneMetric==='today') return zToday(z); if(zoneMetric==='rate'){ var m=zMembers(z); return m>0?(zPrayedAll(z)/m):0; } if(zoneMetric==='avg'){ var m=zMembers(z); var base=h-(z[5]||0); return m>0?(base/m):0; } return h; }
     Z.sort(function(a,b){ var d=metricVal(b)-metricVal(a); return d!==0?d:(b[1]-a[1]); });
     var metricLbl={cum:'누적 기도시간 순위',today:'오늘 기도시간 순위',rate:'참여율 순위 · 멤버 중 기도 참여 비율',avg:'1인당 평균 기도시간 순위',live:'지금 기도 중인 구역 · LIVE'};
     var _dl=({'전체':'전체','장년부':'장년부','청년부':'청년부','청소년부':'청소년부'})[zoneDept]||'전체';
@@ -2828,14 +2850,14 @@
       var inten = maxH>0 ? Math.min(hours/maxH,1) : 0;
       var tdy = (nm==='청년부'||nm==='청소년부') ? (aggToday[nm]||0) : (TODAY_ZONE[nm]||0);
       var _ix=zoneLvIdx(hours), _nx=PLEVELS[_ix+1], nextRemain=_nx?Math.max(0,_nx[0]-hours):null;
-      ZONE_INFO[nm]={nm:nm,dept:z[4]||'장년부',hours:hours,pray:pray,conn:conn,today:tdy,lvNum:lvNum,lvPct:lvPct,rank:(rankMap[nm]||0),total:totalZones,nextRemain:nextRemain,groupIds:zoneGroupIds(nm,z[4])};
+      ZONE_INFO[nm]={nm:nm,dept:z[4]||'장년부',hours:hours,bonus:(z[5]||0),pray:pray,conn:conn,today:tdy,lvNum:lvNum,lvPct:lvPct,rank:(rankMap[nm]||0),total:totalZones,nextRemain:nextRemain,groupIds:zoneGroupIds(nm,z[4])};
       var _cr=cumRank[nm]||(i+1), _delta=_cr-(i+1);
       var _arrow=(zoneMetric==='cum')?'':(_delta>0?'<span class="zrkchg up">▲'+_delta+'</span>':(_delta<0?'<span class="zrkchg down">▼'+(-_delta)+'</span>':'<span class="zrkchg same">–</span>'));
       var _main;
       if(zoneMetric==='live'){ var _lv=zPray(z[0]); _main = _lv>0 ? ('<i class="livedot"></i><span class="zmlbl">기도중</span><span class="zmnum live">'+_lv+'명</span>') : '<span class="zmlbl">지금 없음</span>'; }
       else if(zoneMetric==='today'){ _main='<span class="zmlbl">오늘</span><span class="zmnum">'+korDur(zToday(z))+'</span>'; }
       else if(zoneMetric==='rate'){ var _m=zMembers(z); _main='<span class="zmlbl">참여</span><span class="zmnum">'+(_m>0?Math.round(zPrayedAll(z)/_m*100):0)+'%</span>'; }
-      else if(zoneMetric==='avg'){ var _m2=zMembers(z); _main='<span class="zmlbl">1인</span><span class="zmnum">'+(_m2>0?(hours/_m2).toFixed(1):'0')+'시간</span>'; }
+      else if(zoneMetric==='avg'){ var _m2=zMembers(z); var _bz=hours-(z[5]||0); _main='<span class="zmlbl">1인</span><span class="zmnum">'+(_m2>0?(_bz/_m2).toFixed(1):'0')+'시간</span>'; }
       else { _main=fmtHM(hours*60)+(tdy>0?'<span class="ztoday">+'+tdy+'분</span>':''); }
       var _anim=_zReorder?' zanim':'', _animS=_zReorder?(' style="animation-delay:'+(i*0.04).toFixed(2)+'s"'):'';
       const rank = '<div class="zglow'+(pray>0?' live':'')+'" style="--g:'+inten.toFixed(2)+'"><span class="zg-core"></span></div>';
@@ -2885,6 +2907,7 @@
       '<div class="zd-head"><div class="zd-ti"><span class="zd-ic '+zicClass(info.nm,info.dept)+'">'+zoneSymbol(info.nm,info.dept)+'</span><span><span class="zd-nm">'+zoneDisplayName(info.nm)+'</span><br><span class="zd-dp">'+info.dept+'</span></span></div><span class="zd-x" onclick="closeZoneDetail()">✕</span></div>'+
       '<div class="zd-lv"><span class="zd-lvsym">'+flowerSVG(info.lvNum)+'</span><span class="zd-lvmid"><span class="zd-lvrow"><span class="zd-lvn">Lv.'+info.lvNum+'</span><span class="zd-lvname">'+PLEVELS[info.lvNum-1][1]+'</span></span><span class="zd-track"><i style="width:'+info.lvPct+'%"></i></span></span><span class="zd-next">'+nextTxt+'</span></div>'+
       '<div class="zd-rank">'+ZICO.trophy+'전체 '+info.total+'구역 중 <b>'+(info.rank||'-')+'위</b></div>'+
+      ((info.bonus>0)?('<div class="zd-coop">＋ 구역 추가 시간 <b>'+fmtHM(info.bonus*60)+'</b> 포함</div>'):'')+
       '<div class="zd-tiles">'+
         '<div class="zd-tile"><span class="zd-tl">'+ZICO.users+'참여 인원</span><span class="zd-tv">'+(_peopleLoaded?(members+'<span class="u">명</span>'):'<span class="u" style="font-size:14px">집계 준비 중</span>')+'</span></div>'+
         '<div class="zd-tile"><span class="zd-tl">'+ZICO.clock+'누적 기도</span><span class="zd-tv">'+fmtHM(info.hours*60)+'</span></div>'+
@@ -3154,10 +3177,21 @@
       recoverActivePrayer();
     }catch(e){ console.warn('백엔드 미연결(데모 모드):', e); SB=null; recoverActivePrayer(); }
   }
+  var ZONE_BONUS_BY_NAME={}, ZONE_BONUS_TOTAL=0, _baseTotalH=0;
   async function refreshProgress(){
     if(!SB) return;
     const { data } = await SB.rpc('get_progress');
-    if(data){ current = Number(data.total_hours)||0; try{ localStorage.setItem('gauge_total_h', current); }catch(e){} renderGauge(); }
+    if(data){ _baseTotalH = Number(data.total_hours)||0; current = _baseTotalH + ZONE_BONUS_TOTAL; try{ localStorage.setItem('gauge_total_h', current); }catch(e){} renderGauge(); }
+  }
+  async function loadZoneBonus(){
+    if(!SB) return;
+    try{
+      var r=await SB.rpc('approved_zone_minutes');
+      ZONE_BONUS_BY_NAME={}; ZONE_BONUS_TOTAL=0;
+      var idToName={}; try{ Object.keys(GROUPS_BY_NAME||{}).forEach(function(n){ idToName[GROUPS_BY_NAME[n]]=n; }); }catch(e){}
+      (r.data||[]).forEach(function(x){ var hrs=(Number(x.minutes)||0)/60; ZONE_BONUS_TOTAL+=hrs; var nm=idToName[x.group_id]; if(nm) ZONE_BONUS_BY_NAME[nm]=(ZONE_BONUS_BY_NAME[nm]||0)+hrs; });
+      current = _baseTotalH + ZONE_BONUS_TOTAL; try{ localStorage.setItem('gauge_total_h', current); }catch(e){} renderGauge();
+    }catch(e){}
   }
   async function recordPrayer(mins){
     const linkedId = MY_PRAYER_ID;   // 이 세션에서 연동된 개인 제목
@@ -3173,21 +3207,39 @@
   /* ===== 수동 기도시간 입력 · 보정 ===== */
   var _manMode='add';
   function openManualModal(){
-    if(!SB || !myLoggedIn()){ alert('로그인 후 직접 기록할 수 있어요.'); return; }
+    if(!SB){ alert('연결이 필요해요. 잠시 후 다시 시도해주세요.'); return; }
     setManualMode('add');
     var h=document.getElementById('manH'), m=document.getElementById('manM');
     if(h) h.value=''; if(m) m.value='';
+    var zn=document.getElementById('manZoneNote'); if(zn) zn.value='';
     document.getElementById('manualModal').classList.add('on');
   }
   function closeManual(){ document.getElementById('manualModal').classList.remove('on'); }
+  function fillZoneSelect(){
+    var sel=document.getElementById('manZoneSel'); if(!sel) return;
+    var map=GROUPS_BY_NAME||{};
+    var names=Object.keys(map).filter(function(n){ return n!=='교역자' && n!=='구역 미정'; }).sort(function(a,b){ return a.localeCompare(b,'ko'); });
+    if(!names.length){ sel.innerHTML='<option value="">구역 정보를 불러오는 중…</option>'; return; }
+    var myName=null; try{ myName=Object.keys(map).find(function(k){ return map[k]===MY_GROUP_ID; }); }catch(e){}
+    sel.innerHTML=names.map(function(n){ return '<option value="'+map[n]+'"'+(n===myName?' selected':'')+'>'+mpEsc(n)+'</option>'; }).join('');
+  }
   function setManualMode(mode){
     _manMode=mode;
-    var mm=document.getElementById('manualModal'); mm.classList.toggle('sub', mode==='sub');
+    var mm=document.getElementById('manualModal');
+    mm.classList.toggle('sub', mode==='sub');
+    mm.classList.toggle('zone', mode==='zone');
     document.getElementById('man-add').classList.toggle('on', mode==='add');
     document.getElementById('man-sub').classList.toggle('on', mode==='sub');
+    var mz=document.getElementById('man-zone'); if(mz) mz.classList.toggle('on', mode==='zone');
+    var zr=document.getElementById('manZoneRow'), nr=document.getElementById('manNoteRow');
+    if(zr) zr.style.display = (mode==='zone')?'block':'none';
+    if(nr) nr.style.display = (mode==='zone')?'block':'none';
     var note=document.getElementById('manNote'), btn=document.getElementById('manSaveBtn');
     if(mode==='add'){ note.textContent='하나님 앞에서 정직하게 드린 기도 시간을 기록해 주세요.'; btn.textContent='기록하기'; }
-    else { note.textContent='기도 마침을 누르지 못해 잘못 쌓인 시간을 정직하게 빼주세요.'; btn.textContent='차감하기'; }
+    else if(mode==='sub'){ note.textContent='기도 마침을 누르지 못해 잘못 쌓인 시간을 정직하게 빼주세요.'; btn.textContent='차감하기'; }
+    else { fillZoneSelect();
+      note.textContent = isClergy() ? '선택한 구역에 바로 더해져요 (교역자).' : '구역에 더할 시간을 신청하면 교역자 승인 후 반영돼요.';
+      btn.textContent = isClergy() ? '구역에 추가' : '추가 신청'; }
   }
   async function saveManual(){
     var h=parseInt((document.getElementById('manH')||{}).value||'0',10)||0;
@@ -3195,8 +3247,23 @@
     if(h<0)h=0; if(m<0)m=0; if(m>59)m=59; if(h>24)h=24;
     var mins=h*60+m;
     if(mins<=0){ alert('시간 또는 분을 입력해 주세요.'); return; }
-    if(mins>1440) mins=1440;
     var label=(h?h+'시간 ':'')+(m?m+'분':(h?'':'0분'));
+    if(_manMode==='zone'){
+      var sel=document.getElementById('manZoneSel'); var gid=sel?parseInt(sel.value,10):0;
+      if(!gid){ alert('구역을 선택해 주세요.'); return; }
+      var zname=sel.options[sel.selectedIndex].text;
+      var znote=(document.getElementById('manZoneNote')||{}).value||'';
+      var ic=isClergy();
+      if(!confirm((ic?'[교역자] ':'')+zname+' 구역에 '+label+(ic?' 바로 더할까요?':' 추가를 신청할까요?\n\n교역자 승인 후 반영됩니다.'))) return;
+      try{
+        var r=await SB.rpc('submit_zone_time',{ p_group_id:gid, p_minutes:mins, p_note:znote });
+        if(r.error) throw r.error;
+        if(r.data==='approved'){ showToast('구역 시간이 추가됐어요', zname+' · '+label); try{ await loadZoneBonus(); await loadRankings(); loadHomeStats(); }catch(e){} }
+        else { showToast('구역 시간 추가를 신청했어요','교역자 승인 후 반영됩니다'); }
+      }catch(e){ alert('처리에 실패했어요: '+(e&&e.message||e)); return; }
+      closeManual(); return;
+    }
+    if(mins>1440) mins=1440;
     if(_manMode==='add'){
       if(!confirm('하나님 앞에서 정직하게 드린 기도 시간이 맞나요?\n\n추가: '+label)) return;
       await recordManual(mins);
@@ -3359,6 +3426,43 @@
     if(!SB || !isClergy()){ if(deny)deny.style.display='block'; if(wrap)wrap.style.display='none'; return; }
     if(deny)deny.style.display='none'; if(wrap)wrap.style.display='block';
     try{ var res=await SB.rpc('admin_pending_v2'); renderAdmin(res.data||[]); }catch(e){ renderAdmin([]); }
+    loadZoneAdmin();
+  }
+  async function loadZoneAdmin(){
+    if(!SB || !isClergy()) return;
+    try{ var p=await SB.rpc('zone_time_pending'); renderZoneReqs(p.data||[]); }catch(e){ renderZoneReqs([]); }
+    try{ var c=await SB.rpc('zone_time_recent'); renderZoneRecent(c.data||[]); }catch(e){ renderZoneRecent([]); }
+  }
+  function renderZoneReqs(rows){
+    var list=document.getElementById('zoneReqList'); if(!list) return;
+    if(!rows.length){ list.innerHTML='<div class="myempty">대기 중인 구역시간 신청이 없어요.</div>'; return; }
+    list.innerHTML=rows.map(function(r){
+      var meta=mpEsc(r.group_name)+' · '+fmtHM(r.minutes)+(r.requester_name?(' · '+mpEsc(r.requester_name)):'');
+      var note=r.note?('<div class="ab">'+mpEsc(r.note)+'</div>'):'';
+      return '<div class="admincard"><div class="zr-meta">'+meta+'</div>'+note+'<div class="aa"><button class="ok" onclick="zoneReqAct('+r.id+',true)">승인</button><button class="no" onclick="zoneReqAct('+r.id+',false)">반려</button></div></div>';
+    }).join('');
+  }
+  function renderZoneRecent(rows){
+    var list=document.getElementById('zoneRecentList'); if(!list) return;
+    if(!rows.length){ list.innerHTML='<div class="myempty">아직 처리된 내역이 없어요.</div>'; return; }
+    list.innerHTML=rows.map(function(r){
+      var badge=r.status==='approved'?'<span class="zr-badge ok">반영됨</span>':'<span class="zr-badge no">반려</span>';
+      var meta=mpEsc(r.group_name)+' · '+fmtHM(r.minutes)+(r.note?(' · '+mpEsc(r.note)):'');
+      return '<div class="zr-row">'+badge+'<span class="zr-tx">'+meta+'</span><button class="zr-del" onclick="zoneLogDelete('+r.id+')">삭제</button></div>';
+    }).join('');
+  }
+  async function zoneReqAct(id, approve){
+    if(!SB) return;
+    try{ await SB.rpc('decide_zone_time',{ p_id:id, p_approve:approve }); }catch(e){ alert('처리에 실패했어요.'); return; }
+    loadZoneAdmin();
+    try{ await loadZoneBonus(); await loadRankings(); loadHomeStats(); }catch(e){}
+  }
+  async function zoneLogDelete(id){
+    if(!SB) return;
+    if(!confirm('이 구역시간 내역을 삭제할까요? 반영된 시간이 빠집니다.')) return;
+    try{ await SB.rpc('delete_zone_log',{ p_id:id }); }catch(e){ alert('삭제에 실패했어요.'); return; }
+    loadZoneAdmin();
+    try{ await loadZoneBonus(); await loadRankings(); loadHomeStats(); }catch(e){}
   }
   function syncAdminMenu(){ var row=document.getElementById('adminMenuRow'); if(row) row.style.display = isClergy() ? 'flex' : 'none'; }
   function renderAdmin(rows){
@@ -3547,9 +3651,10 @@
   var TODAY_ZONE={};
   async function loadRankings(){
     if(!SB) return;
+    try{ await loadZoneBonus(); }catch(e){}
     const { data } = await SB.rpc('group_rankings');
     if(!data) return;
-    SERVER_ZONES = data.map(function(r){ return [ r.group_name, Number(r.hours)||0, 'people', r.group_name===selZone, r.dept_name||'장년부' ]; });
+    SERVER_ZONES = data.map(function(r){ var base=Number(r.hours)||0; var bonus=(ZONE_BONUS_BY_NAME[r.group_name]||0); return [ r.group_name, base+bonus, 'people', r.group_name===selZone, r.dept_name||'장년부', bonus ]; });
     try{ var n=new Date(); var from=new Date(n.getFullYear(),n.getMonth(),n.getDate()).toISOString(), to=new Date(n.getFullYear(),n.getMonth(),n.getDate()+1).toISOString();
       var r2=await SB.rpc('group_today_minutes',{p_from:from,p_to:to}); TODAY_ZONE={};
       (r2.data||[]).forEach(function(x){ TODAY_ZONE[x.group_name]=Number(x.mins)||0; });
