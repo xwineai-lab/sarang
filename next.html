@@ -4019,11 +4019,28 @@
   body.solo #record .ieentry{display:none!important;}
   body.solo .solo-hide{display:none!important;}
   body.solo #adminMenuRow{display:none!important;}
-  body.solo #welcome .bigemblem{background:transparent!important;box-shadow:none!important;}
   body.solo .solo-badge{position:fixed;top:6px;left:50%;transform:translateX(-50%);z-index:9999;background:rgba(94,125,79,.92);color:#fff;font-size:10px;padding:2px 10px;border-radius:999px;font-family:"Gowun Dodum",sans-serif;pointer-events:none;}
   body.solo #home .wordmark .solomark{height:30px;width:30px;flex-shrink:0;}
   body.solo #home .wordmark{gap:9px;}
   body.solo #home .wordmark .nm{display:inline-block!important;font-size:19px;font-weight:700;}
+  /* 솔로 인트로(welcome) 재디자인 */
+  body.solo #welcome{background:url('solo-bg.jpg') center/cover no-repeat, #e9e2d6 !important;overflow-y:auto;}
+  body.solo #welcome .statusbar{display:none!important;}
+  body.solo .sw-wrap{display:flex;flex-direction:column;min-height:100%;box-sizing:border-box;}
+  body.solo .sw-top{padding:46px 24px 0;text-align:center;}
+  body.solo .sw-title{font-family:"Gowun Dodum",sans-serif;font-size:44px;font-weight:700;color:#2e2a22;letter-spacing:3px;text-shadow:0 1px 14px rgba(255,251,244,.8);}
+  body.solo .sw-desc{font-size:15px;color:#5d5446;margin-top:12px;text-shadow:0 1px 10px rgba(255,251,244,.75);}
+  body.solo .sw-div{width:1px;height:46px;background:rgba(90,80,64,.45);margin:22px auto;}
+  body.solo .sw-slogan{font-size:15px;line-height:1.75;color:#4c4538;text-shadow:0 1px 10px rgba(255,251,244,.75);}
+  body.solo .sw-card{margin:auto 16px 18px;background:rgba(255,255,255,.96);border-radius:24px;padding:18px 20px 20px;box-shadow:0 14px 36px rgba(110,88,45,.22);}
+  body.solo .sw-feat{display:flex;align-items:flex-start;gap:13px;text-align:left;padding:13px 2px;}
+  body.solo .sw-feat + .sw-feat{border-top:1px solid rgba(0,0,0,.055);}
+  body.solo .sw-ic{width:42px;height:42px;border-radius:50%;background:#f6ead1;color:#d99a3a;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  body.solo .sw-ic svg{width:21px;height:21px;}
+  body.solo .sw-ft{font-size:15px;font-weight:700;color:#2f2a21;}
+  body.solo .sw-fd{font-size:12.5px;color:#8b8270;margin-top:3px;line-height:1.5;}
+  body.solo .sw-btn{width:100%;margin-top:16px;height:52px;font-size:16px;}
+  body.solo .sw-foot{font-size:11.5px;color:#9c937f;margin-top:13px;line-height:1.65;text-align:center;}
 </style>
 <script>
 (function(){
@@ -4045,15 +4062,26 @@
   function hideByI18n(k){ var el=document.querySelector('[data-i18n="'+k+'"]'); if(!el) return; var row=el.closest('.mrow')||el; row.classList.add('solo-hide'); }
   function stripZone(){ var rs=document.getElementById('recSub'); if(rs){ var t=rs.textContent||''; if(t.indexOf('구역')>=0 && t.indexOf(' · ')>=0){ rs.textContent=t.split(' · ')[0]; } } }
   function fixWelcome(){
-    var w=document.getElementById('welcome'); if(!w || w.dataset.solo) return; w.dataset.solo='1';
-    var em=w.querySelector('.bigemblem'); if(em){ em.innerHTML='<div style="width:82px;height:82px;display:flex;align-items:center;justify-content:center;">'+SOLO_MARK+'</div>'; var mk=em.querySelector('.solomark'); if(mk){ mk.style.width='70px'; mk.style.height='70px'; } }
-    var t=w.querySelector('.welcome-t'); if(t) t.textContent='만시간';
-    var d=w.querySelector('.welcome-d'); if(d) d.textContent='나만의 기도 시간을 쌓아가요';
-    var sl=w.querySelector('.welcome-slogan'); if(sl) sl.textContent='하루 한 걸음, 기도의 정원';
-    var card=w.querySelector('.welcome-card');
-    if(card){ card.innerHTML='<button class="primary" id="soloStart">나의 기도실 시작하기</button><div class="note">기록은 이 기기에 안전하게 저장돼요.<br>카카오·이메일을 연결하면 어디서나 이어볼 수 있어요.</div>';
-      var sb=document.getElementById('soloStart'); if(sb) sb.addEventListener('click', function(){ try{ if(window.enterApp){ enterApp(); } else { go('home'); } }catch(e){ try{go('home');}catch(_){}; } });
-    }
+    var w=document.getElementById('welcome'); if(!w || w.dataset.solo2) return; w.dataset.solo2='1';
+    var CLK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 1.8"/></svg>';
+    var SPR='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20v-7"/><path d="M12 13C12 9.7 9.8 7.5 6.5 7.5 6.5 10.8 8.7 13 12 13z"/><path d="M12 13c0-3.3 2.2-5.5 5.5-5.5C17.5 10.8 15.3 13 12 13z"/></svg>';
+    var BAR='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 20v-7"/><path d="M12 20V5"/><path d="M18 20v-10"/></svg>';
+    w.innerHTML='<div class="sw-wrap">'
+      +'<div class="sw-top">'
+        +'<div class="sw-title">만시간</div>'
+        +'<div class="sw-desc">나만의 기도 시간을 쌓아가요</div>'
+        +'<div class="sw-div"></div>'
+        +'<div class="sw-slogan">작은 기도의 순간이 모여<br>삶을 바꾸는 큰 변화가 됩니다</div>'
+      +'</div>'
+      +'<div class="sw-card">'
+        +'<div class="sw-feat"><span class="sw-ic">'+CLK+'</span><div class="sw-tx"><div class="sw-ft">기도 시간을 기록하고</div><div class="sw-fd">하루의 기도 시간을 간편하게 기록하세요.</div></div></div>'
+        +'<div class="sw-feat"><span class="sw-ic">'+SPR+'</span><div class="sw-tx"><div class="sw-ft">기도 제목을 관리하고</div><div class="sw-fd">나의 기도 제목을 정리하고 함께 기도해요.</div></div></div>'
+        +'<div class="sw-feat"><span class="sw-ic">'+BAR+'</span><div class="sw-tx"><div class="sw-ft">기도의 여정을 확인하고</div><div class="sw-fd">나의 기도 여정을 돌아보고 감사함을 나눠요.</div></div></div>'
+        +'<button class="primary sw-btn" id="soloStart">나의 기도시간 시작하기</button>'
+        +'<div class="sw-foot">기록은 이 기기에 안전하게 저장돼요.<br>카카오·이메일을 연결하면 어디서나 이어볼 수 있어요.</div>'
+      +'</div>'
+    +'</div>';
+    var sb=document.getElementById('soloStart'); if(sb) sb.addEventListener('click', function(){ try{ if(window.enterApp){ enterApp(); } else { go('home'); } }catch(e){ try{go('home');}catch(_){}; } });
   }
   function applySolo(){
     try{
