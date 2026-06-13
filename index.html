@@ -599,6 +599,13 @@
   .zmnum.live{color:#e0594a;}
   .livedot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#e0594a;margin-right:5px;vertical-align:middle;animation:livePulse 1.25s infinite;}
   @keyframes livePulse{0%{box-shadow:0 0 0 0 rgba(224,89,74,.55)}70%{box-shadow:0 0 0 6px rgba(224,89,74,0)}100%{box-shadow:0 0 0 0 rgba(224,89,74,0)}}
+  .zlive-cta{display:flex;align-items:center;gap:12px;background:linear-gradient(110deg,#fff2ec,#ffe6dc 60%,#fff2ec);border:1px solid #f5d2c4;border-radius:16px;padding:14px 15px;margin-bottom:10px;cursor:pointer;box-shadow:0 6px 16px rgba(214,104,74,.14);}
+  .zlive-cta .zlc-ic{width:40px;height:40px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .zlive-cta .zlc-flame{display:inline-block;width:12px;height:12px;border-radius:50%;background:#e0594a;animation:livePulse 1.25s infinite;}
+  .zlive-cta .zlc-tx{flex:1;min-width:0;}
+  .zlive-cta .zlc-t{font-family:"Gowun Dodum",sans-serif;font-size:14px;color:#9c3d2c;font-weight:600;}
+  .zlive-cta .zlc-d{font-size:12px;color:#bf6a52;margin-top:2px;}
+  .zlive-cta .zlc-go{font-size:13px;font-weight:700;color:#d6685a;white-space:nowrap;}
   /* 아이디어 보드 */
   .idea-cat{display:flex;gap:6px;margin-bottom:10px;}
   .idea-cat button{flex:1;border:1px solid var(--line);background:var(--surface);color:var(--soft);font-family:"Gowun Dodum",sans-serif;font-size:12px;padding:7px 4px;border-radius:10px;cursor:pointer;}
@@ -2754,7 +2761,7 @@
   function zonePrefix(dept){ return dept==='청년부'?'청년부 ':(dept==='청소년부'?'청소년부 ':''); }
   // 교역자·청년부·청소년부는 그대로, 나머지 구역은 '구역' 접미사 (이미 포함된 경우 제외)
   function zoneDisplayName(nm){ if(nm==='교역자'||nm==='청년부'||nm==='청소년부') return nm; if(/구역/.test(nm)||/마을$/.test(nm)||/반$/.test(nm)) return nm; return nm+' 구역'; }
-  var zoneMetric='cum', _zReorder=false;
+  var zoneMetric='cum', _zReorder=false, _zAnimating=false;
   function setZoneMetric(m){ zoneMetric=m; var r=document.getElementById('zMetric'); if(r){ r.querySelectorAll('.zmtab').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-m')===m); }); } _zReorder=true; buildZones(); }
   function zoneTab(d){
     zoneDept=d; _zReorder=true;
@@ -2765,6 +2772,7 @@
     buildZones();
   }
   function buildZones(){
+    if(_zAnimating && !_zReorder) return;   // 리오더 애니메이션 중엔 패시브 갱신 건너뜀
     const all = SERVER_ZONES || ZONES.map(function(z){ return [z[0],z[1],z[2],z[3],'장년부']; });
     // 청년부·청소년부는 마을/반 구분 없이 부서 단위 한 줄로 합산
     var aggLive={'청년부':0,'청소년부':0}, aggConn={'청년부':0,'청소년부':0}, aggToday={'청년부':0,'청소년부':0};
@@ -2807,7 +2815,7 @@
     if(!Z.length){ list.innerHTML='<div class="myempty">아직 구역 정보가 없어요.</div>'; return; }
     var maxH=_cumOrder.length?(_cumOrder[0][1]||0):0;
     var _flipPrev=null; if(_zReorder){ _flipPrev={}; list.querySelectorAll('.zcard[data-zn]').forEach(function(c){ _flipPrev[c.getAttribute('data-zn')]=c.getBoundingClientRect().top; }); }
-    list.innerHTML=Z.map(function(z,i){
+    var _zhtml=Z.map(function(z,i){
       var nm=z[0]; const hours=z[1], me=z[3]===true;
       const pray=zPray(nm), conn=zConn(nm), prep=Math.max(0,conn-pray);
       const lvPct=zoneLvPct(hours), lvNum=zoneLvIdx(hours)+1;
@@ -2837,10 +2845,17 @@
         '<div class="zbarrow"><div class="ztrack"><i style="width:'+lvPct+'%"></i></div><span class="zlvsym" title="'+PLEVELS[lvNum-1][1]+' 단계">'+flowerSVG(lvNum)+'</span><span class="zlvtxt">Lv.'+lvNum+'</span></div>'+
         botRow+'</div><div class="ar">›</div></div>';
     }).join('');
-    if(_zReorder && _flipPrev){ var _cs=list.querySelectorAll('.zcard[data-zn]');
-      _cs.forEach(function(c){ var zn=c.getAttribute('data-zn'); if(_flipPrev[zn]!=null){ var dy=_flipPrev[zn]-c.getBoundingClientRect().top; if(dy){ c.style.transform='translateY('+dy+'px)'; } } });
-      void list.offsetWidth;
-      _cs.forEach(function(c){ c.style.transition='transform .5s cubic-bezier(.2,.7,.3,1)'; c.style.transform=''; });
+    var _zbanner=(zoneMetric==='live' && (liveN||0)===0) ? ('<div class="zlive-cta" onclick="go(\'pray\')"><div class="zlc-ic"><span class="zlc-flame"></span></div><div class="zlc-tx"><div class="zlc-t">지금은 기도하는 분이 없어요</div><div class="zlc-d">당신이 가장 먼저 기도의 불을 밝혀주세요</div></div><div class="zlc-go">기도 시작 ›</div></div>') : '';
+    list.innerHTML=_zbanner+_zhtml;
+    if(_zReorder && _flipPrev){
+      var _cs=[].slice.call(list.querySelectorAll('.zcard[data-zn]')), _moved=[];
+      _cs.forEach(function(c){ var zn=c.getAttribute('data-zn'); if(_flipPrev[zn]!=null){ var dy=_flipPrev[zn]-c.getBoundingClientRect().top; if(Math.abs(dy)>1){ c.style.transition='none'; c.style.transform='translateY('+dy+'px)'; _moved.push(c); } } });
+      if(_moved.length){
+        void list.offsetWidth;                 // 역방향 위치를 먼저 커밋
+        _zAnimating=true;
+        _moved.forEach(function(c){ c.style.transition='transform .55s cubic-bezier(.2,.75,.3,1)'; c.style.transform='translateY(0)'; });   // 자연 위치로 슬라이드
+        setTimeout(function(){ _zAnimating=false; _moved.forEach(function(c){ c.style.transition=''; c.style.transform=''; }); }, 620);
+      }
     }
     _zReorder=false;
   }
