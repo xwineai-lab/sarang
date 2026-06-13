@@ -1671,6 +1671,7 @@
   var AV_LIST=['avatar01','avatar02','avatar03','avatar04','avatar05','avatar06','avatar07','avatar08'];
   var CLERGY_AV=['clergy01','clergy02','clergy03','clergy04'];   // 교역자 전용 아이콘(교역자만 선택 가능, 표시는 모두에게)
   var AV_ALL=AV_LIST.concat(CLERGY_AV);
+  function sanitizeAvatar(av){ return (CLERGY_AV.indexOf(av)>=0 && !isClergy()) ? '' : av; }   // 교역자 아닌 경우 교역자 아이콘 저장 차단
   function avatarBox(av, nick, px){
     px=px||44; var sz='width:'+px+'px;height:'+px+'px;';
     if(av && AV_ALL.indexOf(av)>=0){ return '<span class="avbox" style="'+sz+'"><img src="'+av+'.png" alt=""></span>'; }
@@ -1699,7 +1700,7 @@
   function saveAvatarModal(){
     var v=((document.getElementById('avNameIn')||{}).value||'').trim();
     var name=v||myName||makeAlias();
-    myName=name; myAvatar=_avPick;
+    myName=name; myAvatar=sanitizeAvatar(_avPick);
     var p=loadProfile()||{joined:true,dept:selDept,zone:selZone,mode:joinMode}; p.name=name; p.avatar=myAvatar; if(v) p.mode='nick'; joinMode=p.mode||joinMode; saveProfile(p);
     if(SB) upsertProfile(name);
     syncProfileUI(); if(typeof trackPresence==='function') trackPresence(); closeAvatarModal();
@@ -3702,7 +3703,7 @@
   async function upsertProfile(name){
     if(!SB) return;
     try{ const { data:u } = await SB.auth.getUser(); if(!u || !u.user) return;
-      await SB.from('profiles').upsert({ id:u.user.id, group_id:MY_GROUP_ID, is_anonymous:(joinMode!=='nick'), display_name:(name||null), avatar:(myAvatar||null) });
+      await SB.from('profiles').upsert({ id:u.user.id, group_id:MY_GROUP_ID, is_anonymous:(joinMode!=='nick'), display_name:(name||null), avatar:(sanitizeAvatar(myAvatar)||null) });
     }catch(e){ console.warn('profile upsert:', e); }
   }
   // 하단 탭바: 항상 하단 고정 (스크롤 숨김 없음)
