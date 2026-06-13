@@ -4009,6 +4009,7 @@
   /* ===== SOLO(개인) 오버레이 — next.html 전용. index.html 미변경 ===== */
   body.solo .tab[data-s="zone"]{display:none!important;}
   body.solo #home .sloganstrip,
+  body.solo #home .livecard2,
   body.solo #home .progcard2,
   body.solo #home .ydaycard,
   body.solo #home .midcard,
@@ -4023,24 +4024,35 @@
   body.solo #home .wordmark .solomark{height:30px;width:30px;flex-shrink:0;}
   body.solo #home .wordmark{gap:9px;}
   body.solo #home .wordmark .nm{display:inline-block!important;font-size:19px;font-weight:700;}
-  /* 솔로 인트로(welcome) 재디자인 */
+  /* 솔로 인트로(welcome) */
   body.solo #welcome{background:url('solo-bg.jpg') center/cover no-repeat, #e9e2d6 !important;overflow-y:auto;}
   body.solo #welcome .statusbar{display:none!important;}
   body.solo .sw-wrap{display:flex;flex-direction:column;min-height:100%;box-sizing:border-box;}
-  body.solo .sw-top{padding:46px 24px 0;text-align:center;}
-  body.solo .sw-title{font-family:"Gowun Dodum",sans-serif;font-size:44px;font-weight:700;color:#2e2a22;letter-spacing:3px;text-shadow:0 1px 14px rgba(255,251,244,.8);}
-  body.solo .sw-desc{font-size:15px;color:#5d5446;margin-top:12px;text-shadow:0 1px 10px rgba(255,251,244,.75);}
-  body.solo .sw-div{width:1px;height:46px;background:rgba(90,80,64,.45);margin:22px auto;}
-  body.solo .sw-slogan{font-size:15px;line-height:1.75;color:#4c4538;text-shadow:0 1px 10px rgba(255,251,244,.75);}
-  body.solo .sw-card{margin:auto 16px 18px;background:rgba(255,255,255,.96);border-radius:24px;padding:18px 20px 20px;box-shadow:0 14px 36px rgba(110,88,45,.22);}
-  body.solo .sw-feat{display:flex;align-items:flex-start;gap:13px;text-align:left;padding:13px 2px;}
+  body.solo .sw-top{padding:34px 24px 0;text-align:center;}
+  body.solo .sw-logo svg{width:50px;height:50px;}
+  body.solo .sw-title{font-family:"Gowun Dodum",sans-serif;font-size:30px;font-weight:700;color:#2e2a22;letter-spacing:2px;margin-top:8px;text-shadow:0 1px 12px rgba(255,251,244,.85);}
+  body.solo .sw-desc{font-size:14px;color:#5d5446;margin-top:8px;text-shadow:0 1px 10px rgba(255,251,244,.8);}
+  body.solo .sw-div{width:1px;height:34px;background:rgba(90,80,64,.4);margin:16px auto;}
+  body.solo .sw-slogan{font-size:14px;line-height:1.7;color:#4c4538;text-shadow:0 1px 10px rgba(255,251,244,.8);}
+  body.solo .sw-card{margin:auto 16px 18px;background:rgba(255,255,255,.97);border-radius:24px;padding:16px 20px 20px;box-shadow:0 14px 36px rgba(110,88,45,.22);}
+  body.solo .sw-feat{display:flex;align-items:flex-start;gap:13px;text-align:left;padding:12px 2px;}
   body.solo .sw-feat + .sw-feat{border-top:1px solid rgba(0,0,0,.055);}
-  body.solo .sw-ic{width:42px;height:42px;border-radius:50%;background:#f6ead1;color:#d99a3a;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-  body.solo .sw-ic svg{width:21px;height:21px;}
-  body.solo .sw-ft{font-size:15px;font-weight:700;color:#2f2a21;}
-  body.solo .sw-fd{font-size:12.5px;color:#8b8270;margin-top:3px;line-height:1.5;}
-  body.solo .sw-btn{width:100%;margin-top:16px;height:52px;font-size:16px;}
-  body.solo .sw-foot{font-size:11.5px;color:#9c937f;margin-top:13px;line-height:1.65;text-align:center;}
+  body.solo .sw-ic{width:40px;height:40px;border-radius:50%;background:#f6ead1;color:#d99a3a;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  body.solo .sw-ic svg{width:20px;height:20px;}
+  body.solo .sw-ft{font-size:14.5px;font-weight:700;color:#2f2a21;}
+  body.solo .sw-fd{font-size:12px;color:#8b8270;margin-top:3px;line-height:1.5;}
+  body.solo .sw-btn{width:100%;margin-top:14px;height:50px;font-size:15.5px;}
+  body.solo .sw-foot{font-size:11px;color:#9c937f;margin-top:11px;line-height:1.6;text-align:center;}
+  /* 감사노트 나무 열매 (솔로) */
+  #thxHero .thx-fruits{position:absolute;inset:0;pointer-events:none;z-index:2;}
+  #thxHero .thx-ov{z-index:3;}
+  .thx-fruit{position:absolute;width:10px;height:13px;border-radius:50% 50% 48% 48%;transform-origin:50% -5px;animation:fruitSway 4s ease-in-out infinite;}
+  .thx-fruit::before{content:"";position:absolute;top:-4px;left:50%;width:1.1px;height:4px;background:#6b7a3e;transform:translateX(-50%);}
+  .thx-fruit.green{background:radial-gradient(circle at 35% 28%, #c2cf78, #6f8a3e 72%);box-shadow:0 1px 2px rgba(50,60,25,.3);}
+  .thx-fruit.dark{background:radial-gradient(circle at 35% 28%, #86934f, #3f4a24 72%);box-shadow:0 1px 2px rgba(40,48,20,.35);}
+  .thx-fruit.gold{background:radial-gradient(circle at 35% 28%, #ffe9a8, #e0a92e 66%);animation:fruitSway 4s ease-in-out infinite, goldGlow 2.6s ease-in-out infinite;}
+  @keyframes fruitSway{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg)}}
+  @keyframes goldGlow{0%,100%{box-shadow:0 0 5px 1px rgba(240,196,80,.5)}50%{box-shadow:0 0 10px 3px rgba(240,196,80,.95)}}
 </style>
 <script>
 (function(){
@@ -4062,12 +4074,13 @@
   function hideByI18n(k){ var el=document.querySelector('[data-i18n="'+k+'"]'); if(!el) return; var row=el.closest('.mrow')||el; row.classList.add('solo-hide'); }
   function stripZone(){ var rs=document.getElementById('recSub'); if(rs){ var t=rs.textContent||''; if(t.indexOf('구역')>=0 && t.indexOf(' · ')>=0){ rs.textContent=t.split(' · ')[0]; } } }
   function fixWelcome(){
-    var w=document.getElementById('welcome'); if(!w || w.dataset.solo2) return; w.dataset.solo2='1';
+    var w=document.getElementById('welcome'); if(!w || w.dataset.solo3) return; w.dataset.solo3='1';
     var CLK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 1.8"/></svg>';
     var SPR='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20v-7"/><path d="M12 13C12 9.7 9.8 7.5 6.5 7.5 6.5 10.8 8.7 13 12 13z"/><path d="M12 13c0-3.3 2.2-5.5 5.5-5.5C17.5 10.8 15.3 13 12 13z"/></svg>';
     var BAR='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 20v-7"/><path d="M12 20V5"/><path d="M18 20v-10"/></svg>';
     w.innerHTML='<div class="sw-wrap">'
       +'<div class="sw-top">'
+        +'<div class="sw-logo">'+SOLO_MARK+'</div>'
         +'<div class="sw-title">만시간</div>'
         +'<div class="sw-desc">나만의 기도 시간을 쌓아가요</div>'
         +'<div class="sw-div"></div>'
@@ -4083,6 +4096,32 @@
     +'</div>';
     var sb=document.getElementById('soloStart'); if(sb) sb.addEventListener('click', function(){ try{ if(window.enterApp){ enterApp(); } else { go('home'); } }catch(e){ try{go('home');}catch(_){}; } });
   }
+  // 감사노트 나무 열매 주입
+  var FPOS=[[31,20],[43,15],[55,18],[66,24],[25,30],[37,28],[50,26],[61,31],[71,37],[28,42],[40,40],[52,38],[63,44],[34,50],[46,48],[58,50],[45,22],[57,29],[38,36],[50,34],[68,50],[30,52]];
+  function injectFruit(){
+    try{
+      var hero=document.getElementById('thxHero'); if(!hero) return;
+      var total=parseInt((document.getElementById('thx-count')||{}).textContent||'0',10)||0;
+      var gold=parseInt((document.getElementById('thx-answer')||{}).textContent||'0',10)||0;
+      var old=hero.querySelector('.thx-fruits'); if(old) old.remove();
+      if(total<=0) return;
+      var n=Math.min(total, FPOS.length); var goldN=Math.min(gold, n);
+      var layer=document.createElement('div'); layer.className='thx-fruits';
+      // 황금 열매를 캐노피 전반에 고르게 배치
+      var goldSet={}; if(goldN>0){ var step=n/goldN; for(var g=0;g<goldN;g++){ goldSet[Math.floor(g*step)]=1; } }
+      for(var i=0;i<n;i++){
+        var f=document.createElement('span');
+        var cls= goldSet[i] ? 'gold' : (i%3===0?'dark':'green');
+        f.className='thx-fruit '+cls;
+        f.style.left=FPOS[i][0]+'%'; f.style.top=FPOS[i][1]+'%';
+        f.style.animationDelay=((i*0.21)%2.4).toFixed(2)+'s';
+        var sc=(0.85+((i*7)%5)*0.07).toFixed(2); f.style.transform='scale('+sc+')';
+        layer.appendChild(f);
+      }
+      hero.appendChild(layer);
+    }catch(e){}
+  }
+  function patchGratitude(){ try{ if(window.renderGratitude && !window._soloFruit){ window._soloFruit=true; var _rg=window.renderGratitude; window.renderGratitude=function(){ var r=_rg.apply(this,arguments); setTimeout(injectFruit,30); return r; }; } }catch(e){} }
   function applySolo(){
     try{
       document.body.classList.add('solo');
@@ -4095,7 +4134,7 @@
       }
       hideByI18n('row.myzone'); hideByI18n('row.goal');
       var camp=document.querySelector('[data-i18n="sec.campaign"]'); if(camp) camp.classList.add('solo-hide');
-      stripZone(); paintSoloHead();
+      stripZone(); paintSoloHead(); injectFruit();
       if(!document.querySelector('.solo-badge')){ var b=document.createElement('div'); b.className='solo-badge'; b.textContent='SOLO 미리보기 (비공개)'; document.body.appendChild(b); }
     }catch(e){}
   }
@@ -4113,10 +4152,10 @@
     }catch(e){}
   }
   if(document.body) applySolo(); else document.addEventListener('DOMContentLoaded', applySolo);
-  patchPray(); patchHead();
-  setTimeout(function(){ applySolo(); patchPray(); patchHead(); }, 600);
-  setTimeout(function(){ applySolo(); patchPray(); patchHead(); }, 1800);
-  document.addEventListener('click', function(){ setTimeout(function(){ applySolo(); stripZone(); }, 250); }, true);
+  patchPray(); patchHead(); patchGratitude();
+  setTimeout(function(){ applySolo(); patchPray(); patchHead(); patchGratitude(); }, 600);
+  setTimeout(function(){ applySolo(); patchPray(); patchHead(); patchGratitude(); }, 1800);
+  document.addEventListener('click', function(){ setTimeout(function(){ applySolo(); stripZone(); injectFruit(); }, 300); }, true);
 })();
 </script>
 </body>
