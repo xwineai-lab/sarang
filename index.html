@@ -514,17 +514,18 @@
   .thx-ov .thx-num{font-family:"Outfit",sans-serif;font-weight:800;font-size:30px;line-height:1.12;}
   .thx-ov .thx-num .u{font-size:15px;font-family:"Gowun Dodum",sans-serif;font-weight:400;margin-left:2px;}
   .thx-ov .thx-verse{font-size:11.5px;opacity:.9;margin-top:1px;}
-  .thx-stats{display:flex;gap:9px;margin-top:12px;}
-  .thx-stats .ts{flex:1;background:var(--surface);border-radius:14px;padding:11px 6px;text-align:center;box-shadow:0 3px 9px rgba(150,120,60,.05);}
+  .thx-stats{display:flex;gap:9px;margin-top:13px;}
+  .thx-stats .ts{flex:1;background:#f7f1e3;border:1px solid #ece4d2;border-radius:14px;padding:12px 6px;text-align:center;box-shadow:0 3px 9px rgba(150,120,60,.05);}
   .thx-stats .tv{font-family:"Outfit",sans-serif;font-weight:700;font-size:18px;color:#5e7d4f;}
   .thx-stats .tl{font-size:11px;color:var(--soft);margin-top:2px;}
-  .thx-add{margin-top:14px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:0 4px 12px rgba(150,120,60,.05);}
-  .thx-add-h{font-size:14px;font-weight:700;color:#46523f;}
-  .thx-add-p{font-size:12px;color:var(--amber-deep);margin-top:3px;}
-  .thx-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
-  .thx-chip{font-size:11.5px;border-radius:999px;padding:5px 11px;background:#f0ece0;color:#857b62;cursor:pointer;}
+  .thx-add{margin-top:13px;background:#f7f1e3;border:1px solid #ece4d2;border-radius:16px;padding:15px 15px 16px;box-shadow:0 4px 12px rgba(150,120,60,.05);}
+  .thx-add-h{font-size:14.5px;font-weight:700;color:#46523f;}
+  .thx-add-p{font-size:12px;color:var(--amber-deep);margin-top:4px;}
+  .thx-add textarea{margin-top:11px;min-height:54px;background:#fffdf8;}
+  .thx-chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px;}
+  .thx-chip{font-size:11.5px;border-radius:999px;padding:6px 12px;background:#efe9da;color:#857b62;cursor:pointer;}
   .thx-chip.on{background:#e7f2ea;color:#5e7d4f;}
-  .thx-add-btn{margin-top:12px;width:100%;border:none;border-radius:12px;padding:11px;background:linear-gradient(135deg,#9cb070,#7e9a54);color:#fff;font-family:"Gowun Dodum",sans-serif;font-size:14px;cursor:pointer;}
+  .thx-add-btn{margin-top:14px;width:100%;border:none;border-radius:12px;padding:12px;background:linear-gradient(135deg,#9cb070,#7e9a54);color:#fff;font-family:"Gowun Dodum",sans-serif;font-size:14.5px;cursor:pointer;}
   .thx-card{background:var(--surface);border-radius:14px;padding:12px 13px;margin-bottom:9px;box-shadow:0 3px 10px rgba(150,120,60,.05);display:flex;gap:10px;}
   .thx-fr{width:24px;height:24px;flex-shrink:0;margin-top:1px;}
   .thx-cb{flex:1;min-width:0;}
@@ -986,6 +987,11 @@
   .gcgot-emo{font-size:44px;line-height:1;}
   .gcgot-ttl{margin-top:12px;font-family:"Gowun Dodum",sans-serif;font-size:21px;font-weight:700;color:#5d6f49;line-height:1.45;}
   .gcgot-sub{margin-top:12px;font-size:13px;color:#9a8f78;line-height:1.65;}
+  .gcgot-sub b{color:#5e7d4f;}
+  .gcgot-links{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:13px;font-size:12.5px;color:#9a8f78;}
+  .gcgot-links span{cursor:pointer;}
+  .gcgot-links span:not(.gl-dot){color:#8a7a5a;}
+  .gcgot-links .gl-dot{color:#cfc6b2;cursor:default;}
   .gmodal-hint{color:rgba(255,250,235,.85);font-size:11.5px;text-align:center;}
   /* 아바타 */
   .avbox{display:inline-flex;align-items:center;justify-content:center;border-radius:50%;background:var(--amber-tint);overflow:hidden;flex-shrink:0;vertical-align:middle;}
@@ -1473,7 +1479,7 @@
             <div class="thx-add">
               <div class="thx-add-h">오늘의 감사</div>
               <div class="thx-add-p" id="thxPrompt">오늘 감사한 일은 무엇인가요?</div>
-              <textarea class="minput" id="thxBody" maxlength="300" placeholder="감사한 일을 적어보세요…" style="min-height:64px;"></textarea>
+              <textarea class="minput" id="thxBody" maxlength="300" placeholder="감사한 일을 적어보세요…"></textarea>
               <div class="thx-chips" id="thxCats"></div>
               <button class="thx-add-btn" onclick="submitGratitude()">감사 열매 맺기</button>
             </div>
@@ -2720,10 +2726,13 @@
     ov.innerHTML='<div class="gmodal-box"><div class="gcgot">'
       +'<div class="gcgot-emo">🌿</div>'
       +'<div class="gcgot-ttl">오늘의 은혜 말씀 카드를<br>받았어요</div>'
-      +'<div class="gcgot-sub">기록 탭 · 은혜 말씀 카드함에서<br>지금 바로 확인할 수 있어요</div></div>'
-      +'<div class="gmodal-btns"><button class="gm-save" onclick="closeGraceModal();go(\'record\')">카드 보러가기</button><button class="gm-close" onclick="closeGraceModal()">닫기</button></div></div>';
+      +'<div class="gcgot-sub">이 은혜에 <b>감사 한 줄</b>로<br>화답해볼까요?</div></div>'
+      +'<div class="gmodal-btns"><button class="gm-save" onclick="graceToGratitude()">감사 적기</button></div>'
+      +'<div class="gcgot-links"><span onclick="graceViewCards()">카드 보러가기</span><span class="gl-dot">·</span><span onclick="closeGraceModal()">닫기</span></div></div>';
     document.querySelector('.phone').appendChild(ov);
   }
+  function graceToGratitude(){ closeGraceModal(); go('record'); recTab('thanks'); setTimeout(function(){ var t=document.getElementById('thxBody'); if(t){ try{ t.scrollIntoView({block:'center'}); t.focus(); }catch(e){} } }, 380); }
+  function graceViewCards(){ closeGraceModal(); go('record'); recTab('log'); setTimeout(function(){ var s=document.querySelector('.gracesec'); if(s){ try{ s.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){ s.scrollIntoView(); } } }, 380); }
   function gDownloadBlob(blob){ var url=URL.createObjectURL(blob); var a=document.createElement('a'); a.href=url; a.download='말씀카드.png'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){URL.revokeObjectURL(url);},5000); }
   async function saveGraceImage(){
     var el=document.getElementById('graceCardEl'); if(!el||!window.html2canvas){ alert('잠시 후 다시 시도해 주세요.'); return; }
