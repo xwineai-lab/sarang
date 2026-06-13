@@ -37,11 +37,10 @@
   .apphead{display:flex;justify-content:space-between;align-items:center;margin:6px 0 18px;overflow:visible;}
   .wordmark{display:flex;align-items:center;gap:6px;overflow:visible;}
   .wordmark .nm{font-family:"Gowun Dodum",sans-serif;font-size:17px;color:var(--ink);}
-  .wordmark .big5{font-family:"Dancing Script",cursive;font-weight:700;font-size:48px;line-height:.78;
-    background:linear-gradient(135deg,#e7a93c,#b5742a);-webkit-background-clip:text;background-clip:text;
-    -webkit-text-fill-color:transparent;color:#b5742a;margin:-12px 0 -10px 1px;position:relative;top:2px;
-    text-shadow:0 3px 8px rgba(181,116,42,.16);}
-  .wordmark .big5+.nm{margin-left:0;}
+  .wordmark .big5{font-family:"Dancing Script",cursive;font-weight:700;font-size:43px;line-height:1.12;
+    background:linear-gradient(135deg,#9aa85a,#6d7e38);-webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;color:#6d7e38;margin:0 2px 0 1px;padding:0 1px;position:relative;top:1px;}
+  .wordmark .big5+.nm{margin-left:0;align-self:flex-end;padding-bottom:6px;}
   .bell{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--soft);}
   .bell svg{width:19px;height:19px;}
 
@@ -299,8 +298,8 @@
   .ringcard .rc-sprig{width:22px;height:22px;}
   .ringcard .rc-sprig svg{width:100%;height:100%;}
   .ringcard .rc-lbl{font-family:"Gowun Dodum",sans-serif;font-size:16px;color:#4f6a3a;}
-  .ringcard .rc-btn{margin-top:5px;border:none;cursor:pointer;background:linear-gradient(135deg,#9cb070,#7e9a54);color:#fff;font-family:"Gowun Dodum",sans-serif;font-size:15px;padding:9px 20px;border-radius:999px;box-shadow:0 6px 14px rgba(120,150,80,.3);display:inline-flex;align-items:center;gap:6px;}
-  .ringcard .rc-tri{font-size:10px;}
+  .ringcard .rc-btn{margin-top:5px;border:none;cursor:pointer;background:linear-gradient(135deg,#9cb070,#7e9a54);color:#fff;font-family:"Gowun Dodum",sans-serif;font-size:13px;padding:7px 16px;border-radius:999px;box-shadow:0 6px 14px rgba(120,150,80,.3);display:inline-flex;align-items:center;gap:5px;}
+  .ringcard .rc-tri{font-size:8.5px;}
   .ringcard .rc-spin{transform-origin:100px 100px;animation:rcspin 12s linear infinite;}
   .ringcard .rc-arc{animation:rcsweep 12s linear infinite;}
   @keyframes rcspin{to{transform:rotate(360deg);}}
@@ -1046,7 +1045,7 @@
         <div class="statusbar"><span>9:41</span><span class="r">5G &nbsp; 87%</span></div>
         <div>
           <div class="bigemblem">
-            <img src="https://yt3.googleusercontent.com/phzQ_4l7Z3cWCFyH-cqIhTEeId2_8480_4j8RmCEphGwbGvJ97A8LWJTwyE3Lw_di626rXiyqg=s900-c-k-c0x00ffffff-no-rj" alt="프랑크푸르트 사랑의 교회 로고" style="width:80px;height:80px;object-fit:contain;border-radius:18px;" />
+            <img src="logo-church.png" alt="프랑크푸르트 사랑의 교회 로고" style="width:82px;height:82px;object-fit:contain;" />
           </div>
           <div class="welcome-t">프랑크푸르트 사랑의 교회</div>
           <div class="welcome-d">함께 채우는 50,000 시간의 기도</div>
@@ -1132,7 +1131,7 @@
         <div class="statusbar"><span>9:41</span><span class="r">5G &nbsp; 87%</span></div>
         <div class="apphead">
           <div class="wordmark">
-            <img src="https://yt3.googleusercontent.com/phzQ_4l7Z3cWCFyH-cqIhTEeId2_8480_4j8RmCEphGwbGvJ97A8LWJTwyE3Lw_di626rXiyqg=s900-c-k-c0x00ffffff-no-rj" alt="" style="width:30px;height:30px;object-fit:contain;border-radius:8px;" />
+            <img src="logo-church.png" alt="" style="width:30px;height:30px;object-fit:contain;" />
             <span class="big5">5</span><span class="nm">만시간</span>
           </div>
           <div class="bell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 01-3.4 0"/></svg></div>
