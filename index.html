@@ -853,6 +853,7 @@
   .zcard .zic.zic-logo{background:#fff;overflow:hidden;}
   .zcard .zic.zic-logo .zlogo{width:100%;height:100%;object-fit:cover;border-radius:50%;transform:scale(1.32);}
   .zcard .zic.zic-logo .zlogo.zlogo-youth{transform:scale(1.04);}
+  .zcard .zic.zic-logo .zlogo.zlogo-clergy{transform:scale(1.06);}
 
   /* record */
   .statcard{display:flex;background:var(--surface);border-radius:20px;box-shadow:0 8px 22px rgba(150,120,60,.08);margin-top:16px;overflow:hidden;}
@@ -2790,13 +2791,14 @@
   var ZEMO={'교역자':'🐑','초록우산':'☂️','오픈도어스':'🚪','밀알':'🌾','에벤에셀':'🪨','쇼니':'⛺','구역 미정':'📍'};
   function zoneSymbol(name, dept){
     if(name==='프랑크푸르트') return FFM_SKYLINE;
+    if(name==='교역자') return '<img class="zlogo zlogo-clergy" src="logo-clergy.png" alt="교역자">';
     if((dept||'장년부')==='장년부' && FLAG[name]) return '<img class="zflag" src="https://flagcdn.com/w40/'+FLAG[name]+'.png" srcset="https://flagcdn.com/w80/'+FLAG[name]+'.png 2x" alt="">';
     if(dept==='청년부') return '<img class="zlogo" src="logo-young.png" alt="Light & Salt">';
     if(dept==='청소년부') return '<img class="zlogo zlogo-youth" src="logo-youth.png" alt="Youth in Faith">';
     var emo = (ZEMO[name] || '🌍');
     return '<span class="zemo">'+emo+'</span>';
   }
-  function zicClass(name, dept){ if(name==='프랑크푸르트') return 'zic-ffm'; if(dept==='청년부'||dept==='청소년부') return 'zic-logo'; if((dept||'장년부')==='장년부' && FLAG[name]) return 'flag'; return 'zic-tone'; }
+  function zicClass(name, dept){ if(name==='프랑크푸르트') return 'zic-ffm'; if(name==='교역자') return 'zic-logo'; if(dept==='청년부'||dept==='청소년부') return 'zic-logo'; if((dept||'장년부')==='장년부' && FLAG[name]) return 'flag'; return 'zic-tone'; }
   // 구역 레벨 (개인 성장과 동일한 PLEVELS·flowerSVG 재사용, 누적시간 기준)
   function zoneLvIdx(hours){ var i=0; for(var k=0;k<PLEVELS.length;k++){ if(hours>=PLEVELS[k][0]) i=k; } return i; }
   function zoneLvPct(hours){ var i=zoneLvIdx(hours); var nx=PLEVELS[i+1]; if(!nx) return 100; var span=nx[0]-PLEVELS[i][0]; return Math.round(Math.min((hours-PLEVELS[i][0])/span,1)*100); }
