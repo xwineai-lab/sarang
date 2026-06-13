@@ -772,6 +772,8 @@
   .zd-head .zd-ti{display:flex;align-items:center;gap:9px;min-width:0;}
   .zd-head .zd-ic{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;}
   .zd-head .zd-ic svg{width:20px;height:20px;}
+  .zd-head .zd-ic .zlogo{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+  .zd-head .zd-ic.zic-logo{background:#fff;}
   .zd-head .zd-nm{font-family:"Gowun Dodum",sans-serif;font-size:16px;color:var(--ink);}
   .zd-head .zd-dp{font-size:11px;color:var(--soft);}
   .zd-head .zd-x{font-size:21px;color:#c3b49a;cursor:pointer;line-height:1;padding:2px 8px;flex-shrink:0;}
@@ -850,6 +852,7 @@
   /* 청년부 Light & Salt 로고 */
   .zcard .zic.zic-logo{background:#fff;overflow:hidden;}
   .zcard .zic.zic-logo .zlogo{width:100%;height:100%;object-fit:cover;border-radius:50%;transform:scale(1.32);}
+  .zcard .zic.zic-logo .zlogo.zlogo-youth{transform:scale(1.04);}
 
   /* record */
   .statcard{display:flex;background:var(--surface);border-radius:20px;box-shadow:0 8px 22px rgba(150,120,60,.08);margin-top:16px;overflow:hidden;}
@@ -2789,10 +2792,11 @@
     if(name==='프랑크푸르트') return FFM_SKYLINE;
     if((dept||'장년부')==='장년부' && FLAG[name]) return '<img class="zflag" src="https://flagcdn.com/w40/'+FLAG[name]+'.png" srcset="https://flagcdn.com/w80/'+FLAG[name]+'.png 2x" alt="">';
     if(dept==='청년부') return '<img class="zlogo" src="logo-young.png" alt="Light & Salt">';
-    var emo = dept==='청년부' ? '🏘️' : (dept==='청소년부' ? '🎒' : (ZEMO[name] || '🌍'));
+    if(dept==='청소년부') return '<img class="zlogo zlogo-youth" src="logo-youth.png" alt="Youth in Faith">';
+    var emo = (ZEMO[name] || '🌍');
     return '<span class="zemo">'+emo+'</span>';
   }
-  function zicClass(name, dept){ if(name==='프랑크푸르트') return 'zic-ffm'; if(dept==='청년부') return 'zic-logo'; if((dept||'장년부')==='장년부' && FLAG[name]) return 'flag'; return 'zic-tone'; }
+  function zicClass(name, dept){ if(name==='프랑크푸르트') return 'zic-ffm'; if(dept==='청년부'||dept==='청소년부') return 'zic-logo'; if((dept||'장년부')==='장년부' && FLAG[name]) return 'flag'; return 'zic-tone'; }
   // 구역 레벨 (개인 성장과 동일한 PLEVELS·flowerSVG 재사용, 누적시간 기준)
   function zoneLvIdx(hours){ var i=0; for(var k=0;k<PLEVELS.length;k++){ if(hours>=PLEVELS[k][0]) i=k; } return i; }
   function zoneLvPct(hours){ var i=zoneLvIdx(hours); var nx=PLEVELS[i+1]; if(!nx) return 100; var span=nx[0]-PLEVELS[i][0]; return Math.round(Math.min((hours-PLEVELS[i][0])/span,1)*100); }
