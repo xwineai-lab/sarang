@@ -4020,8 +4020,9 @@
   body.solo #pray .praymode{display:none!important;}
   /* 기록: 중보기도 나눔(공동체) 숨김 */
   body.solo #record .ieentry{display:none!important;}
-  /* 더보기: 교회 전용 행 숨김 */
+  /* 더보기: 교회 전용 행 숨김 (내 구역·캠페인·목표·중보기도 검수) */
   body.solo .solo-hide{display:none!important;}
+  body.solo #adminMenuRow{display:none!important;}
   body.solo .solo-badge{position:fixed;top:6px;left:50%;transform:translateX(-50%);z-index:9999;background:rgba(94,125,79,.92);color:#fff;font-size:10px;padding:2px 10px;border-radius:999px;font-family:"Gowun Dodum",sans-serif;pointer-events:none;}
   body.solo #home .wordmark .solomark{height:34px;width:34px;flex-shrink:0;}
   body.solo #home .wordmark{gap:9px;}
@@ -4034,6 +4035,7 @@
     +'<circle cx="78" cy="76" r="7.4" fill="#f5a623"/>'
     +'</svg>';
   function hideByI18n(k){ var el=document.querySelector('[data-i18n="'+k+'"]'); if(!el) return; var row=el.closest('.mrow')||el; row.classList.add('solo-hide'); }
+  function stripZone(){ var rs=document.getElementById('recSub'); if(rs){ var t=rs.textContent||''; if(t.indexOf('구역')>=0 && t.indexOf(' · ')>=0){ rs.textContent=t.split(' · ')[0]; } } }
   function applySolo(){
     try{
       document.body.classList.add('solo');
@@ -4044,6 +4046,7 @@
       }
       hideByI18n('row.myzone'); hideByI18n('row.goal');
       var camp=document.querySelector('[data-i18n="sec.campaign"]'); if(camp) camp.classList.add('solo-hide');
+      stripZone();
       if(!document.querySelector('.solo-badge')){ var b=document.createElement('div'); b.className='solo-badge'; b.textContent='SOLO 미리보기 (비공개)'; document.body.appendChild(b); }
     }catch(e){}
   }
@@ -4063,8 +4066,7 @@
   patchPray();
   setTimeout(function(){ applySolo(); patchPray(); }, 1200);
   setTimeout(function(){ applySolo(); patchPray(); }, 3000);
-  // 더보기 탭은 진입 시 렌더될 수 있어 클릭 후 한 번 더 적용
-  document.addEventListener('click', function(){ setTimeout(applySolo, 250); }, true);
+  document.addEventListener('click', function(){ setTimeout(function(){ applySolo(); stripZone(); }, 250); }, true);
 })();
 </script>
 </body>
