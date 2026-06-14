@@ -1,0 +1,26 @@
+{
+  "name": "만시간 · 나의 기도실",
+  "short_name": "만시간",
+  "description": "나만의 기도 시간을 쌓아가요",
+  "start_url": "./next.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f4eee1",
+  "theme_color": "#e0a93a",
+  "lang": "ko",
+  "icons": [
+    {
+      "src": "icon-solo-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-solo-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
