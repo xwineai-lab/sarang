@@ -2795,6 +2795,9 @@
     document.querySelector('.phone').appendChild(ov);
   }
   function closeGraceModal(){var o=document.getElementById('graceModal');if(o)o.remove();}
+  function gToday(){ var d=new Date(); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
+  function graceBannerAllowedToday(){ try{ return localStorage.getItem('grace_banner_day')!==gToday(); }catch(e){ return true; } }
+  function graceBannerMarkToday(){ try{ localStorage.setItem('grace_banner_day', gToday()); }catch(e){} }
   function gCardGotBanner(){
     closeGraceModal();
     var ov=document.createElement('div'); ov.className='gmodal'; ov.id='graceModal'; ov.onclick=function(e){if(e.target===ov)closeGraceModal();};
@@ -2844,7 +2847,7 @@
     if(!bgPool.length){ for(var br=1;br<=24;br++) bgPool.push(br); }
     var bgi=bgPool[Math.floor(Math.random()*bgPool.length)];
     try{ var res=await SB.rpc('claim_grace_card',{p_date:gLocalDate(),p_bg:'cardbg'+gpad(bgi),p_verse:v.t,p_ref:v.r,p_minutes:tot});
-      if(res&&res.data){ gMarkSeen(v.i); gCardGotBanner(); } }catch(e){}   // 받을 땐 안내만, 실제 카드는 기록 탭 카드함에서
+      if(res&&res.data){ gMarkSeen(v.i); if(graceBannerAllowedToday()){ graceBannerMarkToday(); gCardGotBanner(); } } }catch(e){}   // 받을 땐 안내만, 실제 카드는 기록 탭 카드함에서
   }
   var GRACE_CACHE=[];
   async function loadGraceCards(){
