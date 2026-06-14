@@ -1268,6 +1268,41 @@
           <div class="hh-desc" id="hhDesc">마음의 문을 열고 하나님께 나아가요</div>
         </div>
 
+        <!-- 솔로 촛불 배너 (질문 기도 진입) -->
+        <div class="solocandle cbn" id="soloCandle">
+          <div class="sc-amb"></div>
+          <div class="sc-glow"></div>
+          <div class="sc-motes" id="scMotes"></div>
+          <svg class="sc-flame" id="scFlame" viewBox="0 0 19 46" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <filter id="scff" x="-60%" y="-30%" width="220%" height="160%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.013 0.035" numOctaves="2" seed="3" result="scn">
+                  <animate attributeName="baseFrequency" dur="6.5s" values="0.013 0.035;0.018 0.05;0.013 0.04;0.013 0.035" repeatCount="indefinite"/>
+                </feTurbulence>
+                <feDisplacementMap in="SourceGraphic" in2="scn" scale="2.2"/>
+              </filter>
+              <radialGradient id="scfgr" cx="50%" cy="80%" r="56%">
+                <stop offset="0%" stop-color="#fffaf0"/><stop offset="32%" stop-color="#ffe8ad"/>
+                <stop offset="64%" stop-color="#ffb24d"/><stop offset="100%" stop-color="#ff8a2e" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+            <g filter="url(#scff)"><path d="M9.5 45 C6.5 38 7.5 24 9.5 2 C11.5 24 12.5 38 9.5 45 Z" fill="url(#scfgr)"/></g>
+            <ellipse cx="9.5" cy="37" rx="2.6" ry="8.4" fill="#fffaef" opacity=".92"/>
+            <ellipse cx="9.5" cy="40" rx="1.5" ry="5" fill="#fffef8" opacity=".95"/>
+            <ellipse cx="9.5" cy="43" rx="2" ry="3.2" fill="#b8d4ff" opacity=".4"/>
+          </svg>
+          <div class="sc-scrim"></div>
+          <div class="sc-inner">
+            <div class="sc-top">
+              <div class="sc-eyebrow">가만히 듣고 있어요</div>
+              <div class="sc-q" id="scQ">지금, 기도가 필요하신가요?</div>
+            </div>
+            <div class="sc-bot">
+              <button class="sc-btn" type="button" onclick="event.stopPropagation();try{go('pray')}catch(e){}"><span class="sc-tri">▶</span> 기도하러 들어가기</button>
+            </div>
+          </div>
+        </div>
+
         <!-- 오늘의 1분 기도 -->
         <div class="todaycard ringcard">
           <div class="rc-ring">
@@ -4089,6 +4124,33 @@
   body.solo .sw-foot{font-family:"Gowun Dodum","Pretendard",sans-serif;font-size:11.5px;color:rgba(255,255,255,.9);margin-top:12px;text-shadow:0 1px 5px rgba(35,26,14,.6);}
   @keyframes swFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
   @keyframes swIn{from{opacity:0;transform:translateY(13px)}to{opacity:1;transform:translateY(0)}}
+  /* === 솔로 홈 촛불 배너 === */
+  body.solo #home .homehead{display:none!important;}
+  .solocandle{display:none;}
+  body.solo .solocandle{display:block;position:relative;border-radius:22px;overflow:hidden;cursor:pointer;height:300px;background-size:cover;background-position:center;margin:8px 0 6px;box-shadow:0 10px 26px rgba(90,70,40,.25);}
+  body.solo .solocandle.cbd{background-image:url('candle-day.jpg');}
+  body.solo .solocandle.cbn{background-image:url('candle-night.jpg');}
+  .sc-amb{position:absolute;left:50%;bottom:30%;transform:translate(-50%,50%);width:240px;height:230px;border-radius:50%;pointer-events:none;z-index:1;background:radial-gradient(circle, rgba(255,202,114,.46) 0%, rgba(255,176,78,.28) 28%, rgba(255,156,58,.13) 50%, rgba(255,148,52,.05) 66%, transparent 78%);animation:scHeart 2.2s ease-in-out infinite;}
+  .sc-glow{position:absolute;left:50%;bottom:50%;transform:translate(-50%,50%);width:120px;height:120px;border-radius:50%;pointer-events:none;z-index:2;background:radial-gradient(circle, rgba(255,246,214,.9) 0%, rgba(255,204,116,.5) 22%, rgba(255,170,68,.2) 46%, transparent 70%);animation:scHeart 2.2s ease-in-out infinite;}
+  @keyframes scHeart{0%,100%{opacity:.34;transform:translate(-50%,50%) scale(.92)}10%{opacity:1;transform:translate(-50%,50%) scale(1.12)}20%{opacity:.6;transform:translate(-50%,50%) scale(1)}30%{opacity:.9;transform:translate(-50%,50%) scale(1.07)}46%{opacity:.4;transform:translate(-50%,50%) scale(.95)}}
+  .sc-flame{position:absolute;left:50%;bottom:48%;width:19px;height:46px;transform:translateX(-50%);transform-origin:50% 100%;pointer-events:none;z-index:4;animation:scSway 3.2s ease-in-out infinite;}
+  @keyframes scSway{0%,100%{transform:translateX(-50%) rotate(0deg) scaleY(1)}20%{transform:translateX(-51%) rotate(-2.2deg) scaleY(1.05)}45%{transform:translateX(-49.4%) rotate(1.6deg) scaleY(.96)}70%{transform:translateX(-50.6%) rotate(-1deg) scaleY(1.02)}}
+  .sc-motes{position:absolute;left:50%;bottom:48%;width:54px;height:70px;transform:translateX(-50%);pointer-events:none;z-index:3;}
+  .sc-mote{position:absolute;bottom:4px;width:5px;height:5px;border-radius:50%;opacity:0;background:radial-gradient(circle, rgba(255,242,196,.95), rgba(255,200,110,.4) 55%, transparent 76%);animation:scMote 4.6s ease-in infinite;}
+  @keyframes scMote{0%{opacity:0;transform:translate(0,8px) scale(.5)}16%{opacity:.9}62%{opacity:.5}100%{opacity:0;transform:translate(var(--mx,4px),-60px) scale(.18)}}
+  .sc-scrim{position:absolute;inset:0;z-index:5;pointer-events:none;}
+  .solocandle.cbd .sc-scrim{background:linear-gradient(180deg, rgba(255,253,246,.74) 0%, rgba(255,253,246,.34) 18%, rgba(255,253,246,.06) 32%, transparent 46%, transparent 68%, rgba(255,250,240,.28) 100%);}
+  .solocandle.cbn .sc-scrim{background:linear-gradient(180deg, rgba(16,11,5,.52) 0%, rgba(16,11,5,.14) 30%, transparent 46%, transparent 70%, rgba(16,11,5,.3) 100%);}
+  .sc-inner{position:absolute;inset:0;z-index:6;display:flex;flex-direction:column;justify-content:space-between;padding:22px 18px 18px;text-align:center;}
+  .sc-eyebrow{font-family:"Gowun Dodum",sans-serif;font-size:11.5px;letter-spacing:.6px;}
+  .sc-q{font-family:"Gowun Dodum",sans-serif;font-size:19px;line-height:1.55;margin:6px 6px 0;min-height:56px;transition:opacity .5s;}
+  .solocandle.cbd .sc-eyebrow{color:#6b5828;text-shadow:0 1px 2px rgba(255,255,255,.85);}
+  .solocandle.cbd .sc-q{color:#31260e;text-shadow:0 1px 2px rgba(255,255,255,.92),0 0 12px rgba(255,253,246,.7);}
+  .solocandle.cbn .sc-eyebrow{color:#dcb57b;}
+  .solocandle.cbn .sc-q{color:#f7e9cb;text-shadow:0 1px 14px rgba(255,170,70,.4);}
+  .sc-btn{display:inline-flex;align-items:center;gap:7px;border:none;border-radius:13px;padding:12px 26px;cursor:pointer;font-family:"Gowun Dodum",sans-serif;font-size:14px;font-weight:700;background:linear-gradient(135deg,#eab85e,#cf8c33);color:#2a1c08;box-shadow:0 6px 18px rgba(0,0,0,.3);}
+  .solocandle.cbd .sc-btn{background:linear-gradient(135deg,#e9b256,#cf8c33);color:#3a2607;box-shadow:0 6px 16px rgba(180,110,30,.4);}
+  .sc-tri{font-size:10px;}
 </style>
 <script>
 (function(){
@@ -4125,6 +4187,24 @@
     +'</div>';
     var sb=document.getElementById('soloStart'); if(sb) sb.addEventListener('click', function(){ try{ if(window.enterApp){ enterApp(); } else { go('home'); } }catch(e){ try{go('home');}catch(_){}; } });
   }
+  var SC_Q=['지금, 기도가 필요하신가요?','잠시 멈추고 싶으신가요?','오늘, 주님 앞에 서볼까요?','혼자 감당하기 버거우신가요?','무거운 하루였나요?'];
+  function initCandle(){
+    try{
+      var c=document.getElementById('soloCandle'); if(!c || c.dataset.init) return; c.dataset.init='1';
+      var h=new Date().getHours(); var day=(h>=6 && h<18);
+      c.classList.remove('cbd','cbn'); c.classList.add(day?'cbd':'cbn');
+      var P=day?{l:51,b:38,s:1.70}:{l:50,b:39,s:1.75};
+      var fl=document.getElementById('scFlame'), gl=c.querySelector('.sc-glow'), am=c.querySelector('.sc-amb'), mo=document.getElementById('scMotes');
+      if(fl){fl.style.left=P.l+'%';fl.style.bottom=P.b+'%';fl.style.height=(46*P.s)+'px';fl.style.width=(19*P.s)+'px';}
+      if(gl){gl.style.left=P.l+'%';gl.style.bottom=(P.b+5)+'%';}
+      if(am){am.style.left=P.l+'%';am.style.bottom=(P.b-16)+'%';}
+      if(mo){mo.style.left=P.l+'%';mo.style.bottom=P.b+'%';
+        for(var i=0;i<6;i++){var m=document.createElement('span');m.className='sc-mote';m.style.left=(8+i*8)+'px';m.style.setProperty('--mx',((i%2?1:-1)*(4+i*2))+'px');m.style.animationDelay=(i*0.75)+'s';m.style.animationDuration=(4+i*0.4)+'s';mo.appendChild(m);}
+      }
+      var qi=0, el=document.getElementById('scQ');
+      if(el){ setInterval(function(){ el.style.opacity=0; setTimeout(function(){ qi=(qi+1)%SC_Q.length; el.textContent=SC_Q[qi]; el.style.opacity=1; },420); },5000); }
+    }catch(e){}
+  }
   function applySolo(){
     try{
       document.body.classList.add('solo');
@@ -4137,7 +4217,7 @@
       }
       hideByI18n('row.myzone'); hideByI18n('row.goal');
       var camp=document.querySelector('[data-i18n="sec.campaign"]'); if(camp) camp.classList.add('solo-hide');
-      stripZone(); paintSoloHead();
+      stripZone(); paintSoloHead(); initCandle();
       if(!document.querySelector('.solo-badge')){ var b=document.createElement('div'); b.className='solo-badge'; b.textContent='SOLO 미리보기 (비공개)'; document.body.appendChild(b); }
     }catch(e){}
   }
