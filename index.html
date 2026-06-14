@@ -3334,6 +3334,7 @@
       if(!s || !s.session){ await SB.auth.signInAnonymously(); }
       try{ const { data:uu } = await SB.auth.getUser(); if(uu && uu.user){ const u=uu.user; myEmail=u.email||null; isAnon=!!u.is_anonymous; const ids=(u.identities||[]).map(function(i){return i.provider;}); authProvider = ids.indexOf('kakao')>=0?'kakao':((ids.indexOf('email')>=0||myEmail)?'email':null); } }catch(e){}
       syncAuthUI();
+      try{ setupPresence(); }catch(e){}   // 라이브 인원 지연 단축: 프레즌스 조기 연결
       const { data:gs } = await SB.from('groups').select('id,name,kind').order('id');
       SERVER_DEPT_ITEMS = { '장년부':[], '청년부':[], '청소년부':[] };
       (gs||[]).forEach(function(g){
@@ -4017,7 +4018,7 @@
     if(document.getElementById('zone').classList.contains('on')) buildZones();
   }
   function setupPresence(){
-    if(!SB) return;
+    if(!SB || PRESENCE) return;
     const key = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Math.random());
     PRESENCE = SB.channel('prayer-room', { config:{ presence:{ key: key } } });
     PRESENCE.on('presence', { event:'sync' }, function(){
