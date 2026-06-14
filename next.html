@@ -2317,6 +2317,7 @@
     _gaugeShown=mins;
   }
   var YDAY_PRAYERS=0, YDAY_VISITS=0, YDAY_MIN=0, _ydTimer=null, _ydPhase=0;
+  try{ var _ydc=JSON.parse(localStorage.getItem('ydc')||'null'); if(_ydc){ YDAY_PRAYERS=+_ydc.p||0; YDAY_VISITS=+_ydc.v||0; YDAY_MIN=+_ydc.m||0; try{ renderLive(false); }catch(e){} } }catch(e){}
   function ydMinText(m){ var h=Math.floor(m/60), mm=m%60; return h>0?(h+'시간 '+mm+'분'):(mm+'분'); }
   function ydBannerMsgs(){ return ['어제는 <b>'+YDAY_PRAYERS+'명</b>의 성도가 기도했어요','어제 <b>'+YDAY_VISITS+'명</b>이 다녀갔어요','어제 함께 드린 기도 <b>'+ydMinText(YDAY_MIN)+'</b>이에요']; }
   function ydDayKey(){ var d=new Date(); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
@@ -2335,6 +2336,8 @@
     try{ var r=await SB.rpc('home_daily_stats'); var d=(r.data&&r.data[0])||{};
       var p=Number(d.y_prayers)||0, v=Number(d.y_visits)||0, m=Number(d.y_minutes)||0;
       YDAY_PRAYERS=p; YDAY_VISITS=v; YDAY_MIN=m;
+      try{ localStorage.setItem('ydc', JSON.stringify({p:p,v:v,m:m})); }catch(e){}
+      try{ renderLive(false); }catch(e){}
       ydUp('ydPrayers', p, '명');
       ydUp('ydVisits', v, '명');
       ydUpMin('ydMin', m);
@@ -3390,6 +3393,7 @@
       if(!s || !s.session){ await SB.auth.signInAnonymously(); }
       try{ const { data:uu } = await SB.auth.getUser(); if(uu && uu.user){ const u=uu.user; myEmail=u.email||null; isAnon=!!u.is_anonymous; const ids=(u.identities||[]).map(function(i){return i.provider;}); authProvider = ids.indexOf('kakao')>=0?'kakao':((ids.indexOf('email')>=0||myEmail)?'email':null); } }catch(e){}
       syncAuthUI();
+      try{ setupPresence(); }catch(e){}   /* 실시간 인원 연결을 인증 직후 즉시 시작(나머지 쿼리와 병렬) → 라이브 카운트 지연 단축 */
       const { data:gs } = await SB.from('groups').select('id,name,kind').order('id');
       SERVER_DEPT_ITEMS = { '장년부':[], '청년부':[], '청소년부':[] };
       (gs||[]).forEach(function(g){
@@ -4073,7 +4077,7 @@
     if(document.getElementById('zone').classList.contains('on')) buildZones();
   }
   function setupPresence(){
-    if(!SB) return;
+    if(!SB || PRESENCE) return;
     const key = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Math.random());
     PRESENCE = SB.channel('prayer-room', { config:{ presence:{ key: key } } });
     PRESENCE.on('presence', { event:'sync' }, function(){
