@@ -1480,11 +1480,6 @@
             <div class="cal-grid" id="calGrid"></div>
             <div class="cal-legend"><span><i class="lg-p"></i>기도한 날</span><span><i class="lg-t"></i>오늘</span></div>
           </div>
-          <div class="gracesec">
-            <div class="gc-head"><span class="reclbl" style="margin:0;">은혜 말씀 카드</span><span class="gc-count-w">받은 카드 <b id="graceCount">0</b>장</span></div>
-            <div class="gc-sub">기도 30분을 드린 날, 하루 한 장 받는 오늘의 말씀이에요.</div>
-            <div class="gc-grid" id="graceGrid"><div class="gc-empty">아직 받은 카드가 없어요.</div></div>
-          </div>
           <button class="manualbtn" onclick="openManualModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v8M8 12h8"/><circle cx="12" cy="12" r="9"/></svg>기도 시간 직접 기록 · 보정</button>
           <div class="ieentry" onclick="go('intercede')" style="margin-top:18px;">
             <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21C5 16 3 12 3 8.5 3 6 5 4 7.5 4 9.5 4 11 5.2 12 6.7 13 5.2 14.5 4 16.5 4 19 4 21 6 21 8.5 21 12 19 16 12 21z"/></svg></div>
@@ -1544,6 +1539,11 @@
               <textarea class="minput" id="thxBody" maxlength="300" placeholder="감사한 일을 적어보세요…"></textarea>
               <div class="thx-chips" id="thxCats"></div>
               <button class="thx-add-btn" onclick="submitGratitude()">감사 열매 맺기</button>
+            </div>
+            <div class="gracesec">
+              <div class="gc-head"><span class="reclbl" style="margin:0;">은혜 말씀 카드</span><span class="gc-count-w">받은 카드 <b id="graceCount">0</b>장</span></div>
+              <div class="gc-sub">기도 30분을 드린 날, 하루 한 장 받는 오늘의 말씀이에요.</div>
+              <div class="gc-grid" id="graceGrid"><div class="gc-empty">아직 받은 카드가 없어요.</div></div>
             </div>
             <div class="myreclbl">감사의 기록</div>
             <div id="thxList"></div>
@@ -2807,7 +2807,7 @@
     document.querySelector('.phone').appendChild(ov);
   }
   function graceToGratitude(){ closeGraceModal(); go('record'); recTab('thanks'); setTimeout(function(){ var t=document.getElementById('thxBody'); if(t){ try{ t.scrollIntoView({block:'center'}); t.focus(); }catch(e){} } }, 380); }
-  function graceViewCards(){ closeGraceModal(); go('record'); recTab('log'); setTimeout(function(){ var s=document.querySelector('.gracesec'); if(s){ try{ s.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){ s.scrollIntoView(); } } }, 380); }
+  function graceViewCards(){ closeGraceModal(); go('record'); recTab('thanks'); setTimeout(function(){ var s=document.querySelector('.gracesec'); if(s){ try{ s.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){ s.scrollIntoView(); } } }, 380); }
   function gDownloadBlob(blob){ var url=URL.createObjectURL(blob); var a=document.createElement('a'); a.href=url; a.download='말씀카드.png'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){URL.revokeObjectURL(url);},5000); }
   async function saveGraceImage(){
     var el=document.getElementById('graceCardEl'); if(!el||!window.html2canvas){ alert('잠시 후 다시 시도해 주세요.'); return; }
