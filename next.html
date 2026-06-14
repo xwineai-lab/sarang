@@ -516,6 +516,33 @@
   .rectabs{display:flex;background:var(--amber-tint);border-radius:14px;padding:4px;margin:14px 0 2px;}
   .rectab{flex:1;border:none;background:none;padding:8px 3px;border-radius:11px;font-family:"Gowun Dodum",sans-serif;font-size:12.5px;white-space:nowrap;color:var(--soft);cursor:pointer;}
   .rectab.on{background:var(--surface);color:var(--amber-deep);box-shadow:0 2px 8px rgba(150,120,60,.1);}
+  /* 나의 기도 여정 탭 */
+  #recPaneJourney .jrn-intro{font-size:12.5px;color:var(--soft);line-height:1.6;margin:14px 2px 4px;}
+  #recPaneJourney .jrn-seclbl{font-size:12.5px;color:#5e7d4f;font-weight:700;margin:18px 2px 11px;display:flex;align-items:center;gap:7px;}
+  #recPaneJourney .jrn-n{background:#eaf2e2;color:#5e7d4f;border-radius:99px;font-size:11px;padding:1px 9px;}
+  #recPaneJourney .jp{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:15px 16px;margin-bottom:11px;box-shadow:0 5px 14px rgba(120,95,45,.06);}
+  #recPaneJourney .jp-top{display:flex;align-items:center;gap:11px;}
+  #recPaneJourney .jp .ci{width:38px;height:38px;border-radius:50%;background:#eef2e6;display:flex;align-items:center;justify-content:center;flex:0 0 auto;}
+  #recPaneJourney .jp .ci svg{width:20px;height:20px;fill:none;stroke:#7e9a54;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
+  #recPaneJourney .jp-tt{flex:1;min-width:0;}
+  #recPaneJourney .jp-cat{font-size:11px;color:#5e7d4f;}
+  #recPaneJourney .jp-name{font-size:15.5px;font-weight:700;margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  #recPaneJourney .jp-st{font-size:11px;padding:3px 10px;border-radius:99px;background:#eaf2e2;color:#5e7d4f;white-space:nowrap;flex:0 0 auto;}
+  #recPaneJourney .jp-st.ans{background:#fbeede;color:#bb6a2a;}
+  #recPaneJourney .jp-pr{display:flex;justify-content:space-between;align-items:baseline;margin:13px 0 6px;gap:8px;}
+  #recPaneJourney .jp-h{font-size:14.5px;color:#3a3122;}
+  #recPaneJourney .jp-h b{color:#5e7d4f;font-size:16px;}
+  #recPaneJourney .jp-goal{font-size:11.5px;color:#a89e89;white-space:nowrap;}
+  #recPaneJourney .jrbar{height:9px;border-radius:99px;background:#ece4d2;overflow:hidden;}
+  #recPaneJourney .jrbar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#9cb878,#e0a93a);transition:width .6s;}
+  #recPaneJourney .jp-foot{display:flex;justify-content:space-between;align-items:center;margin-top:11px;gap:8px;}
+  #recPaneJourney .jp-last{font-size:11px;color:#a89e89;}
+  #recPaneJourney .jp-pray{display:inline-flex;align-items:center;gap:6px;border:1px solid #e6ad4c;background:#fbf3df;border-radius:99px;padding:7px 14px;font-size:12.5px;color:var(--amber-deep);font-weight:700;cursor:pointer;white-space:nowrap;}
+  #recPaneJourney .jp-pray .tri{font-size:9px;}
+  #recPaneJourney .jp.ans{opacity:.94;}
+  #recPaneJourney .jp.ans .jrbar i{background:#d9b06a;}
+  #recPaneJourney .jraddbtn{width:100%;border:1.5px dashed #c9bb98;background:var(--surface);border-radius:16px;padding:14px;font-family:"Gowun Dodum",sans-serif;font-size:14px;color:#5e7d4f;font-weight:700;cursor:pointer;}
+  #recPaneJourney .jrempty{text-align:center;color:#a89e89;font-size:12.5px;padding:16px 14px;line-height:1.7;}
   /* 감사노트 */
   .thx-hero{position:relative;height:290px;border-radius:18px;overflow:hidden;background:#cdd0b8 center/cover no-repeat;box-shadow:0 8px 20px rgba(70,80,55,.12);margin-top:14px;}
   #thxHero .thx-fruits{position:absolute;inset:0;pointer-events:none;z-index:2;}
@@ -1488,8 +1515,9 @@
           <div class="h-desc" id="recSub" style="margin-top:5px;font-weight:600;color:var(--amber-deep);">고요한 등불 · 독일열방 구역</div>
         </div>
         <div class="rectabs">
-          <button class="rectab on" id="rt-log" onclick="recTab('log')" data-i18n="rec.tab.log">기도 기록</button>
-          <button class="rectab" id="rt-my" onclick="recTab('my')" data-i18n="rec.tab.my">나의 기도제목</button>
+          <button class="rectab on" id="rt-log" onclick="recTab('log')" data-i18n="rec.tab.log">기도기록</button>
+          <button class="rectab" id="rt-journey" onclick="recTab('journey')" data-i18n="rec.tab.journey">기도여정</button>
+          <button class="rectab" id="rt-my" onclick="recTab('my')" data-i18n="rec.tab.my">기도제목</button>
           <button class="rectab" id="rt-thanks" onclick="recTab('thanks')">감사노트</button>
         </div>
         <div id="recPaneLog">
@@ -1595,6 +1623,21 @@
             </div>
             <div class="myreclbl">감사의 기록</div>
             <div id="thxList"></div>
+          </div>
+        </div>
+        <div id="recPaneJourney" style="display:none;">
+          <div id="jrnGate" class="gatecard" style="display:none;">
+            <div class="gt">나의 기도 여정</div>
+            <div class="gd">로그인하면 기도 목표와 진행을<br>어디서나 이어갈 수 있어요.<br>(내 기록은 나만 봅니다)</div>
+            <button class="primary" onclick="go('connect')">로그인하고 시작하기</button>
+          </div>
+          <div id="jrnWrap" style="display:none;">
+            <div class="jrn-intro">목표를 향해 한 기도씩 쌓아가요.<br>응답되면 감사로 남겨두세요.</div>
+            <div class="jrn-seclbl">기도 중 <span class="jrn-n" id="jrnActiveN">0</span></div>
+            <div id="jrnActive"></div>
+            <button class="jraddbtn" onclick="openMyEditor(null)">＋ 새 기도 시작하기</button>
+            <div class="jrn-seclbl" style="margin-top:22px;">응답된 기도 <span class="jrn-n" id="jrnAnsN">0</span></div>
+            <div id="jrnAnswered"></div>
           </div>
         </div>
       </div>
@@ -1982,8 +2025,9 @@
     'dept.youth':{ko:'청소년부',en:'Youth',de:'Jugend'},
     'rec.title':{ko:'나의 기록',en:'My Records',de:'Mein Verlauf'},
     'rec.desc':{ko:'하나님께 드린 시간을 돌아보세요',en:'Look back on the time you gave to God',de:'Blicken Sie auf Ihre Gebetszeit zurück'},
-    'rec.tab.log':{ko:'기도 기록',en:'Prayer Log',de:'Gebetsverlauf'},
-    'rec.tab.my':{ko:'나의 기도제목',en:'My Topics',de:'Meine Themen'},
+    'rec.tab.log':{ko:'기도기록',en:'Log',de:'Verlauf'},
+    'rec.tab.journey':{ko:'기도여정',en:'Journey',de:'Weg'},
+    'rec.tab.my':{ko:'기도제목',en:'Topics',de:'Themen'},
     'rec.intercede':{ko:'중보기도 나눔',en:'Shared Intercession',de:'Fürbitte teilen'},
     'more.title':{ko:'더보기',en:'More',de:'Mehr'},
     'more.help':{ko:'처음 오셨나요?',en:'New here?',de:'Neu hier?'},
@@ -3556,14 +3600,16 @@
   var REC_ICON_PRAY='<svg viewBox="0 0 24 24"><path d="M12 3 C9.5 7.5 7.5 10.5 7.5 14 7.5 16.5 9.5 18.5 12 18.5 14.5 18.5 16.5 16.5 16.5 14 16.5 10.5 14.5 7.5 12 3z"/></svg>';
   function recTab(which){
     window._recTab=which;
-    var l=document.getElementById('rt-log'), m=document.getElementById('rt-my'), th=document.getElementById('rt-thanks');
-    if(l) l.classList.toggle('on',which==='log'); if(m) m.classList.toggle('on',which==='my'); if(th) th.classList.toggle('on',which==='thanks');
-    var pl=document.getElementById('recPaneLog'), pm=document.getElementById('recPaneMy'), pt=document.getElementById('recPaneThanks');
+    var l=document.getElementById('rt-log'), m=document.getElementById('rt-my'), th=document.getElementById('rt-thanks'), jr=document.getElementById('rt-journey');
+    if(l) l.classList.toggle('on',which==='log'); if(m) m.classList.toggle('on',which==='my'); if(th) th.classList.toggle('on',which==='thanks'); if(jr) jr.classList.toggle('on',which==='journey');
+    var pl=document.getElementById('recPaneLog'), pm=document.getElementById('recPaneMy'), pt=document.getElementById('recPaneThanks'), pj=document.getElementById('recPaneJourney');
     if(pl) pl.style.display=which==='log'?'block':'none';
     if(pm) pm.style.display=which==='my'?'block':'none';
     if(pt) pt.style.display=which==='thanks'?'block':'none';
+    if(pj) pj.style.display=which==='journey'?'block':'none';
     if(which==='my'){ loadMyPrayers(); } else { var f=document.getElementById('myFab'); if(f) f.style.display='none'; }
     if(which==='thanks'){ loadGratitude(); }
+    if(which==='journey'){ loadJourney(); }
   }
   function myLoggedIn(){ return (!!authProvider || !!myEmail || isAnon===false); }
   async function loadMyPrayers(){
@@ -3593,6 +3639,80 @@
         +'<div class="mpc-body"><div class="mt"><div class="mtt">'+mpEsc(p.title)+'</div><span class="stbadge '+p.status+'">'+lab[p.status]+'</span></div>'+note+'<div class="mm">'+last+' · 총 '+(p.pray_count||0)+'회</div></div>'
         +'<div class="mpc-chev">›</div></div>';
     }).join('');
+  }
+  /* ===== 나의 기도 여정 ===== */
+  var JOURNEY_ROWS=[], JOURNEY_AGG={};
+  var JRIC={
+    '자녀·입시':'<svg viewBox="0 0 24 24"><circle cx="9" cy="9" r="2.5"/><circle cx="16" cy="10" r="2"/><path d="M4.5 19c0-3 2-4.7 4.5-4.7s4.5 1.7 4.5 4.7"/><path d="M14.2 19c0-2.5 1.4-3.9 3.3-3.9"/></svg>',
+    '건강·치유':'<svg viewBox="0 0 24 24"><path d="M12 21s-7.4-4.6-9.9-9.2C.7 8.6 2.4 5.4 5.5 5.4c1.95 0 3.35 1.15 4.15 2.35L12 9l2.35-1.25C15.15 6.55 16.55 5.4 18.5 5.4c3.1 0 4.8 3.2 3.4 6.4C19.4 16.45 12 21 12 21z"/></svg>',
+    '가족':'<svg viewBox="0 0 24 24"><path d="M4 11l8-6 8 6"/><path d="M6 10v9h12v-9"/><path d="M10 19v-5h4v5"/></svg>',
+    '진로·직장':'<svg viewBox="0 0 24 24"><path d="M12 3v18"/><path d="M12 6h6.5l2 2-2 2H12z"/><path d="M12 12H5.5l-2 2 2 2H12z"/></svg>',
+    '재정':'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M9.5 9.5C9.5 8 10.7 7.5 12 7.5s2.5.6 2.5 2-1.2 1.8-2.5 2-2.5.6-2.5 2 1.2 2 2.5 2 2.5-.6 2.5-2M12 6v1.5M12 16.5V18"/></svg>',
+    '관계·회복':'<svg viewBox="0 0 24 24"><circle cx="8.5" cy="9" r="2.4"/><circle cx="15.5" cy="9" r="2.4"/><path d="M4 19c0-2.8 2-4.5 4.5-4.5s4.5 1.7 4.5 4.5"/><path d="M11 19c0-2.8 2-4.5 4.5-4.5s4.5 1.7 4.5 4.5"/></svg>',
+    '마음·평안':'<svg viewBox="0 0 24 24"><path d="M7 18h9.6a3.5 3.5 0 0 0 .3-7A5 5 0 0 0 7 10.4 3.6 3.6 0 0 0 7 18z"/></svg>',
+    '감사':'<svg viewBox="0 0 24 24"><path d="M5 19c8-1 13-6 14-15C10 5 5 10 5 19z"/><path d="M5 19 13 11"/></svg>',
+    '신앙 성장':'<svg viewBox="0 0 24 24"><path d="M12 3v18M7 8h10"/></svg>',
+    '전도·교회·나라':'<svg viewBox="0 0 24 24"><path d="M12 3v4M10 5h4"/><path d="M5 21V11l7-4 7 4v10"/><path d="M10 21v-5h4v5"/></svg>'
+  };
+  function jrCatIcon(cat){ return JRIC[cat]||'<svg viewBox="0 0 24 24"><path d="M12 21 V11"/><path d="M12 14 C8.5 14 6.5 11.3 6.5 8 9.8 8 12 10.2 12 13.2"/><path d="M12 13 C15.5 13 17.5 10.3 17.5 7 14.2 7 12 9.2 12 12.2"/></svg>'; }
+  function jrTime(mins){ mins=Math.round(mins||0); var h=Math.floor(mins/60), m=mins%60; if(h>0) return '<b>'+h+'</b>시간'+(m?(' '+m+'분'):''); return '<b>'+m+'</b>분'; }
+  async function loadJourney(){
+    var gate=document.getElementById('jrnGate'), wrap=document.getElementById('jrnWrap');
+    if(!SB || !myLoggedIn()){ if(gate)gate.style.display='block'; if(wrap)wrap.style.display='none'; return; }
+    if(gate)gate.style.display='none'; if(wrap)wrap.style.display='block';
+    try{
+      var res=await SB.from('my_prayers').select('id,title,status,category,goal_type,goal_hours,goal_days,pray_count,last_prayed_at,answered_note,answered_at,created_at').eq('archived',false).order('created_at',{ascending:false});
+      JOURNEY_ROWS=res.data||[];
+    }catch(e){ JOURNEY_ROWS=[]; }
+    JOURNEY_AGG={};
+    try{
+      var ss=await SB.from('prayer_sessions').select('minutes,ended_at,my_prayer_id').not('my_prayer_id','is',null).limit(3000);
+      (ss.data||[]).forEach(function(s){ var k=s.my_prayer_id; if(!k) return; var a=JOURNEY_AGG[k]||(JOURNEY_AGG[k]={min:0,days:{}}); a.min+=(s.minutes||0); var d=(s.ended_at||'').slice(0,10); if(d) a.days[d]=1; });
+    }catch(e){}
+    renderJrn();
+  }
+  function jrProgress(p){
+    var ag=JOURNEY_AGG[p.id]||{min:0,days:{}};
+    var mins=ag.min||0, daysN=Object.keys(ag.days||{}).length;
+    var gt=p.goal_type||'open';
+    if(gt==='hours' && p.goal_hours){ var pct=Math.min(100,Math.round(mins/60/p.goal_hours*100)); return { head:jrTime(mins)+' 기도', goal:'목표 '+p.goal_hours+'시간 · '+pct+'%', pct:pct }; }
+    if(gt==='days' && p.goal_days){ var pd=Math.min(100,Math.round(daysN/p.goal_days*100)); return { head:'<b>'+daysN+'</b>일 기도', goal:'기간 '+p.goal_days+'일 · '+daysN+'/'+p.goal_days+'일', pct:pd }; }
+    return { head:jrTime(mins)+' 기도', goal:'🕊 이루어질 때까지', pct:Math.min(92,(p.pray_count||0)*7) };
+  }
+  function renderJrn(){
+    var active=document.getElementById('jrnActive'), ans=document.getElementById('jrnAnswered');
+    if(!active||!ans) return;
+    var aRows=JOURNEY_ROWS.filter(function(p){return p.status==='praying';});
+    var nRows=JOURNEY_ROWS.filter(function(p){return p.status==='answered'||p.status==='thanks';});
+    var an=document.getElementById('jrnActiveN'); if(an) an.textContent=aRows.length;
+    var nn=document.getElementById('jrnAnsN'); if(nn) nn.textContent=nRows.length;
+    if(!aRows.length){ active.innerHTML='<div class="jrempty">아직 시작한 기도 여정이 없어요.<br>아래 버튼으로 첫 기도를 세워보세요.</div>'; }
+    else active.innerHTML=aRows.map(function(p){
+      var pr=jrProgress(p);
+      var last=p.last_prayed_at?('마지막 기도 '+mpRelDay(p.last_prayed_at)):'아직 기도 전';
+      return '<div class="jp"><div class="jp-top"><span class="ci">'+jrCatIcon(p.category)+'</span>'
+        +'<span class="jp-tt"><span class="jp-cat">'+mpEsc(p.category||'기도')+'</span><div class="jp-name">'+mpEsc(p.title)+'</div></span>'
+        +'<span class="jp-st">기도중</span></div>'
+        +'<div class="jp-pr"><span class="jp-h">'+pr.head+'</span><span class="jp-goal">'+pr.goal+'</span></div>'
+        +'<div class="jrbar"><i style="width:'+pr.pct+'%"></i></div>'
+        +'<div class="jp-foot"><span class="jp-last">'+last+'</span><span class="jp-pray" onclick="prayJourney('+p.id+')"><span class="tri">▶</span> 이 기도로 기도하기</span></div></div>';
+    }).join('');
+    if(!nRows.length){ ans.innerHTML='<div class="jrempty">응답된 기도가 여기에 쌓여요.</div>'; }
+    else ans.innerHTML=nRows.map(function(p){
+      var pr=jrProgress(p);
+      var when=p.answered_at?(mpRelDay(p.answered_at)+' 응답'):'응답됨';
+      var goalTx=when+(p.answered_note?(' · '+mpEsc(p.answered_note.slice(0,16))):' · 감사 기록함');
+      return '<div class="jp ans"><div class="jp-top"><span class="ci">'+jrCatIcon(p.category)+'</span>'
+        +'<span class="jp-tt"><span class="jp-cat">'+mpEsc(p.category||'기도')+'</span><div class="jp-name">'+mpEsc(p.title)+'</div></span>'
+        +'<span class="jp-st ans">응답됨</span></div>'
+        +'<div class="jp-pr"><span class="jp-h">'+pr.head+'</span><span class="jp-goal">'+goalTx+'</span></div>'
+        +'<div class="jrbar"><i style="width:100%"></i></div></div>';
+    }).join('');
+  }
+  function prayJourney(id){
+    var p=JOURNEY_ROWS.find(function(x){return x.id===id;})||{};
+    MY_PRAYER_ID=id; MY_PRAYER_TITLE=p.title||'';
+    go('pray');
   }
   var MPCATS=['자녀·입시','건강·치유','가족','진로·직장','재정','관계·회복','마음·평안','감사','신앙 성장','전도·교회·나라'];
   var _mpCat='', _mpGoalType='open', _mpGoalH=null, _mpGoalD=null;
@@ -3661,6 +3781,7 @@
       }
     }catch(e){ console.warn('기도제목 저장 실패:', e); alert('저장에 실패했어요. 로그인 상태를 확인해주세요.'); return; }
     closeMyModal(); loadMyPrayers();
+    if(window._recTab==='journey'){ try{ loadJourney(); }catch(e){} }
     if(document.getElementById('pray').classList.contains('on')){ if(!myEditId) MY_PRAYER_ID=null; setPrayMode('mine'); }
   }
   async function delMyPrayer(){
@@ -3668,6 +3789,7 @@
     if(!confirm('이 기도제목을 삭제할까요?')) return;
     try{ await SB.from('my_prayers').update({archived:true}).eq('id', myEditId); }catch(e){}
     closeMyModal(); loadMyPrayers();
+    if(window._recTab==='journey'){ try{ loadJourney(); }catch(e){} }
   }
   function prayFromModal(){
     if(!myEditId) return;
