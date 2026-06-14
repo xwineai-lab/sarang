@@ -2130,7 +2130,7 @@
   function renderLive(fade){
     var prep=Math.max(0,(connN||0)-(liveN||0));
     var cnt = _livePhase===0 ? (liveN||0) : prep;
-    var yfb = YDAY_PRAYERS>0 ? '어제 <b>'+YDAY_PRAYERS+'</b>명의 성도가 기도를 했어요' : null;
+    var yfb = YDAY_PRAYERS>0 ? '어제 <b>'+YDAY_PRAYERS+'</b>분이 기도했어요' : null;
     var useY = (cnt===0 && yfb);
     var lines={
       liveText: useY ? yfb : (_livePhase===0 ? '지금 <b>'+(liveN||0)+'</b>명이 함께 기도하고 있어요' : '지금 <b>'+prep+'</b>명이 기도를 준비하고 있어요'),
@@ -2273,7 +2273,7 @@
   }
   var YDAY_PRAYERS=0, YDAY_VISITS=0, YDAY_MIN=0, _ydTimer=null, _ydPhase=0;
   function ydMinText(m){ var h=Math.floor(m/60), mm=m%60; return h>0?(h+'시간 '+mm+'분'):(mm+'분'); }
-  function ydBannerMsgs(){ return ['어제는 <b>'+YDAY_PRAYERS+'명</b>의 성도가 기도했어요','어제 <b>'+YDAY_VISITS+'명</b>이 다녀갔어요','어제 함께 드린 기도 <b>'+ydMinText(YDAY_MIN)+'</b>이에요']; }
+  function ydBannerMsgs(){ return ['어제 <b>'+YDAY_PRAYERS+'분</b>이 기도했어요','어제 <b>'+YDAY_VISITS+'명</b>이 다녀갔어요','어제 함께 드린 기도 <b>'+ydMinText(YDAY_MIN)+'</b>이에요']; }
   function ydDayKey(){ var d=new Date(); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
   function ydDismissed(){ try{ return localStorage.getItem('ydDismiss')===ydDayKey(); }catch(e){ return false; } }
   function dismissYd(ev){ if(ev){ ev.stopPropagation(); ev.preventDefault(); } try{ localStorage.setItem('ydDismiss', ydDayKey()); }catch(e){} var b=document.getElementById('ydBanner'); if(b) b.style.display='none'; try{ if(_ydTimer) clearInterval(_ydTimer); }catch(e){} }
