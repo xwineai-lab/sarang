@@ -1622,8 +1622,19 @@
       <div class="modalmask" id="myModal">
         <div class="modalbox">
           <h3 id="myModalTitle">기도제목 추가</h3>
+          <div class="mseglbl mpsololine" style="margin-top:2px;display:none;">기도 주제 <span style="color:#cf8a3a;font-size:11px;">· 꼭 골라주세요</span></div>
+          <div class="mpcats mpsololine" id="mpCats" style="display:none;"></div>
           <input class="minput" id="mpTitle" maxlength="100" placeholder="기도제목 (예: 가족의 건강)">
           <textarea class="minput" id="mpNote" maxlength="1000" placeholder="기도 내용을 적어보세요 (선택)"></textarea>
+          <div class="mpgoalwrap mpsololine" style="display:none;">
+            <div class="mseglbl">기도 목표</div>
+            <button type="button" class="mpgbig on" id="mpgOpen" onclick="mpPickBig()"><span>🕊 이루어질 때까지</span><small>응답될 때까지 함께 기도해요</small></button>
+            <div class="mpgor"><span>또는 목표를 정해서</span></div>
+            <div class="mpgsub">목표 시간</div>
+            <div class="mpgoals" id="mpgH"></div>
+            <div class="mpgsub" style="margin-top:8px;">기간 약속</div>
+            <div class="mpgoals" id="mpgD"></div>
+          </div>
           <div id="mpStatusWrap" style="display:none;">
             <div class="mseglbl">상태</div>
             <div class="mseg">
@@ -3583,21 +3594,40 @@
         +'<div class="mpc-chev">›</div></div>';
     }).join('');
   }
+  var MPCATS=['자녀·입시','건강·치유','가족','진로·직장','재정','관계·회복','마음·평안','감사','신앙 성장','전도·교회·나라'];
+  var _mpCat='', _mpGoalType='open', _mpGoalH=null, _mpGoalD=null;
+  function mpBuildPickers(){
+    var c=document.getElementById('mpCats');
+    if(c && !c.dataset.built){ c.dataset.built='1'; MPCATS.forEach(function(x){ var b=document.createElement('button'); b.type='button'; b.className='mpcat'; b.dataset.cat=x; b.textContent=x; b.onclick=function(){ _mpCat=x; mpRenderCat(); }; c.appendChild(b); }); }
+    var gh=document.getElementById('mpgH');
+    if(gh && !gh.dataset.built){ gh.dataset.built='1'; [50,100,1000].forEach(function(h){ var b=document.createElement('button'); b.type='button'; b.className='mpgoal'; b.dataset.h=h; b.textContent=h+'시간'; b.onclick=function(){ mpSetGoal('hours',h,null); }; gh.appendChild(b); }); var bd=document.createElement('button'); bd.type='button'; bd.className='mpgoal'; bd.textContent='직접'; bd.onclick=function(){ var v=prompt('목표 시간을 시간 단위로 입력하세요 (숫자)'); v=parseInt(v,10); if(v>0) mpSetGoal('hours',v,null); }; gh.appendChild(bd); }
+    var gd=document.getElementById('mpgD');
+    if(gd && !gd.dataset.built){ gd.dataset.built='1'; [21,40,100].forEach(function(d){ var b=document.createElement('button'); b.type='button'; b.className='mpgoal'; b.dataset.d=d; b.textContent=d+'일'; b.onclick=function(){ mpSetGoal('days',null,d); }; gd.appendChild(b); }); }
+  }
+  function mpRenderCat(){ document.querySelectorAll('#mpCats .mpcat').forEach(function(e){ e.classList.toggle('on', e.dataset.cat===_mpCat); }); }
+  function mpClearGoals(){ document.querySelectorAll('#mpgH .mpgoal,#mpgD .mpgoal').forEach(function(e){ e.classList.remove('on'); }); }
+  function mpPickBig(){ _mpGoalType='open'; _mpGoalH=null; _mpGoalD=null; mpRenderGoal(); }
+  function mpSetGoal(type,h,d){ _mpGoalType=type; _mpGoalH=h; _mpGoalD=d; mpRenderGoal(); }
+  function mpRenderGoal(){ var o=document.getElementById('mpgOpen'); if(o) o.classList.toggle('on', _mpGoalType==='open'); mpClearGoals(); if(_mpGoalType==='hours'){ var f=false; document.querySelectorAll('#mpgH .mpgoal').forEach(function(e){ if(e.dataset.h && +e.dataset.h===_mpGoalH){ e.classList.add('on'); f=true; } }); if(!f){ var last=document.querySelector('#mpgH .mpgoal:last-child'); if(last && _mpGoalH) last.classList.add('on'); } } else if(_mpGoalType==='days'){ document.querySelectorAll('#mpgD .mpgoal').forEach(function(e){ if(+e.dataset.d===_mpGoalD) e.classList.add('on'); }); } }
   function openMyEditor(id){
     myEditId=id;
+    mpBuildPickers();
+    document.querySelectorAll('#myModal .mpsololine').forEach(function(e){ e.style.display=''; });
     var t=document.getElementById('mpTitle'),n=document.getElementById('mpNote'),a=document.getElementById('mpAnswer');
     var stWrap=document.getElementById('mpStatusWrap'),prayBtn=document.getElementById('mpPrayBtn'),delBtn=document.getElementById('mpDelBtn'),title=document.getElementById('myModalTitle');
     if(id){
       var p=MY_PRAYERS.find(function(x){return x.id===id;})||{};
       t.value=p.title||''; n.value=p.note||''; a.value=p.answered_note||''; modalStatus=p.status||'praying';
+      _mpCat=p.category||''; _mpGoalType=p.goal_type||'open'; _mpGoalH=p.goal_hours||null; _mpGoalD=p.goal_days||null;
       stWrap.style.display='block'; prayBtn.style.display='block'; delBtn.style.display='block'; title.textContent='기도제목';
     } else {
       t.value=''; n.value=''; a.value=''; modalStatus='praying';
+      _mpCat=''; _mpGoalType='open'; _mpGoalH=null; _mpGoalD=null;
       stWrap.style.display='none'; prayBtn.style.display='none'; delBtn.style.display='none'; title.textContent='기도제목 추가';
     }
+    mpRenderCat(); mpRenderGoal();
     applyModalStatusUI();
     document.getElementById('myModal').classList.add('on');
-    setTimeout(function(){ try{t.focus();}catch(e){} },60);
   }
   function closeMyModal(){ document.getElementById('myModal').classList.remove('on'); }
   function setModalStatus(s){ modalStatus=s; applyModalStatusUI(); }
@@ -3609,12 +3639,14 @@
     var title=document.getElementById('mpTitle').value.trim();
     if(!title){ alert('기도제목을 입력해주세요.'); return; }
     var note=document.getElementById('mpNote').value.trim();
+    if(!_mpCat){ alert('기도 주제를 골라주세요.'); return; }
+    var _goal={ category:_mpCat, goal_type:_mpGoalType, goal_hours:(_mpGoalType==='hours'?_mpGoalH:null), goal_days:(_mpGoalType==='days'?_mpGoalD:null) };
     if(!SB){ closeMyModal(); return; }
     try{
       if(myEditId){
         var _old=(MY_PRAYERS.find(function(x){return x.id===myEditId;})||{});
         var ans=document.getElementById('mpAnswer').value.trim();
-        var patch={ title:title, note:note, status:modalStatus, answered_note: ans||null };
+        var patch={ title:title, note:note, status:modalStatus, answered_note: ans||null, category:_goal.category, goal_type:_goal.goal_type, goal_hours:_goal.goal_hours, goal_days:_goal.goal_days };
         if(modalStatus!=='praying') patch.answered_at=new Date().toISOString();
         await SB.from('my_prayers').update(patch).eq('id', myEditId);
         try{
@@ -3625,7 +3657,7 @@
           }
         }catch(e){}
       } else {
-        await SB.from('my_prayers').insert({ title:title, note:note, status:'praying' });
+        await SB.from('my_prayers').insert({ title:title, note:note, status:'praying', category:_goal.category, goal_type:_goal.goal_type, goal_hours:_goal.goal_hours, goal_days:_goal.goal_days });
       }
     }catch(e){ console.warn('기도제목 저장 실패:', e); alert('저장에 실패했어요. 로그인 상태를 확인해주세요.'); return; }
     closeMyModal(); loadMyPrayers();
@@ -4193,6 +4225,21 @@
   body.solo #soloWord .sw-e-t{font-family:"Gowun Batang",serif;font-size:15.5px;color:#4a4334;margin-bottom:7px;}
   body.solo #soloWord .sw-e-d{font-size:12.5px;color:#7c7464;line-height:1.65;margin-bottom:15px;}
   body.solo #soloWord .sw-e-btn{border:none;border-radius:12px;padding:11px 22px;background:linear-gradient(135deg,#e6ad4c,#cd8a30);color:#fff;font-family:"Gowun Dodum",sans-serif;font-size:13.5px;font-weight:700;cursor:pointer;}
+  /* 기도제목 모달: 주제·목표 picker */
+  #myModal .modalbox{max-height:90vh;overflow-y:auto;}
+  .mpcats{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:0 0 4px;}
+  .mpcat{display:flex;align-items:center;gap:8px;border:1.5px solid #ece3d2;background:#fffdf8;border-radius:12px;padding:9px 11px;font-size:13px;cursor:pointer;color:#3a362e;font-family:"Gowun Dodum",sans-serif;text-align:left;}
+  .mpcat.on{border-color:#6fa45c;background:#f0f5ea;color:#3a8a5a;font-weight:600;}
+  .mpgbig{width:100%;display:block;text-align:left;border:1.5px solid #ece3d2;background:#fffdf8;border-radius:13px;padding:11px 14px;cursor:pointer;font-family:"Gowun Dodum",sans-serif;margin-bottom:4px;}
+  .mpgbig span{font-size:14.5px;color:#3a362e;}
+  .mpgbig small{display:block;font-size:11px;color:#7c7464;margin-top:2px;}
+  .mpgbig.on{border-color:#6fa45c;background:#f0f5ea;}
+  .mpgbig.on span{color:#3a8a5a;font-weight:700;}
+  .mpgor{text-align:center;color:#a89e89;font-size:11px;margin:11px 0 8px;}
+  .mpgsub{font-size:11px;color:#7c7464;margin:0 2px 6px;}
+  .mpgoals{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:2px;}
+  .mpgoal{border:1.5px solid #ece3d2;background:#fffdf8;border-radius:11px;padding:8px 15px;font-size:13.5px;color:#7c7464;cursor:pointer;font-family:"Gowun Dodum",sans-serif;}
+  .mpgoal.on{border-color:#e0a93a;background:#fbf2dd;color:#c5881d;font-weight:700;}
 </style>
 <script>
 (function(){
