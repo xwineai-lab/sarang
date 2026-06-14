@@ -4227,7 +4227,7 @@
         +'<div class="sw-foot">기록은 이 기기에 안전하게 저장돼요</div>'
       +'</div>'
     +'</div>';
-    var sb=document.getElementById('soloStart'); if(sb) sb.addEventListener('click', function(){ try{ if(window.enterApp){ enterApp(); } else { go('home'); } }catch(e){ try{go('home');}catch(_){}; } });
+    var sb=document.getElementById('soloStart'); if(sb) sb.addEventListener('click', function(){ try{ go('joinmode'); }catch(e){ try{go('home');}catch(_){}; } });
   }
   var SC_Q=['지금, 기도가 필요하신가요?','잠시 멈추고 싶으신가요?','오늘, 주님 앞에 서볼까요?','혼자 감당하기 버거우신가요?','무거운 하루였나요?'];
   function initCandle(){
@@ -4261,6 +4261,7 @@
       var camp=document.querySelector('[data-i18n="sec.campaign"]'); if(camp) camp.classList.add('solo-hide');
       stripZone(); paintSoloHead(); initCandle();
       var _btg=document.getElementById('pm-together'); if(_btg && _btg.textContent.indexOf('오늘의 말씀')<0){ _btg.textContent='오늘의 말씀 기도'; _btg.removeAttribute('data-i18n'); }
+      var _jmb=document.querySelector('#joinmode .subhead .bk'); if(_jmb) _jmb.setAttribute('onclick',"go('welcome')");   /* 솔로: 참여방식 뒤로가기 → 인트로(구역선택 건너뜀) */
       if(!document.querySelector('.solo-badge')){ var b=document.createElement('div'); b.className='solo-badge'; b.textContent='SOLO 미리보기 (비공개)'; document.body.appendChild(b); }
     }catch(e){}
   }
