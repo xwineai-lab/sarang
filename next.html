@@ -4151,6 +4151,19 @@
   .sc-btn{display:inline-flex;align-items:center;gap:7px;border:none;border-radius:13px;padding:12px 26px;cursor:pointer;font-family:"Gowun Dodum",sans-serif;font-size:14px;font-weight:700;background:linear-gradient(135deg,#eab85e,#cf8c33);color:#2a1c08;box-shadow:0 6px 18px rgba(0,0,0,.3);}
   .solocandle.cbd .sc-btn{background:linear-gradient(135deg,#e9b256,#cf8c33);color:#3a2607;box-shadow:0 6px 16px rgba(180,110,30,.4);}
   .sc-tri{font-size:10px;}
+  /* === 솔로 기도실: 오늘의 말씀 기도 카드 === */
+  body.solo #soloWord{padding:8px 2px 2px;text-align:center;}
+  body.solo #soloWord .sw-tag{display:inline-block;font-size:11px;letter-spacing:1px;color:#b08a3e;border:1px solid rgba(200,160,90,.45);padding:3px 12px;border-radius:99px;margin-bottom:7px;}
+  body.solo #soloWord .sw-verse{font-family:"Gowun Batang","Gowun Dodum",serif;font-size:16px;line-height:1.85;color:#3a322a;margin:6px 6px;word-break:keep-all;}
+  body.solo #soloWord .sw-ref{font-size:12px;color:#a07f3c;}
+  body.solo #soloWord .sw-pline{height:1px;background:rgba(120,100,60,.18);margin:14px 8px;}
+  body.solo #soloWord .sw-plab{font-size:11px;color:#7c7464;margin-bottom:8px;}
+  body.solo #soloWord .sw-pray{font-family:"Gowun Dodum",sans-serif;font-size:13.5px;line-height:2;color:#4a4334;text-align:left;padding:0 6px;}
+  body.solo #soloWord .sw-src{font-size:10px;color:#a89e89;margin-top:13px;}
+  body.solo #soloWord #sw-empty{padding:22px 10px;text-align:center;}
+  body.solo #soloWord .sw-e-t{font-family:"Gowun Batang",serif;font-size:15.5px;color:#4a4334;margin-bottom:7px;}
+  body.solo #soloWord .sw-e-d{font-size:12.5px;color:#7c7464;line-height:1.65;margin-bottom:15px;}
+  body.solo #soloWord .sw-e-btn{border:none;border-radius:12px;padding:11px 22px;background:linear-gradient(135deg,#e6ad4c,#cd8a30);color:#fff;font-family:"Gowun Dodum",sans-serif;font-size:13.5px;font-weight:700;cursor:pointer;}
 </style>
 <script>
 (function(){
@@ -4218,18 +4231,65 @@
       hideByI18n('row.myzone'); hideByI18n('row.goal');
       var camp=document.querySelector('[data-i18n="sec.campaign"]'); if(camp) camp.classList.add('solo-hide');
       stripZone(); paintSoloHead(); initCandle();
+      var _btg=document.getElementById('pm-together'); if(_btg && _btg.textContent.indexOf('오늘의 말씀')<0){ _btg.textContent='오늘의 말씀 기도'; _btg.removeAttribute('data-i18n'); }
       if(!document.querySelector('.solo-badge')){ var b=document.createElement('div'); b.className='solo-badge'; b.textContent='SOLO 미리보기 (비공개)'; document.body.appendChild(b); }
     }catch(e){}
   }
   function patchHead(){ try{ if(window.paintHead && !window._soloHead){ window._soloHead=true; window.paintHead=function(){ sIdx++; paintSoloHead(); }; } }catch(e){} }
+  function ensureSoloWord(){
+    if(document.getElementById('soloWord')) return;
+    var tc=document.getElementById('topicCard'); if(!tc) return;
+    var d=document.createElement('div'); d.id='soloWord'; d.style.display='none';
+    d.innerHTML='<div id="sw-body" style="display:none;">'
+      +'<div class="sw-tag" id="sw-tag"></div>'
+      +'<div class="sw-verse" id="sw-verse"></div>'
+      +'<div class="sw-ref" id="sw-ref"></div>'
+      +'<div class="sw-pline"></div>'
+      +'<div class="sw-plab">이 말씀으로, 이렇게 기도해요</div>'
+      +'<div class="sw-pray" id="sw-pray"></div>'
+      +'<div class="sw-src" id="sw-src"></div>'
+      +'</div>'
+      +'<div id="sw-empty"><div class="sw-e-t">오늘의 말씀을 받아보세요</div><div class="sw-e-d">홈의 촛불을 눌러 지금 마음을 따라가면<br>오늘 당신을 위한 말씀과 기도가 이 자리에 담겨요.</div><button class="sw-e-btn" onclick="try{openQFlow()}catch(e){}">▶ 오늘의 말씀 받기</button></div>';
+    tc.appendChild(d);
+  }
+  function praySoloWord(){
+    ensureSoloWord();
+    var main=document.getElementById('topicMain'), gate=document.getElementById('mineGate'), sw=document.getElementById('soloWord');
+    if(main) main.style.display='none'; if(gate) gate.style.display='none'; if(sw) sw.style.display='block';
+    var tc=document.getElementById('topicCard'); if(tc) tc.classList.remove('mine');
+    var c=window.SOLO_CARD;
+    var body=document.getElementById('sw-body'), empty=document.getElementById('sw-empty'), fb=document.getElementById('finishBtn');
+    if(c){
+      document.getElementById('sw-tag').textContent=c.tag||'';
+      document.getElementById('sw-verse').textContent=c.v||'';
+      document.getElementById('sw-ref').textContent=c.r||'';
+      document.getElementById('sw-pray').textContent=c.pLong||c.p||'';
+      document.getElementById('sw-src').textContent='성경(개역한글)';
+      if(body) body.style.display='block'; if(empty) empty.style.display='none';
+      if(fb) fb.style.display='';
+    } else {
+      if(body) body.style.display='none'; if(empty) empty.style.display='block';
+      if(fb) fb.style.display='none';
+    }
+  }
   function patchPray(){
     try{
       if(window.setPrayMode && !window._soloPatched){
         window._soloPatched=true;
         var _sp=window.setPrayMode;
         window.setPrayMode=function(m){
-          try{ _sp.call(this,'mine'); }catch(e){ try{_sp('mine');}catch(_){} }
-          var pt=document.getElementById('prayHTitle'); if(pt) pt.textContent='나의 기도실';
+          try{
+            var bt=document.getElementById('pm-together'), bm=document.getElementById('pm-mine');
+            if(m==='together'){
+              praySoloWord();
+              if(bt) bt.classList.add('on'); if(bm) bm.classList.remove('on');
+              var tc=document.getElementById('topicCard'); if(tc) tc.classList.remove('mine');
+            } else {
+              var sw=document.getElementById('soloWord'); if(sw) sw.style.display='none';
+              _sp.call(this,'mine');
+            }
+            var pt=document.getElementById('prayHTitle'); if(pt) pt.textContent='나의 기도실';
+          }catch(e){ try{_sp('mine');}catch(_){} }
         };
       }
     }catch(e){}
@@ -4372,7 +4432,39 @@
   ];
   var DORDER=['grow','god','interc','work','rel','heart','suffer'];
   var ESC=['조용한 기도','"너희는 가만히 있어 내가 하나님 됨을 알찌어다"','시편 46:10','무슨 말이 필요할지 몰라도 괜찮습니다.\n잠시 주님 앞에 가만히 머뭅니다.'];
-  var stack=[], curDom=null, curSit=null;
+  // 기도실용 긴 기도문 (말씀 레퍼런스 기준)
+  var LONGP={
+   '데살로니가전서 5:18':'주님, 바쁜 하루 속에서 당신이 베푸신 은혜를 자주 잊고 살았습니다. 돌아보니 숨 쉬는 것 하나, 곁에 있는 사람 하나까지 모두 주님의 선물이었습니다. 작은 것에도 감사할 줄 아는 마음을 제게 회복시켜 주소서. 불평이 머물던 자리에 감사가 흐르게 하시고, 범사에 감사하는 것이 주님의 뜻임을 기억하며 오늘을 살게 하소서. 예수님의 이름으로 기도합니다. 아멘.',
+   '요한계시록 2:4':'주님, 언제부터인가 제 신앙이 식어 버린 것을 고백합니다. 처음 주님을 만났을 때의 그 뜨거움과 설렘이 무뎌졌습니다. 어디서 떨어졌는지 돌아보게 하시고, 잃어버린 처음 사랑을 회복시켜 주소서. 의무로 드리던 예배가 다시 기쁨이 되게 하시고, 메마른 제 마음에 주님을 향한 갈망을 새롭게 부어 주소서. 예수님의 이름으로 기도합니다. 아멘.',
+   '야고보서 4:8':'주님, 저는 주님을 더 깊이 알고 더 가까이 가기를 원합니다. 분주함을 핑계로 멀어졌던 거리를 좁히게 하시고, 제가 한 걸음 나아갈 때 저를 가까이 맞아 주소서. 말씀과 기도 속에서 주님의 음성을 듣게 하시고, 주님과 함께 있는 이 시간이 제 삶의 가장 큰 복이 되게 하소서. 예수님의 이름으로 기도합니다. 아멘.',
+   '마태복음 5:16':'주님, 제가 선 자리에서 주님의 빛으로 살기를 원합니다. 말이 아니라 삶으로, 착한 행실로 주님을 드러내게 하소서. 어그러진 세대 속에서도 흔들리지 않게 붙드시고, 사람들이 저를 통해 하늘에 계신 아버지께 영광 돌리게 하소서. 작은 일에도 정직과 사랑으로 행하게 하소서. 예수님의 이름으로 기도합니다. 아멘.',
+   '출애굽기 34:6':'주님, 오늘 저는 당신이 어떤 분이신지 더 알기를 원합니다. 자비롭고 은혜로우시며 노하기를 더디 하시는 주님, 그 인자하심을 제 삶 속에서 경험하게 하소서. 머리로만 알던 하나님을 마음으로 만나게 하시고, 잠잠히 주님 앞에 머무는 이 시간에 주님이 하나님 되심을 깊이 알게 하소서. 예수님의 이름으로 기도합니다. 아멘.',
+   '로마서 8:39':'주님, 때로 제 믿음이 흔들리고 제가 정말 구원받았는지 두려울 때가 있습니다. 그러나 죽음도 생명도, 그 어떤 것도 그리스도 예수 안에 있는 주님의 사랑에서 저를 끊을 수 없음을 믿습니다. 제 감정이 아니라 주님의 약속 위에 서게 하소서. 주님의 손 안에 있는 저는 안전합니다. 이 확신으로 오늘을 살게 하소서. 예수님의 이름으로 기도합니다. 아멘.',
+   '로마서 12:2':'주님, 제 앞에 놓인 일들 속에서 무엇이 주님의 뜻인지 분별하기를 원합니다. 세상의 방식이 아니라 마음을 새롭게 하여 변화받게 하시고, 제 욕심과 두려움이 아니라 주님의 선하시고 기뻐하시고 온전하신 뜻을 따르게 하소서. 조급함을 내려놓고 주님의 인도하심을 기다리게 하소서. 예수님의 이름으로 기도합니다. 아멘.',
+   '로마서 8:26':'주님, 무슨 말로 기도해야 할지 모를 만큼 마음이 막막합니다. 그러나 성령께서 제 연약함을 도우시고, 제가 알지 못하는 그 자리에서 친히 간구하심을 믿습니다. 정돈되지 않은 제 마음 그대로 주님 앞에 쏟아 놓습니다. 말이 부족해도 제 탄식을 들으시는 주님께 모든 것을 맡깁니다. 예수님의 이름으로 기도합니다. 아멘.',
+   '여호수아 24:15':'주님, 제게 주신 가정을 주님 앞에 올려 드립니다. 나와 내 집이 주님을 섬기는 가정이 되게 하시고, 한 사람 한 사람의 이름을 불러 기도합니다. 가정 안에 주님의 평안과 사랑이 흐르게 하시고, 세대를 이어 주님을 경외하는 복된 가정이 되게 하소서. 제가 먼저 본이 되게 하소서. 예수님의 이름으로 기도합니다. 아멘.',
+   '야고보서 5:15':'주님, 지금 아파하는 그 사람을 주님 앞에 데려옵니다. 병상에 누운 그를 붙드시고, 주님의 손길로 그 몸과 마음을 만져 주소서. 의료진에게 지혜를 주시고, 무엇보다 그가 이 시간 속에서 주님이 함께하심을 느끼게 하소서. 회복을 주관하시는 주님을 신뢰하며 그를 맡깁니다. 예수님의 이름으로 기도합니다. 아멘.',
+   '역대하 7:14':'주님, 이 땅과 교회를 위해 무릎 꿇습니다. 주의 백성이 스스로 낮추고 기도하며 주님을 찾을 때 이 땅을 고쳐 주신다 하셨으니, 우리의 죄를 용서하시고 회복시켜 주소서. 교회가 세상의 빛과 소금 되게 하시고, 지도자들에게 지혜를 주시며, 다음 세대 위에 주님의 은혜를 부어 주소서. 예수님의 이름으로 기도합니다. 아멘.',
+   '디모데전서 2:4':'주님, 제가 사랑하는 그 사람의 영혼을 주님께 올려 드립니다. 아직 주님을 알지 못하는 그를 향한 주님의 오래 참으심을 신뢰합니다. 그의 굳은 마음을 부드럽게 만지시고, 주님을 만날 길을 열어 주소서. 제 삶이 그에게 주님을 보여 주는 작은 통로가 되게 하소서. 예수님의 이름으로 기도합니다. 아멘.',
+   '여호수아 1:9':'주님, 새로운 길 앞에 서 있습니다. 설렘보다 두려움이 클 때가 많지만, 강하고 담대하라 하신 주님의 말씀을 붙듭니다. 어디로 가든지 함께하시겠다는 약속을 믿고 첫걸음을 내딛습니다. 제 힘이 아니라 주님을 의지하게 하시고, 이 시작을 주님이 인도하시고 이루어 주소서. 예수님의 이름으로 기도합니다. 아멘.',
+   '잠언 3:5':'주님, 어떤 길을 택해야 할지 마음이 복잡합니다. 제 명철을 의지하지 않고 마음을 다해 주님을 신뢰합니다. 제 생각과 욕심을 내려놓을 때 주님이 제 길을 지도해 주실 줄 믿습니다. 서두르지 않고 주님의 음성을 기다리게 하시고, 무엇보다 주님이 기뻐하시는 길로 인도하소서. 예수님의 이름으로 기도합니다. 아멘.',
+   '시편 37:5':'주님, 제 앞날이 막막하고 어떤 길로 가야 할지 고민됩니다. 제 길을 주님께 맡기오니 주님이 이루실 줄 믿습니다. 제가 계획할지라도 걸음을 인도하시는 분은 주님이심을 기억합니다. 저를 향한 주님의 생각은 평안이요 미래와 희망임을 신뢰하며, 두려움 대신 주님께 제 길을 드립니다. 예수님의 이름으로 기도합니다. 아멘.',
+   '마태복음 6:33':'주님, 재정의 무게가 제 마음을 누릅니다. 염려에 사로잡히지 않게 하시고, 먼저 주님의 나라와 의를 구할 때 모든 것을 더해 주신다는 약속을 붙들게 하소서. 부족함 없게 하시는 목자 되신 주님을 신뢰합니다. 제게 주신 것에 감사하며 지혜롭게 살게 하시고, 제 필요를 아시는 주님께 맡깁니다. 예수님의 이름으로 기도합니다. 아멘.',
+   '에베소서 4:32':'주님, 제 마음에 용서하지 못한 사람이 있습니다. 그를 떠올리면 여전히 아프고 분합니다. 그러나 주님이 그리스도 안에서 저를 먼저 용서하신 그 큰 사랑을 기억합니다. 제 힘으로 안 되는 용서를 주님이 도와주소서. 미움을 내려놓고 그를 주님 손에 맡기며 제 마음이 자유롭게 하소서. 예수님의 이름으로 기도합니다. 아멘.',
+   '시편 147:3':'주님, 받은 상처로 마음의 문이 닫혔습니다. 누구에게도 말하지 못한 아픔을 주님은 다 아십니다. 상심한 자를 고치시고 그 상처를 싸매시는 주님께 제 마음을 엽니다. 제 눈물을 주님의 병에 담으시는 그 세심한 사랑으로 저를 만져 주시고, 다시 사람을 신뢰하고 사랑할 용기를 주소서. 예수님의 이름으로 기도합니다. 아멘.',
+   '잠언 22:6':'주님, 제 아이를 주님 손에 맡깁니다. 제가 다 지킬 수도, 다 이끌 수도 없는 그 길을 주님이 지켜 주소서. 마땅히 행할 길을 가르치게 하시되, 무엇보다 제 아이가 주님을 인격적으로 만나게 하소서. 염려 대신 기도로 아이를 품게 하시고, 주님의 교훈 안에서 큰 평안을 누리게 하소서. 예수님의 이름으로 기도합니다. 아멘.',
+   '신명기 31:8':'주님, 혼자인 것 같은 이 자리에서 주님을 부릅니다. 사람들 속에서도 외롭고, 아무도 제 마음을 모르는 것 같습니다. 그러나 주님은 제 앞서 행하시며 저를 떠나지도 버리지도 않으신다 하셨습니다. 사망의 음침한 골짜기에도 함께 걸으시는 주님을 느끼게 하소서. 이 외로움을 주님과의 친밀함으로 채워 주소서. 예수님의 이름으로 기도합니다. 아멘.',
+   '빌립보서 4:6':'주님, 염려가 꼬리에 꼬리를 물어 잠을 이루지 못합니다. 아무것도 염려하지 말고 기도와 간구로 아뢰라 하신 말씀을 붙듭니다. 제 모든 걱정을 하나하나 주님 앞에 내려놓습니다. 제가 다 해결할 수 없음을 인정하고 주님께 맡기오니, 사람의 모든 지각을 뛰어넘는 주님의 평강이 제 마음과 생각을 지켜 주소서. 평안히 잠들게 하소서. 예수님의 이름으로 기도합니다. 아멘.',
+   '에베소서 4:26':'주님, 다스려지지 않는 분노가 제 안에서 끓어오릅니다. 분을 내어도 죄를 짓지 말며 해가 지도록 분을 품지 말라 하셨으니, 이 감정에 삼켜지지 않게 하소서. 갚으려는 마음을 내려놓고 주님께 맡깁니다. 제 입술을 지켜 주시고, 노하기를 더디 하며 제 마음을 다스리는 참된 힘을 주소서. 예수님의 이름으로 기도합니다. 아멘.',
+   '시편 139:14':'주님, 자꾸 저를 다른 사람과 비교하며 작아집니다. 제 부족함만 보이고 스스로가 초라하게 느껴집니다. 그러나 저를 신묘막측하게 지으신 분이 주님이심을 기억합니다. 세상의 잣대가 아니라 저를 지으시고 사랑하시는 주님의 눈으로 저를 보게 하소서. 주님 안에서 제 존재의 가치를 다시 발견하게 하소서. 예수님의 이름으로 기도합니다. 아멘.',
+   '시편 51:10':'주님, 부끄러운 자리에서 주님 앞에 섭니다. 숨기고 싶은 제 죄와 허물을 정직하게 고백합니다. 제 속에 정한 마음을 창조하시고 정직한 영을 새롭게 하소서. 주님은 상하고 통회하는 마음을 멸시하지 않으심을 믿습니다. 죄를 자백하는 저를 용서하시고 깨끗하게 씻어 주소서. 다시 주님과 동행하게 하소서. 예수님의 이름으로 기도합니다. 아멘.',
+   '시편 103:3':'주님, 아픈 몸과 지친 마음을 주님 앞에 내려놓습니다. 제 모든 죄악을 사하시고 모든 병을 고치시는 주님께 저를 맡깁니다. 통증과 두려움 가운데 주님의 손길로 저를 만져 주시고, 회복의 은혜를 베풀어 주소서. 낫지 않는 시간조차 주님이 함께하심으로 견디게 하시고, 이 연약함 속에서 주님을 더 깊이 의지하게 하소서. 예수님의 이름으로 기도합니다. 아멘.',
+   '시편 42:11':'주님, 마음이 가라앉고 모든 것이 무겁게 느껴집니다. 내 영혼아 어찌하여 낙망하느냐, 너는 하나님을 바라라 하신 말씀으로 제 영혼을 일으켜 주소서. 지금은 어둡지만 주님 안에 소망이 있음을 붙듭니다. 가라앉는 제 마음을 주님이 붙드시고, 다시 주님을 찬송할 날을 바라보게 하소서. 예수님의 이름으로 기도합니다. 아멘.',
+   '이사야 40:31':'주님, 다 타버린 것처럼 아무 힘도 남아 있지 않습니다. 쉬어도 쉰 것 같지 않고 마음이 메말랐습니다. 오직 주님을 앙망하는 자는 새 힘을 얻는다 하셨으니, 독수리가 날개 치며 올라가듯 제게 새 힘을 부어 주소서. 푸른 풀밭에 누이시고 쉴 만한 물가로 인도하시는 주님 곁에서 제 영혼이 소생하게 하소서. 예수님의 이름으로 기도합니다. 아멘.',
+   '히브리서 12:2':'주님, 넘어진 자리에서 다시 고개를 듭니다. 눈앞의 무게와 환경에 짓눌리지 않고, 믿음의 주요 온전케 하시는 예수님을 바라봅니다. 제 도움이 천지를 지으신 주님께로부터 옴을 믿습니다. 땅의 것이 아니라 위의 것을 생각하게 하시고, 제 시선을 끝까지 주님께 고정하게 하소서. 예수님의 이름으로 기도합니다. 아멘.',
+   '시편 46:10':'주님, 무슨 말로 기도해야 할지 모르겠습니다. 마음이 복잡하고 정리되지 않아 그저 주님 앞에 가만히 앉습니다. 너희는 가만히 있어 내가 하나님 됨을 알라 하신 말씀을 붙들고 잠시 모든 말을 멈춥니다. 제 침묵 속에서도 제 마음을 다 아시는 주님, 이 고요한 시간에 저와 함께해 주소서. 예수님의 이름으로 기도합니다. 아멘.'
+  };
+  var stack=[], curDom=null, curSit=null, _card=null;
   function $(id){return document.getElementById(id);}
   function find(k){for(var i=0;i<DOMQ.length;i++) if(DOMQ[i].k===k) return DOMQ[i]; return null;}
   function showScreen(id){var ss=document.querySelectorAll('#qflow .qf-screen');for(var i=0;i<ss.length;i++) ss[i].classList.remove('on');$(id).classList.add('on');var f=$('qflow');if(f)f.scrollTop=0;}
@@ -4398,6 +4490,7 @@
     $('qfPbg').style.backgroundImage="linear-gradient(to bottom,rgba(34,27,14,.30),rgba(34,27,14,.66)),url('"+bg+"')";
     $('qfTag').textContent=card.tag;$('qfVerse').textContent=card.v;$('qfRef').textContent=card.r;
     $('qfPray').textContent=card.p;$('qfSrc').textContent='성경(개역한글)';
+    _card={tag:card.tag,v:card.v,r:card.r,p:card.p,pLong:(LONGP[card.r]||card.p)};
     showScreen('qf-card');
   }
   function goBack(){if(stack.length<=1){closeQ();}else{stack.pop();var prev=stack[stack.length-1];stack.pop();if(prev===0){startQ();}else{pickDom(curDom);}}}
@@ -4406,7 +4499,7 @@
   window.openQFlow=openQ;
   function wire(){
     var m={qfBack:goBack,qfClose:closeQ,qfCClose:closeQ,qfCBack:function(){showScreen('qf-q');},qfAgain:startQ,
-      qfGo:function(){closeQ();setTimeout(function(){try{if(window.go)window.go('pray');}catch(e){}},60);}};
+      qfGo:function(){window.SOLO_CARD=_card;closeQ();setTimeout(function(){try{if(window.go)window.go('pray');if(window.setPrayMode)window.setPrayMode('together');}catch(e){}},80);}};
     for(var id in m){var el=$(id);if(el)el.onclick=m[id];}
   }
   if(document.readyState!=='loading')wire();else document.addEventListener('DOMContentLoaded',wire);
