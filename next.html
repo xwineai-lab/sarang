@@ -2000,7 +2000,7 @@
     const el=document.getElementById(id); if(el) el.scrollTop=0;
     tabbarEl.classList.remove('tbhide');  // 탭바는 항상 하단 고정
     if(id!=='pray') MY_PRAYER_ID=null;        // 개인 제목 연동은 prayMyTopic 진입에서만 유지
-    if(id==='pray'){ setPrayMode(MY_PRAYER_ID ? 'mine' : 'together'); updateMyPrayTag(); if(typeof loadAmens==='function') loadAmens(); if(prayMode==='together' && !autoOn && typeof toggleAuto==='function') toggleAuto(); }   /* 진입 시 자동 넘김 기본 ON(기도 누르면 OFF) */
+    if(id==='pray'){ setPrayMode(MY_PRAYER_ID ? 'mine' : 'together'); updateMyPrayTag(); if(typeof loadAmens==='function') loadAmens(); if(prayMode==='together' && !autoOn && !document.body.classList.contains('solo') && typeof toggleAuto==='function') toggleAuto(); }   /* 진입 시 자동 넘김 기본 ON(기도 누르면 OFF) */
     var _fab=document.getElementById('myFab'); if(_fab && id!=='record') _fab.style.display='none';  // FAB는 기록 화면에서만
     if(id==='zone'){ buildZones(); loadDept(); if(typeof loadPeopleCounts==='function') loadPeopleCounts(); }
     if(id==='joinzone') buildChips();
@@ -3196,6 +3196,17 @@
     try{ var res=await SB.from('my_prayers').select('id,title,note,status,pray_count,last_prayed_at').eq('archived',false).order('created_at',{ascending:false}); MY_PRAYERS=res.data||[]; }catch(e){}
   }
   function setPrayMode(m){
+    var _solo=document.body.classList.contains('solo');
+    if(_solo && m==='together'){
+      try{ if(window.praySoloWord) window.praySoloWord(); }catch(e){}
+      var _bt0=document.getElementById('pm-together'),_bm0=document.getElementById('pm-mine');
+      if(_bt0)_bt0.classList.add('on'); if(_bm0)_bm0.classList.remove('on');
+      prayMode='together'; if(autoOn) toggleAuto();
+      var _tc0=document.getElementById('topicCard'); if(_tc0)_tc0.classList.remove('mine');
+      var _h0=document.getElementById('prayHTitle'); if(_h0)_h0.textContent='나의 기도실';
+      return;
+    }
+    if(_solo){ var _sw0=document.getElementById('soloWord'); if(_sw0)_sw0.style.display='none'; }
     prayMode=m;
     var bt=document.getElementById('pm-together'), bm=document.getElementById('pm-mine');
     if(bt) bt.classList.toggle('on', m==='together');
@@ -4272,28 +4283,7 @@
       if(fb) fb.style.display='none';
     }
   }
-  function patchPray(){
-    try{
-      if(window.setPrayMode && !window._soloPatched){
-        window._soloPatched=true;
-        var _sp=window.setPrayMode;
-        window.setPrayMode=function(m){
-          try{
-            var bt=document.getElementById('pm-together'), bm=document.getElementById('pm-mine');
-            if(m==='together'){
-              praySoloWord();
-              if(bt) bt.classList.add('on'); if(bm) bm.classList.remove('on');
-              var tc=document.getElementById('topicCard'); if(tc) tc.classList.remove('mine');
-            } else {
-              var sw=document.getElementById('soloWord'); if(sw) sw.style.display='none';
-              _sp.call(this,'mine');
-            }
-            var pt=document.getElementById('prayHTitle'); if(pt) pt.textContent='나의 기도실';
-          }catch(e){ try{_sp('mine');}catch(_){} }
-        };
-      }
-    }catch(e){}
-  }
+  function patchPray(){ try{ window.praySoloWord=praySoloWord; ensureSoloWord(); }catch(e){} }
   if(document.body) applySolo(); else document.addEventListener('DOMContentLoaded', applySolo);
   patchPray(); patchHead();
   setTimeout(function(){ applySolo(); patchPray(); patchHead(); }, 600);
