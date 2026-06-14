@@ -2383,7 +2383,8 @@
    ['G','#3f4a2c',0,'c'],['G','#6a4a2a',0,'c'],['M','#3f5560',0,'u'],['F','#5a4326',0,'c'],
    ['M','#f2ead4',1,'c'],['M','#6a3f24',0,'u'],['G','#4a4630',0,'c'],['G','#6a4a2a',0,'c'],
    ['G','#3f5560',0,'c'],['M','#3a3a34',0,'c'],['G','#6a4a2a',0,'c'],['M','#f2ead4',1,'c'],
-   ['M','#5a4a2e',0,'c'],['M','#5a3f22',0,'u'],['G','#4a5560',0,'u'],['G','#5a4a52',0,'c']];
+   ['M','#5a4a2e',0,'c'],['M','#5a3f22',0,'u'],['G','#4a5560',0,'u'],['G','#5a4a52',0,'c'],
+   ['F','#5a4326',0,'c'],['M','#5a4326',0,'c'],['G','#5a4326',0,'c'],['F','#5a4326',0,'c'],['M','#5a4326',0,'c'],['G','#5a4326',0,'c'],['F','#5a4326',0,'c'],['M','#5a4326',0,'c'],['G','#5a4326',0,'c'],['F','#5a4326',0,'c'],['M','#5a4326',0,'c'],['G','#5a4326',0,'c'],['F','#5a4326',0,'c']];
   var GVERSES=[
    ['수고하고 무거운 짐 진 자들아 다 내게로 오라 내가 너희를 쉬게 하리라','마태복음 11:28'],
    ['평안을 너희에게 끼치노니 곧 나의 평안을 너희에게 주노라','요한복음 14:27'],
@@ -2842,7 +2843,7 @@
     if(!pool.length){ for(var pj=0;pj<GVERSES.length;pj++) pool.push(pj); }
     var vi=pool[Math.floor(Math.random()*pool.length)];
     var v={i:vi,t:GVERSES[vi][0],r:GVERSES[vi][1]};
-    var bgPool=[]; for(var bk=1;bk<=24;bk++){ if(bk!==lastBg && (!lastFont||CARDBG[bk][0]!==lastFont)) bgPool.push(bk); }
+    var bgPool=[]; for(var bk=1;bk<=37;bk++){ if(bk!==lastBg && (!lastFont||CARDBG[bk][0]!==lastFont)) bgPool.push(bk); }
     if(!bgPool.length){ for(var bq=1;bq<=24;bq++){ if(bq!==lastBg) bgPool.push(bq); } }
     if(!bgPool.length){ for(var br=1;br<=24;br++) bgPool.push(br); }
     var bgi=bgPool[Math.floor(Math.random()*bgPool.length)];
