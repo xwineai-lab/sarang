@@ -3212,7 +3212,7 @@
       var _bt0=document.getElementById('pm-together'),_bm0=document.getElementById('pm-mine');
       if(_bt0)_bt0.classList.add('on'); if(_bm0)_bm0.classList.remove('on');
       prayMode='together'; if(autoOn) toggleAuto();
-      var _tc0=document.getElementById('topicCard'); if(_tc0)_tc0.classList.remove('mine');
+      var _tc0=document.getElementById('topicCard'); if(_tc0)_tc0.classList.add('mine');
       var _h0=document.getElementById('prayHTitle'); if(_h0)_h0.textContent='나의 기도실';
       return;
     }
@@ -4121,16 +4121,9 @@
   body.solo #home .liveticker{display:none!important;}
   body.solo #pray #prayHDesc{display:none!important;}
   body.solo #pray .praysame{display:none!important;}
-  /* 솔로 오늘의 말씀 기도 카로셀 */
-  body.solo #soloWord .sw-idx{text-align:center;font-size:11.5px;color:var(--faint);margin-bottom:6px;}
-  body.solo #soloWord .sw-dots{display:flex;gap:6px;justify-content:center;margin:12px 0 2px;flex-wrap:wrap;}
-  body.solo #soloWord .sw-dots i{width:6px;height:6px;border-radius:50%;background:rgba(120,100,60,.25);}
-  body.solo #soloWord .sw-dots i.on{background:#c5881d;width:15px;border-radius:7px;}
-  body.solo #soloWord .sw-nav{display:flex;align-items:center;justify-content:space-between;margin-top:12px;}
-  body.solo #soloWord .sw-nav>button{border:none;background:none;color:var(--soft);font-family:"Gowun Dodum",sans-serif;font-size:13px;cursor:pointer;padding:6px 8px;}
-  body.solo #soloWord .sw-amen{display:inline-flex;align-items:center;gap:6px;border:1px solid #e7d6ad!important;background:#fbf3df!important;border-radius:99px;padding:7px 16px!important;color:#b5852a!important;font-weight:700;}
-  body.solo #soloWord .sw-amen.pop{animation:swpop .4s ease;}
-  @keyframes swpop{0%{transform:scale(1)}40%{transform:scale(1.13)}100%{transform:scale(1)}}
+  /* 솔로: 아래 중복 '기도 시작' 숨김 (타이머 링의 시작 버튼 사용) */
+  body.solo #pray #finishBtn{display:none!important;}
+  body.solo #soloWord .sw-idx{text-align:left;}
   body.solo #record .ieentry{display:none!important;}
   body.solo .solo-hide{display:none!important;}
   body.solo #adminMenuRow{display:none!important;}
@@ -4272,16 +4265,16 @@
     var tc=document.getElementById('topicCard'); if(!tc) return;
     var d=document.createElement('div'); d.id='soloWord'; d.style.display='none';
     d.innerHTML='<div id="sw-body" style="display:none;">'
-      +'<div class="sw-idx" id="sw-idx"></div>'
-      +'<div class="sw-tag" id="sw-tag"></div>'
+      +'<div class="topiclabel"><span class="topicidx sw-idx" id="sw-idx"></span></div>'
+      +'<div style="text-align:center;"><span class="topiccat tcmine" id="sw-tag"></span></div>'
       +'<div class="sw-verse" id="sw-verse"></div>'
       +'<div class="sw-ref" id="sw-ref"></div>'
       +'<div class="sw-pline"></div>'
       +'<div class="sw-plab">이 말씀으로, 이렇게 기도해요</div>'
       +'<div class="sw-pray" id="sw-pray"></div>'
       +'<div class="sw-src" id="sw-src"></div>'
-      +'<div class="sw-dots" id="sw-dots"></div>'
-      +'<div class="sw-nav"><button type="button" onclick="soloPrev()">‹ 이전</button><button type="button" class="sw-amen" id="sw-amen" onclick="soloAmen(event)"><b id="sw-amen-n">0</b> 기도</button><button type="button" onclick="soloNext()">다음 ›</button></div>'
+      +'<div class="topicdots" id="sw-dots"></div>'
+      +'<div class="topicnav"><button type="button" onclick="soloPrev()">‹ 이전</button><div class="topicamen"><button class="amenbtn" id="sw-amen" onclick="soloAmen(event)"><span class="amencnt"><b id="sw-amen-n">0</b></span><span class="amenheart"><svg viewBox="0 0 24 24" width="17" height="17"><path d="M12 21s-7.4-4.55-9.9-9.2C.7 8.6 2.4 5.4 5.5 5.4c1.95 0 3.35 1.15 4.15 2.35l.35.55.35-.55C11.15 6.55 12.55 5.4 14.5 5.4c3.1 0 4.8 3.2 3.4 6.4C19.4 16.45 12 21 12 21z"/></svg></span><span class="amenlabel">기도</span></button></div><button type="button" onclick="soloNext()">다음 ›</button></div>'
       +'</div>'
       +'<div id="sw-empty"><div class="sw-e-t">오늘의 말씀을 받아보세요</div><div class="sw-e-d">홈의 촛불을 눌러 지금 마음을 따라가면<br>오늘 당신을 위한 말씀과 기도가 이 자리에 담겨요.</div><button class="sw-e-btn" onclick="try{openQFlow()}catch(e){}">▶ 오늘의 말씀 받기</button></div>';
     tc.appendChild(d);
@@ -4290,7 +4283,7 @@
     ensureSoloWord();
     var main=document.getElementById('topicMain'), gate=document.getElementById('mineGate'), sw=document.getElementById('soloWord');
     if(main) main.style.display='none'; if(gate) gate.style.display='none'; if(sw) sw.style.display='block';
-    var tc=document.getElementById('topicCard'); if(tc) tc.classList.remove('mine');
+    var tc=document.getElementById('topicCard'); if(tc) tc.classList.add('mine');
     var cards=soloLoadCards();
     var body=document.getElementById('sw-body'), empty=document.getElementById('sw-empty'), fb=document.getElementById('finishBtn');
     if(!cards.length){ if(body)body.style.display='none'; if(empty)empty.style.display='block'; if(fb)fb.style.display='none'; return; }
@@ -4303,7 +4296,7 @@
     document.getElementById('sw-pray').textContent=c.pLong||c.p||'';
     document.getElementById('sw-src').textContent='성경(개역한글)';
     document.getElementById('sw-amen-n').textContent=(c.amen||0);
-    var dd=document.getElementById('sw-dots'); if(dd) dd.innerHTML=cards.map(function(_,k){return '<i class="'+(k===i?'on':'')+'"></i>';}).join('');
+    var dd=document.getElementById('sw-dots'); if(dd) dd.innerHTML=cards.map(function(_,k){return '<span class="'+(k===i?'on':'')+'"></span>';}).join('');
     if(body)body.style.display='block'; if(empty)empty.style.display='none'; if(fb)fb.style.display='';
   }
   window.praySoloWord=praySoloWord;
